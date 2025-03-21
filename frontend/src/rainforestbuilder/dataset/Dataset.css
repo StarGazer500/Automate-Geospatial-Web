@@ -1,0 +1,39 @@
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: white;
+  margin-top: 0px;
+  border: solid 5px;
+  box-sizing: border-box;
+ }
+ 
+ .grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  padding: 20px;
+  margin-left: 100px;
+  margin-right: 100px;
+  border: 1px solid whitesmoke;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: calc(100% - 200px);
+  box-sizing: border-box;
+  justify-content: center; /* Center grid items horizontally */
+  align-items: start; /* Align items to the start vertically */
+  grid-auto-rows: min-content; /* Ensure rows are sized by content */
+ }
+ 
+ .grid-item {
+  border: 1px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  background-color: green;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ }

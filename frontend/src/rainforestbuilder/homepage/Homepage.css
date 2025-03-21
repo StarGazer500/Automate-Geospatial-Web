@@ -1,0 +1,79 @@
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Use vh for full viewport height */
+  width: 100%;
+  background-color: white;
+}
+
+.sections-container {
+  flex: 1; /* Takes up remaining space in the flex container */
+  max-height: calc(100vh - 54px); /* Full viewport height minus header height */
+  overflow-y: auto; /* Enables vertical scrolling when content overflows */
+  width: 100vw;
+  padding: 0;
+  overflow-x: hidden;
+  margin-top: 54px; /* Offset for fixed header */
+}
+
+.section {
+  margin: 20px 0; /* Space between sections */
+}
+
+.section-image {
+  width: 100vw; /* Use viewport width to span the full screen */
+  height: 70vh;
+  display: block; /* Removes bottom gap */
+  border-radius: 4px; /* Optional: adds rounded corners */
+  margin-left: calc(-50vw + 50%); /* Center the image if parent has padding/margins */
+  object-fit: cover;
+}
+
+.section-description {
+  margin: 10px 0 0 0;
+  font-size: 16px;
+  color: #333;
+  padding: 0 20px; /* Add padding here if you want text indented */
+}
+
+.section h1 {
+  font-family:"Google Sans Display","Roboto",sans-serif;
+  color:#444;
+  font-weight:400;
+  font-size: 48px;font-weight: 400;
+}
+
+.section p {
+  font-size: 21px;
+  font-weight: 300;
+  text-align: justify; /* Justifies the text */
+  line-height: 1.5em; /* Improves readability with justified text */
+  color: #424242;
+  max-width: 1400px; /* Keeps content readable */
+  margin: 0 auto 10px auto; /* Centers the paragraph */
+}
+
+/* If you want to override the global p styling */
+p {
+  line-height: 1.5em;
+  color: #424242;
+  font-size: 18px;
+  font-weight: 400;
+  max-width: 1400px;
+  margin: 0 auto 10px auto;
+  text-align: justify; /* Optional: apply globally if all paragraphs should be justified */
+}
+
+.section .btn {
+  background-color: green;
+  width: 178.583px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
