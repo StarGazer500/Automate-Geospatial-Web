@@ -11,6 +11,9 @@ createpyproto1:
 createpyproto2:
 	python -m grpc_tools.protoc -I./grpc_backend/proto  --python_out=./grpc_backend ./grpc_backend/proto/file_upload2.proto
 
+createpyproto3:
+	python -m grpc_tools.protoc -I./grpc_backend/proto  --python_out=./grpc_backend ./grpc_backend/proto/file_upload3.proto
+
 rungrpc:
 	python manage.py run_grpc_server &
 

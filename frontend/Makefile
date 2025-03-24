@@ -28,7 +28,7 @@ createnpmproto1:
 	  --outfile=./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload1_pb.esm.js
 	sed -i 's/var jspb = require("google-protobuf");/import * as jspb from "google-protobuf";/' \
 	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload1_pb.esm.js
-	sed -i 's/goog.object.extend(exports, proto.upload);/export const { FileUploadRequest, FileMetaData, FileUploadResponse } = proto.upload;/' \
+	sed -i 's/goog.object.extend(exports, proto.upload);/export const { DocumentUploadRequest,DocumentMetaData, DocumentUploadResponse } = proto.upload;/' \
 	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload1_pb.esm.js
 	rm -f ./src/rainforestbuilder/dataset/grpc_setup/generated/file1_upload_pb.js
 
@@ -46,6 +46,20 @@ createnpmproto2:
 	sed -i 's/goog.object.extend(exports, proto.upload);/export const { FileUploadRequest, FileMetaData, FileUploadResponse } = proto.upload;/' \
 	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload2_pb.esm.js
 	rm -f ./src/rainforestbuilder/dataset/grpc_setup/generated/file2_upload_pb.js
+
+createnpmproto3:
+	protoc \
+	  --proto_path=./src/rainforestbuilder/dataset/grpc_setup/proto \
+	  --js_out=import_style=commonjs,binary:./src/rainforestbuilder/dataset/grpc_setup/generated \
+	  ./src/rainforestbuilder/dataset/grpc_setup/proto/file_upload3.proto
+	npx esbuild ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload3_pb.js \
+	  --format=esm \
+	  --outfile=./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload3_pb.esm.js
+	sed -i 's/var jspb = require("google-protobuf");/import * as jspb from "google-protobuf";/' \
+	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload3_pb.esm.js
+	sed -i 's/goog.object.extend(exports, proto.upload);/export const { MapUploadRequest, MapMetaData, MapUploadResponse } = proto.upload;/' \
+	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload3_pb.esm.js
+	rm -f ./src/rainforestbuilder/dataset/grpc_setup/generated/file3_upload_pb.js
 
 install_protoc:
 	@echo "Installing Protocol Buffers Compiler (protoc)..."
