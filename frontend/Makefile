@@ -33,6 +33,20 @@ createnpmproto1:
 	rm -f ./src/rainforestbuilder/dataset/grpc_setup/generated/file1_upload_pb.js
 
 
+createnpmproto2:
+	protoc \
+	  --proto_path=./src/rainforestbuilder/dataset/grpc_setup/proto \
+	  --js_out=import_style=commonjs,binary:./src/rainforestbuilder/dataset/grpc_setup/generated \
+	  ./src/rainforestbuilder/dataset/grpc_setup/proto/file_upload2.proto
+	npx esbuild ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload2_pb.js \
+	  --format=esm \
+	  --outfile=./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload2_pb.esm.js
+	sed -i 's/var jspb = require("google-protobuf");/import * as jspb from "google-protobuf";/' \
+	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload2_pb.esm.js
+	sed -i 's/goog.object.extend(exports, proto.upload);/export const { FileUploadRequest, FileMetaData, FileUploadResponse } = proto.upload;/' \
+	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload2_pb.esm.js
+	rm -f ./src/rainforestbuilder/dataset/grpc_setup/generated/file2_upload_pb.js
+
 install_protoc:
 	@echo "Installing Protocol Buffers Compiler (protoc)..."
 	# macOS

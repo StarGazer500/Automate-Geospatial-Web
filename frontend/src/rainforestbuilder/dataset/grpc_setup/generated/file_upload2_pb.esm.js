@@ -47,6 +47,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
   };
   proto.upload.FileUploadRequest.toObject = function(includeInstance, msg) {
     var f, obj = {
+      fileName: jspb.Message.getFieldWithDefault(msg, 4, ""),
       metaData: (f = msg.getMetaData()) && proto.upload.FileMetaData.toObject(includeInstance, f),
       chunkData: msg.getChunkData_asB64(),
       endSignal: (f = jspb.Message.getBooleanField(msg, 3)) == null ? void 0 : f
@@ -69,6 +70,13 @@ proto.upload.FileUploadRequest.deserializeBinaryFromReader = function(msg, reade
     }
     var field = reader.getFieldNumber();
     switch (field) {
+      case 4:
+        var value = (
+          /** @type {string} */
+          reader.readString()
+        );
+        msg.setFileName(value);
+        break;
       case 1:
         var value = new proto.upload.FileMetaData();
         reader.readMessage(value, proto.upload.FileMetaData.deserializeBinaryFromReader);
@@ -102,6 +110,13 @@ proto.upload.FileUploadRequest.prototype.serializeBinary = function() {
 };
 proto.upload.FileUploadRequest.serializeBinaryToWriter = function(message, writer) {
   var f = void 0;
+  f = message.getFileName();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
   f = message.getMetaData();
   if (f != null) {
     writer.writeMessage(
@@ -126,6 +141,15 @@ proto.upload.FileUploadRequest.serializeBinaryToWriter = function(message, write
       f
     );
   }
+};
+proto.upload.FileUploadRequest.prototype.getFileName = function() {
+  return (
+    /** @type {string} */
+    jspb.Message.getFieldWithDefault(this, 4, "")
+  );
+};
+proto.upload.FileUploadRequest.prototype.setFileName = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 proto.upload.FileUploadRequest.prototype.getMetaData = function() {
   return (
