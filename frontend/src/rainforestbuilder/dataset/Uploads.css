@@ -43,6 +43,7 @@ input[type="file"] {
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #f9f9f9;
+  color: #333;
 }
 
 select, textarea, input[type="text"], input[type="date"] {
@@ -52,6 +53,7 @@ select, textarea, input[type="text"], input[type="date"] {
   border-radius: 4px;
   background-color: #fff;
   font-size: 13px;
+  color: #333;
 }
 
 .date-captured {
@@ -61,6 +63,7 @@ select, textarea, input[type="text"], input[type="date"] {
   border-radius: 4px;
   background-color: #fff;
   font-size: 13px;
+  color: #333;
 }
 
 textarea {
@@ -94,6 +97,7 @@ button:hover {
 
 .file-path-input {
   flex: 9;
+  color: #333;
 }
 
 .file-button {

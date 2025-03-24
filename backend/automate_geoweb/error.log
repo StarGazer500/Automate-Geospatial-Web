@@ -1,0 +1,805 @@
+[2025-03-23 11:08:24 +0000] [19791] [DEBUG] Current configuration:
+  config: ./gunicorn.conf.py
+  wsgi_app: None
+  bind: ['127.0.0.1:8000']
+  backlog: 2048
+  workers: 2
+  worker_class: uvicorn_worker.UvicornWorker
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: True
+  reload_engine: auto
+  reload_extra_files: []
+  spew: False
+  check_config: False
+  print_config: False
+  preload_app: False
+  sendfile: None
+  reuse_port: False
+  chdir: /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 1000
+  group: 1000
+  umask: 0
+  initgroups: False
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1', '::1']
+  accesslog: access.log
+  disable_redirect_access_to_syslog: False
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: error.log
+  loglevel: debug
+  capture_output: True
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  logconfig_dict: {}
+  logconfig_json: None
+  syslog_addr: udp://localhost:514
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: True
+  statsd_host: None
+  dogstatsd_tags: 
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: automate_geoweb.asgi:application
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x713b22ade200>
+  on_reload: <function OnReload.on_reload at 0x713b22ade340>
+  when_ready: <function WhenReady.when_ready at 0x713b22ade480>
+  pre_fork: <function Prefork.pre_fork at 0x713b22ade660>
+  post_fork: <function Postfork.post_fork at 0x713b22ade7a0>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x713b22ade8e0>
+  worker_int: <function WorkerInt.worker_int at 0x713b22adea20>
+  worker_abort: <function WorkerAbort.worker_abort at 0x713b22adeb60>
+  pre_exec: <function PreExec.pre_exec at 0x713b22adeca0>
+  pre_request: <function PreRequest.pre_request at 0x713b22adede0>
+  post_request: <function PostRequest.post_request at 0x713b22adee80>
+  child_exit: <function ChildExit.child_exit at 0x713b22adefc0>
+  worker_exit: <function WorkerExit.worker_exit at 0x713b22adf100>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x713b22adf240>
+  on_exit: <function OnExit.on_exit at 0x713b22adf380>
+  ssl_context: <function NewSSLContext.ssl_context at 0x713b22adf560>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1', '::1']
+  keyfile: None
+  certfile: None
+  ssl_version: 2
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: None
+  raw_paste_global_conf: []
+  permit_obsolete_folding: False
+  strip_header_spaces: False
+  permit_unconventional_http_method: False
+  permit_unconventional_http_version: False
+  casefold_http_method: False
+  forwarder_headers: ['SCRIPT_NAME', 'PATH_INFO']
+  header_map: drop
+[2025-03-23 11:08:24 +0000] [19791] [INFO] Starting gunicorn 23.0.0
+[2025-03-23 11:08:24 +0000] [19791] [DEBUG] Arbiter booted
+[2025-03-23 11:08:24 +0000] [19791] [INFO] Listening at: http://127.0.0.1:8000 (19791)
+[2025-03-23 11:08:24 +0000] [19791] [INFO] Using worker: uvicorn_worker.UvicornWorker
+[2025-03-23 11:08:24 +0000] [19792] [INFO] Booting worker with pid: 19792
+[2025-03-23 11:08:24 +0000] [19793] [INFO] Booting worker with pid: 19793
+[2025-03-23 11:08:24 +0000] [19792] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/uvicorn_worker/_workers.py", line 97, in init_process
+    super().init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/automate_geoweb/asgi.py", line 6, in <module>
+    from upload.websocket_routing import websocket_urlpatterns
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/websocket_routing.py", line 3, in <module>
+    from . import consumers
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/consumers.py", line 6, in <module>
+    from .models import GeospatialData
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/models.py", line 4, in <module>
+    class GeospatialData(models.Model):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/db/models/base.py", line 129, in __new__
+    app_config = apps.get_containing_app_config(module)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 260, in get_containing_app_config
+    self.check_apps_ready()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 138, in check_apps_ready
+    raise AppRegistryNotReady("Apps aren't loaded yet.")
+django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+[2025-03-23 11:08:24 +0000] [19792] [INFO] Worker exiting (pid: 19792)
+[2025-03-23 11:08:24 +0000] [19791] [DEBUG] 2 workers
+[2025-03-23 11:08:24 +0000] [19791] [ERROR] Worker (pid:19792) exited with code 3
+[2025-03-23 11:08:24 +0000] [19791] [ERROR] Worker (pid:19793) was sent SIGTERM!
+[2025-03-23 11:08:24 +0000] [19791] [ERROR] Shutting down: Master
+[2025-03-23 11:08:24 +0000] [19791] [ERROR] Reason: Worker failed to boot.
+[2025-03-23 11:11:47 +0000] [20068] [DEBUG] Current configuration:
+  config: ./gunicorn.conf.py
+  wsgi_app: None
+  bind: ['127.0.0.1:8000']
+  backlog: 2048
+  workers: 2
+  worker_class: uvicorn_worker.UvicornWorker
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: True
+  reload_engine: auto
+  reload_extra_files: []
+  spew: False
+  check_config: False
+  print_config: False
+  preload_app: False
+  sendfile: None
+  reuse_port: False
+  chdir: /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 1000
+  group: 1000
+  umask: 0
+  initgroups: False
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1', '::1']
+  accesslog: access.log
+  disable_redirect_access_to_syslog: False
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: error.log
+  loglevel: debug
+  capture_output: True
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  logconfig_dict: {}
+  logconfig_json: None
+  syslog_addr: udp://localhost:514
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: True
+  statsd_host: None
+  dogstatsd_tags: 
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: automate_geoweb.asgi:application
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x79c0c2f6a200>
+  on_reload: <function OnReload.on_reload at 0x79c0c2f6a340>
+  when_ready: <function WhenReady.when_ready at 0x79c0c2f6a480>
+  pre_fork: <function Prefork.pre_fork at 0x79c0c2f6a660>
+  post_fork: <function Postfork.post_fork at 0x79c0c2f6a7a0>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x79c0c2f6a8e0>
+  worker_int: <function WorkerInt.worker_int at 0x79c0c2f6aa20>
+  worker_abort: <function WorkerAbort.worker_abort at 0x79c0c2f6ab60>
+  pre_exec: <function PreExec.pre_exec at 0x79c0c2f6aca0>
+  pre_request: <function PreRequest.pre_request at 0x79c0c2f6ade0>
+  post_request: <function PostRequest.post_request at 0x79c0c2f6ae80>
+  child_exit: <function ChildExit.child_exit at 0x79c0c2f6afc0>
+  worker_exit: <function WorkerExit.worker_exit at 0x79c0c2f6b100>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x79c0c2f6b240>
+  on_exit: <function OnExit.on_exit at 0x79c0c2f6b380>
+  ssl_context: <function NewSSLContext.ssl_context at 0x79c0c2f6b560>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1', '::1']
+  keyfile: None
+  certfile: None
+  ssl_version: 2
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: None
+  raw_paste_global_conf: []
+  permit_obsolete_folding: False
+  strip_header_spaces: False
+  permit_unconventional_http_method: False
+  permit_unconventional_http_version: False
+  casefold_http_method: False
+  forwarder_headers: ['SCRIPT_NAME', 'PATH_INFO']
+  header_map: drop
+[2025-03-23 11:11:47 +0000] [20068] [INFO] Starting gunicorn 23.0.0
+[2025-03-23 11:11:47 +0000] [20068] [DEBUG] Arbiter booted
+[2025-03-23 11:11:47 +0000] [20068] [INFO] Listening at: http://127.0.0.1:8000 (20068)
+[2025-03-23 11:11:47 +0000] [20068] [INFO] Using worker: uvicorn_worker.UvicornWorker
+[2025-03-23 11:11:47 +0000] [20163] [INFO] Booting worker with pid: 20163
+[2025-03-23 11:11:47 +0000] [20164] [INFO] Booting worker with pid: 20164
+[2025-03-23 11:11:47 +0000] [20068] [DEBUG] 2 workers
+[2025-03-23 11:11:47 +0000] [20163] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/uvicorn_worker/_workers.py", line 97, in init_process
+    super().init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/automate_geoweb/asgi.py", line 6, in <module>
+    from upload.websocket_routing import websocket_urlpatterns
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/websocket_routing.py", line 3, in <module>
+    from . import consumers
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/consumers.py", line 6, in <module>
+    from .models import GeospatialData
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/models.py", line 4, in <module>
+    class GeospatialData(models.Model):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/db/models/base.py", line 129, in __new__
+    app_config = apps.get_containing_app_config(module)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 260, in get_containing_app_config
+    self.check_apps_ready()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 138, in check_apps_ready
+    raise AppRegistryNotReady("Apps aren't loaded yet.")
+django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+[2025-03-23 11:11:47 +0000] [20163] [INFO] Worker exiting (pid: 20163)
+[2025-03-23 11:11:47 +0000] [20164] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/uvicorn_worker/_workers.py", line 97, in init_process
+    super().init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/automate_geoweb/asgi.py", line 6, in <module>
+    from upload.websocket_routing import websocket_urlpatterns
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/websocket_routing.py", line 3, in <module>
+    from . import consumers
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/consumers.py", line 6, in <module>
+    from .models import GeospatialData
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/models.py", line 4, in <module>
+    class GeospatialData(models.Model):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/db/models/base.py", line 129, in __new__
+    app_config = apps.get_containing_app_config(module)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 260, in get_containing_app_config
+    self.check_apps_ready()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 138, in check_apps_ready
+    raise AppRegistryNotReady("Apps aren't loaded yet.")
+django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+[2025-03-23 11:11:47 +0000] [20164] [INFO] Worker exiting (pid: 20164)
+[2025-03-23 11:11:47 +0000] [20068] [ERROR] Worker (pid:20163) exited with code 3
+[2025-03-23 11:11:47 +0000] [20068] [ERROR] Worker (pid:20164) was sent SIGTERM!
+[2025-03-23 11:11:47 +0000] [20068] [ERROR] Shutting down: Master
+[2025-03-23 11:11:47 +0000] [20068] [ERROR] Reason: Worker failed to boot.
+[2025-03-23 11:12:51 +0000] [20343] [DEBUG] Current configuration:
+  config: ./gunicorn.conf.py
+  wsgi_app: None
+  bind: ['127.0.0.1:8000']
+  backlog: 2048
+  workers: 2
+  worker_class: uvicorn_worker.UvicornWorker
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: True
+  reload_engine: auto
+  reload_extra_files: []
+  spew: False
+  check_config: False
+  print_config: False
+  preload_app: False
+  sendfile: None
+  reuse_port: False
+  chdir: /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 1000
+  group: 1000
+  umask: 0
+  initgroups: False
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1', '::1']
+  accesslog: access.log
+  disable_redirect_access_to_syslog: False
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: error.log
+  loglevel: debug
+  capture_output: True
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  logconfig_dict: {}
+  logconfig_json: None
+  syslog_addr: udp://localhost:514
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: True
+  statsd_host: None
+  dogstatsd_tags: 
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: automate_geoweb.asgi:application
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x7284832aa200>
+  on_reload: <function OnReload.on_reload at 0x7284832aa340>
+  when_ready: <function WhenReady.when_ready at 0x7284832aa480>
+  pre_fork: <function Prefork.pre_fork at 0x7284832aa660>
+  post_fork: <function Postfork.post_fork at 0x7284832aa7a0>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x7284832aa8e0>
+  worker_int: <function WorkerInt.worker_int at 0x7284832aaa20>
+  worker_abort: <function WorkerAbort.worker_abort at 0x7284832aab60>
+  pre_exec: <function PreExec.pre_exec at 0x7284832aaca0>
+  pre_request: <function PreRequest.pre_request at 0x7284832aade0>
+  post_request: <function PostRequest.post_request at 0x7284832aae80>
+  child_exit: <function ChildExit.child_exit at 0x7284832aafc0>
+  worker_exit: <function WorkerExit.worker_exit at 0x7284832ab100>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x7284832ab240>
+  on_exit: <function OnExit.on_exit at 0x7284832ab380>
+  ssl_context: <function NewSSLContext.ssl_context at 0x7284832ab560>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1', '::1']
+  keyfile: None
+  certfile: None
+  ssl_version: 2
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: None
+  raw_paste_global_conf: []
+  permit_obsolete_folding: False
+  strip_header_spaces: False
+  permit_unconventional_http_method: False
+  permit_unconventional_http_version: False
+  casefold_http_method: False
+  forwarder_headers: ['SCRIPT_NAME', 'PATH_INFO']
+  header_map: drop
+[2025-03-23 11:12:51 +0000] [20343] [INFO] Starting gunicorn 23.0.0
+[2025-03-23 11:12:51 +0000] [20343] [DEBUG] Arbiter booted
+[2025-03-23 11:12:51 +0000] [20343] [INFO] Listening at: http://127.0.0.1:8000 (20343)
+[2025-03-23 11:12:51 +0000] [20343] [INFO] Using worker: uvicorn_worker.UvicornWorker
+[2025-03-23 11:12:51 +0000] [20431] [INFO] Booting worker with pid: 20431
+[2025-03-23 11:12:51 +0000] [20432] [INFO] Booting worker with pid: 20432
+[2025-03-23 11:12:51 +0000] [20343] [DEBUG] 2 workers
+[2025-03-23 11:12:51 +0000] [20431] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/uvicorn_worker/_workers.py", line 97, in init_process
+    super().init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/automate_geoweb/asgi.py", line 6, in <module>
+    from upload.websocket_routing import websocket_urlpatterns
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/websocket_routing.py", line 3, in <module>
+    from . import consumers
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/consumers.py", line 6, in <module>
+    from .models import GeospatialData
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/models.py", line 4, in <module>
+    class GeospatialData(models.Model):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/db/models/base.py", line 129, in __new__
+    app_config = apps.get_containing_app_config(module)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 260, in get_containing_app_config
+    self.check_apps_ready()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 138, in check_apps_ready
+    raise AppRegistryNotReady("Apps aren't loaded yet.")
+django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+[2025-03-23 11:12:51 +0000] [20431] [INFO] Worker exiting (pid: 20431)
+[2025-03-23 11:12:51 +0000] [20432] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/uvicorn_worker/_workers.py", line 97, in init_process
+    super().init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/automate_geoweb/asgi.py", line 6, in <module>
+    from upload.websocket_routing import websocket_urlpatterns
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/websocket_routing.py", line 3, in <module>
+    from . import consumers
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/consumers.py", line 6, in <module>
+    from .models import GeospatialData
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/models.py", line 4, in <module>
+    class GeospatialData(models.Model):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/db/models/base.py", line 129, in __new__
+    app_config = apps.get_containing_app_config(module)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 260, in get_containing_app_config
+    self.check_apps_ready()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 138, in check_apps_ready
+    raise AppRegistryNotReady("Apps aren't loaded yet.")
+django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+[2025-03-23 11:12:51 +0000] [20432] [INFO] Worker exiting (pid: 20432)
+[2025-03-23 11:12:51 +0000] [20343] [ERROR] Worker (pid:20431) exited with code 3
+[2025-03-23 11:12:51 +0000] [20343] [ERROR] Worker (pid:20432) was sent SIGTERM!
+[2025-03-23 11:12:51 +0000] [20343] [ERROR] Shutting down: Master
+[2025-03-23 11:12:51 +0000] [20343] [ERROR] Reason: Worker failed to boot.
+[2025-03-23 11:13:37 +0000] [20682] [DEBUG] Current configuration:
+  config: ./gunicorn.conf.py
+  wsgi_app: None
+  bind: ['127.0.0.1:8000']
+  backlog: 2048
+  workers: 2
+  worker_class: uvicorn_worker.UvicornWorker
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: True
+  reload_engine: auto
+  reload_extra_files: []
+  spew: False
+  check_config: False
+  print_config: False
+  preload_app: False
+  sendfile: None
+  reuse_port: False
+  chdir: /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 1000
+  group: 1000
+  umask: 0
+  initgroups: False
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1', '::1']
+  accesslog: access.log
+  disable_redirect_access_to_syslog: False
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: error.log
+  loglevel: debug
+  capture_output: True
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  logconfig_dict: {}
+  logconfig_json: None
+  syslog_addr: udp://localhost:514
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: True
+  statsd_host: None
+  dogstatsd_tags: 
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: automate_geoweb.asgi:application
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x7fd87f792200>
+  on_reload: <function OnReload.on_reload at 0x7fd87f792340>
+  when_ready: <function WhenReady.when_ready at 0x7fd87f792480>
+  pre_fork: <function Prefork.pre_fork at 0x7fd87f792660>
+  post_fork: <function Postfork.post_fork at 0x7fd87f7927a0>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x7fd87f7928e0>
+  worker_int: <function WorkerInt.worker_int at 0x7fd87f792a20>
+  worker_abort: <function WorkerAbort.worker_abort at 0x7fd87f792b60>
+  pre_exec: <function PreExec.pre_exec at 0x7fd87f792ca0>
+  pre_request: <function PreRequest.pre_request at 0x7fd87f792de0>
+  post_request: <function PostRequest.post_request at 0x7fd87f792e80>
+  child_exit: <function ChildExit.child_exit at 0x7fd87f792fc0>
+  worker_exit: <function WorkerExit.worker_exit at 0x7fd87f793100>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x7fd87f793240>
+  on_exit: <function OnExit.on_exit at 0x7fd87f793380>
+  ssl_context: <function NewSSLContext.ssl_context at 0x7fd87f793560>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1', '::1']
+  keyfile: None
+  certfile: None
+  ssl_version: 2
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: None
+  raw_paste_global_conf: []
+  permit_obsolete_folding: False
+  strip_header_spaces: False
+  permit_unconventional_http_method: False
+  permit_unconventional_http_version: False
+  casefold_http_method: False
+  forwarder_headers: ['SCRIPT_NAME', 'PATH_INFO']
+  header_map: drop
+[2025-03-23 11:13:37 +0000] [20682] [INFO] Starting gunicorn 23.0.0
+[2025-03-23 11:13:37 +0000] [20682] [DEBUG] Arbiter booted
+[2025-03-23 11:13:37 +0000] [20682] [INFO] Listening at: http://127.0.0.1:8000 (20682)
+[2025-03-23 11:13:37 +0000] [20682] [INFO] Using worker: uvicorn_worker.UvicornWorker
+[2025-03-23 11:13:37 +0000] [20683] [INFO] Booting worker with pid: 20683
+[2025-03-23 11:13:37 +0000] [20684] [INFO] Booting worker with pid: 20684
+[2025-03-23 11:13:37 +0000] [20682] [DEBUG] 2 workers
+[2025-03-23 11:13:37 +0000] [20683] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/uvicorn_worker/_workers.py", line 97, in init_process
+    super().init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/automate_geoweb/asgi.py", line 6, in <module>
+    from upload.websocket_routing import websocket_urlpatterns
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/websocket_routing.py", line 3, in <module>
+    from . import consumers
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/consumers.py", line 6, in <module>
+    from .models import GeospatialData
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/models.py", line 4, in <module>
+    class GeospatialData(models.Model):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/db/models/base.py", line 129, in __new__
+    app_config = apps.get_containing_app_config(module)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 260, in get_containing_app_config
+    self.check_apps_ready()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 138, in check_apps_ready
+    raise AppRegistryNotReady("Apps aren't loaded yet.")
+django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+[2025-03-23 11:13:37 +0000] [20683] [INFO] Worker exiting (pid: 20683)
+[2025-03-23 11:13:37 +0000] [20684] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/uvicorn_worker/_workers.py", line 97, in init_process
+    super().init_process()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/automate_geoweb/asgi.py", line 6, in <module>
+    from upload.websocket_routing import websocket_urlpatterns
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/websocket_routing.py", line 3, in <module>
+    from . import consumers
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/consumers.py", line 6, in <module>
+    from .models import GeospatialData
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/upload/models.py", line 4, in <module>
+    class GeospatialData(models.Model):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/db/models/base.py", line 129, in __new__
+    app_config = apps.get_containing_app_config(module)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 260, in get_containing_app_config
+    self.check_apps_ready()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/django/apps/registry.py", line 138, in check_apps_ready
+    raise AppRegistryNotReady("Apps aren't loaded yet.")
+django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+[2025-03-23 11:13:37 +0000] [20684] [INFO] Worker exiting (pid: 20684)
+[2025-03-23 11:13:37 +0000] [20682] [ERROR] Worker (pid:20683) exited with code 3
+[2025-03-23 11:13:37 +0000] [20682] [ERROR] Worker (pid:20684) exited with code 3
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 208, in run
+    self.sleep()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 359, in sleep
+    ready = select.select([self.PIPE[0]], [], [], 1.0)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 241, in handle_chld
+    self.reap_workers()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 529, in reap_workers
+    raise HaltServer(reason, self.WORKER_BOOT_ERROR)
+gunicorn.errors.HaltServer: <HaltServer 'Worker failed to boot.' 3>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/bin/gunicorn", line 10, in <module>
+    sys.exit(run())
+             ^^^^^
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 66, in run
+    WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]", prog=prog).run()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 235, in run
+    super().run()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 71, in run
+    Arbiter(self).run()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 228, in run
+    self.halt(reason=inst.reason, exit_status=inst.exit_status)
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 341, in halt
+    self.stop()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 384, in stop
+    sock.close_sockets(self.LISTENERS, unlink)
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/sock.py", line 210, in close_sockets
+    sock.close()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/sock.py", line 67, in close
+    self.sock.close()
+  File "/usr/lib/python3.12/socket.py", line 504, in close
+    self._real_close()
+  File "/usr/lib/python3.12/socket.py", line 496, in _real_close
+    def _real_close(self, _ss=_socket.socket):
+
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 241, in handle_chld
+    self.reap_workers()
+  File "/home/martin/Desktop/Automate-Geospatial-Web/backend/geoenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 529, in reap_workers
+    raise HaltServer(reason, self.WORKER_BOOT_ERROR)
+gunicorn.errors.HaltServer: <HaltServer 'Worker failed to boot.' 3>

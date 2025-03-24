@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package upload;
+
+service FileUploadService {
+  rpc UploadFile (FileUploadRequest) returns (FileUploadResponse) {}
+}
+
+message FileUploadRequest {
+  oneof data {
+    FileMetaData meta_data = 1;
+    bytes chunk_data = 2;
+  }
+}
+
+message FileMetaData {
+  string file_name = 1;
+  string data_type = 2;
+  string type_of_data = 3;
+  string description = 4;
+  string date_captured = 5;
+}
+
+message FileUploadResponse {
+  bool success = 1;
+  string message = 2;
+}
