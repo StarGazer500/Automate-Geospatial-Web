@@ -68,7 +68,166 @@
 #             os.unlink(temp_file.name)
 #             logger.info(f"Cleaned up temporary file: {temp_file.name}")
 
+# from celery import shared_task
+# import subprocess
+# import os
+# from django.conf import settings
+# from django.apps import apps
+# from osgeo import gdal
+# from osgeo import ogr
+# import logging
+# import tempfile
+# import filelock
+# import uuid
+
+# logger = logging.getLogger(__name__)
+
+# @shared_task
+# def generate_tiles_task(input_path, output_dir, instance_id):
+#     # Create a unique output directory for each task
+#     unique_output_dir = os.path.join(output_dir, f'instance_{instance_id}')
+#     os.makedirs(unique_output_dir, exist_ok=True)
+    
+#     # Create a lock file path based on output directory
+#     lock_file = os.path.join(os.path.dirname(output_dir), f"{os.path.basename(output_dir)}.lock")
+    
+#     try:
+#         logger.info(f"Starting task for file: {input_path}, size: {os.path.getsize(input_path) / (1024 * 1024)}MB")
+        
+#         # Enable GDAL/OGR exceptions
+#         gdal.UseExceptions()
+#         ogr.UseExceptions()
+
+#         # Get the model instance
+#         GeospatialData = apps.get_model('upload', 'GeospatialData')
+#         instance = GeospatialData.objects.get(id=instance_id)
+
+#         # Determine if raster or vector using exception handling
+#         is_vector = False
+#         try:
+#             ds = gdal.Open(input_path)
+#             logger.info("Detected raster input")
+#         except Exception as e:
+#             logger.info(f"gdal.Open failed: {e}, trying as vector")
+#             try:
+#                 ds_vector = ogr.Open(input_path)
+#                 if ds_vector is None:
+#                     raise ValueError(f"File not recognized as raster or vector: {input_path}")
+#                 is_vector = True
+#                 logger.info("Detected vector input")
+#             except Exception as e:
+#                 raise ValueError(f"Failed to open file as raster or vector: {e}")
+
+#         if is_vector:
+#             # Create a unique temporary file for this task
+#             temp_file_name = f"geojson_{uuid.uuid4().hex}.geojson"
+#             temp_path = os.path.join(tempfile.gettempdir(), temp_file_name)
+            
+#             # Make sure temp file doesn't exist
+#             if os.path.exists(temp_path):
+#                 os.unlink(temp_path)
+                
+#             cmd_convert = [
+#                 'ogr2ogr',
+#                 '-f', 'GeoJSON',
+#                 '-overwrite',
+#                 temp_path,
+#                 input_path
+#             ]
+#             logger.info(f"Converting to GeoJSON: {' '.join(cmd_convert)}")
+#             result = subprocess.run(cmd_convert, check=True, capture_output=True, text=True)
+#             if result.stderr:
+#                 logger.warning(f"ogr2ogr stderr: {result.stderr}")
+#             logger.info("Conversion to GeoJSON completed")
+
+#             # Use a unique output filename for each task
+#             vector_output = os.path.join(unique_output_dir, f'tiles_{instance_id}.mbtiles')
+            
+#             # Acquire a file lock for tippecanoe
+#             # This prevents multiple processes from trying to use tippecanoe simultaneously
+#             # which can cause issues with SQLite database locking
+#             lock = filelock.FileLock(lock_file, timeout=300)  # 5 minute timeout
+            
+#             try:
+#                 with lock:
+#                     logger.info(f"Acquired lock for tippecanoe processing")
+#                     cmd_vector = [
+#                         'tippecanoe',
+#                         '-o', vector_output,
+#                         '-z', '18', '-Z', '0',
+#                         '--extend-zooms-if-still-dropping',
+#                         '--force',
+#                         temp_path
+#                     ]
+#                     logger.info(f"Generating vector tiles: {' '.join(cmd_vector)}")
+#                     result = subprocess.run(cmd_vector, check=True, capture_output=True, text=True)
+#                     if result.stderr:
+#                         logger.warning(f"tippecanoe stderr: {result.stderr}")
+#                     logger.info("Vector tiles generated successfully")
+#             except filelock.Timeout:
+#                 logger.error(f"Could not acquire lock after timeout. Another process may be using tippecanoe.")
+#                 raise RuntimeError("Tilemaking process timed out waiting for lock")
+            
+#             processed_input = None
+#             temp_files = [temp_path]
+#         else:
+#             # Raster tile generation
+#             band = ds.GetRasterBand(1)
+#             data_type = gdal.GetDataTypeName(band.DataType)
+#             logger.info(f"Input file data type: {data_type}")
+
+#             processed_input = input_path
+#             temp_file_8bit = None
+#             if data_type != 'Byte':
+#                 logger.info("Converting GeoTIFF to 8-bit format")
+#                 temp_file_name = f"raster_{uuid.uuid4().hex}.tif"
+#                 temp_path = os.path.join(tempfile.gettempdir(), temp_file_name)
+                
+#                 cmd_convert = [
+#                     'gdal_translate',
+#                     '-of', 'GTiff',
+#                     '-ot', 'Byte',
+#                     '-scale',
+#                     input_path,
+#                     temp_path
+#                 ]
+#                 logger.info(f"Running conversion: {' '.join(cmd_convert)}")
+#                 subprocess.run(cmd_convert, check=True)
+#                 processed_input = temp_path
+#                 logger.info("Conversion to 8-bit completed")
+#                 temp_files = [temp_path]
+#             else:
+#                 temp_files = []
+
+#             cmd = ['gdal2tiles.py', '-p', 'mercator', '-z', '0-18', processed_input, unique_output_dir]
+#             logger.info(f"Generating raster tiles with command: {' '.join(cmd)}")
+#             subprocess.run(cmd, check=True)
+#             logger.info("Raster tiles generated successfully")
+
+#         instance.tiles_generated = True
+#         instance.tile_path = os.path.relpath(unique_output_dir, settings.MEDIA_ROOT)
+#         instance.save(update_fields=['tiles_generated', 'tile_path'])
+#         logger.info(f"Task completed successfully, tile path saved: {instance.tile_path}")
+
+#     except subprocess.CalledProcessError as e:
+#         logger.error(f"Error generating tiles: {e}")
+#         if hasattr(e, 'stderr') and e.stderr:
+#             logger.error(f"Subprocess stderr: {e.stderr}")
+#         raise
+#     except Exception as e:
+#         logger.error(f"Error in task execution: {e}")
+#         raise
+#     finally:
+#         # Clean up temporary files
+#         if 'temp_files' in locals():
+#             for temp_file in temp_files:
+#                 if temp_file and os.path.exists(temp_file):
+#                     os.unlink(temp_file)
+#                     logger.info(f"Cleaned up temporary file: {temp_file}")
+
+
 from celery import shared_task
+from django.core.cache import cache
 import subprocess
 import os
 from django.conf import settings
@@ -77,32 +236,27 @@ from osgeo import gdal
 from osgeo import ogr
 import logging
 import tempfile
-import filelock
-import uuid
 
 logger = logging.getLogger(__name__)
 
-@shared_task
-def generate_tiles_task(input_path, output_dir, instance_id):
-    # Create a unique output directory for each task
-    unique_output_dir = os.path.join(output_dir, f'instance_{instance_id}')
-    os.makedirs(unique_output_dir, exist_ok=True)
-    
-    # Create a lock file path based on output directory
-    lock_file = os.path.join(os.path.dirname(output_dir), f"{os.path.basename(output_dir)}.lock")
-    
+@shared_task(bind=True, max_retries=3)
+def generate_tiles_task(self, input_path, output_dir, instance_id):
+    lock_key = f"tile_task_{instance_id}"
+    lock_timeout = 300
+
+    if not cache.add(lock_key, "locked", lock_timeout):
+        logger.info(f"Task for instance {instance_id} already running, retrying...")
+        raise self.retry(countdown=10)
+
     try:
         logger.info(f"Starting task for file: {input_path}, size: {os.path.getsize(input_path) / (1024 * 1024)}MB")
         
-        # Enable GDAL/OGR exceptions
         gdal.UseExceptions()
         ogr.UseExceptions()
 
-        # Get the model instance
         GeospatialData = apps.get_model('upload', 'GeospatialData')
         instance = GeospatialData.objects.get(id=instance_id)
 
-        # Determine if raster or vector using exception handling
         is_vector = False
         try:
             ds = gdal.Open(input_path)
@@ -119,59 +273,45 @@ def generate_tiles_task(input_path, output_dir, instance_id):
                 raise ValueError(f"Failed to open file as raster or vector: {e}")
 
         if is_vector:
-            # Create a unique temporary file for this task
-            temp_file_name = f"geojson_{uuid.uuid4().hex}.geojson"
-            temp_path = os.path.join(tempfile.gettempdir(), temp_file_name)
-            
-            # Make sure temp file doesn't exist
-            if os.path.exists(temp_path):
-                os.unlink(temp_path)
-                
+            temp_file_geojson = tempfile.NamedTemporaryFile(suffix='.geojson', delete=False)
+            temp_file_geojson.close()
+            if os.path.exists(temp_file_geojson.name):
+                os.unlink(temp_file_geojson.name)
             cmd_convert = [
                 'ogr2ogr',
                 '-f', 'GeoJSON',
                 '-overwrite',
-                temp_path,
+                temp_file_geojson.name,
                 input_path
             ]
             logger.info(f"Converting to GeoJSON: {' '.join(cmd_convert)}")
             result = subprocess.run(cmd_convert, check=True, capture_output=True, text=True)
+            logger.info(f"ogr2ogr output: {result.stdout}")
             if result.stderr:
                 logger.warning(f"ogr2ogr stderr: {result.stderr}")
             logger.info("Conversion to GeoJSON completed")
 
-            # Use a unique output filename for each task
-            vector_output = os.path.join(unique_output_dir, f'tiles_{instance_id}.mbtiles')
-            
-            # Acquire a file lock for tippecanoe
-            # This prevents multiple processes from trying to use tippecanoe simultaneously
-            # which can cause issues with SQLite database locking
-            lock = filelock.FileLock(lock_file, timeout=300)  # 5 minute timeout
-            
-            try:
-                with lock:
-                    logger.info(f"Acquired lock for tippecanoe processing")
-                    cmd_vector = [
-                        'tippecanoe',
-                        '-o', vector_output,
-                        '-z', '18', '-Z', '0',
-                        '--extend-zooms-if-still-dropping',
-                        '--force',
-                        temp_path
-                    ]
-                    logger.info(f"Generating vector tiles: {' '.join(cmd_vector)}")
-                    result = subprocess.run(cmd_vector, check=True, capture_output=True, text=True)
-                    if result.stderr:
-                        logger.warning(f"tippecanoe stderr: {result.stderr}")
-                    logger.info("Vector tiles generated successfully")
-            except filelock.Timeout:
-                logger.error(f"Could not acquire lock after timeout. Another process may be using tippecanoe.")
-                raise RuntimeError("Tilemaking process timed out waiting for lock")
-            
+            vector_output = os.path.join(output_dir, 'tiles.mbtiles')
+            cmd_vector = [
+                'tippecanoe',
+                '-o', vector_output,
+                '-z', '18', '-Z', '0',
+                '--extend-zooms-if-still-dropping',
+                '--force',
+                '--name', os.path.splitext(os.path.basename(input_path))[0],
+                temp_file_geojson.name
+            ]
+            logger.info(f"Generating vector tiles: {' '.join(cmd_vector)}")
+            result = subprocess.run(cmd_vector, check=True, capture_output=True, text=True)
+            logger.info(f"tippecanoe output: {result.stdout}")
+            if result.stderr:
+                logger.warning(f"tippecanoe stderr: {result.stderr}")
+            logger.info("Vector tiles generated successfully")
+
             processed_input = None
-            temp_files = [temp_path]
+            temp_files = [temp_file_geojson]
         else:
-            # Raster tile generation
+            # Raster COG generation
             band = ds.GetRasterBand(1)
             data_type = gdal.GetDataTypeName(band.DataType)
             logger.info(f"Input file data type: {data_type}")
@@ -180,50 +320,130 @@ def generate_tiles_task(input_path, output_dir, instance_id):
             temp_file_8bit = None
             if data_type != 'Byte':
                 logger.info("Converting GeoTIFF to 8-bit format")
-                temp_file_name = f"raster_{uuid.uuid4().hex}.tif"
-                temp_path = os.path.join(tempfile.gettempdir(), temp_file_name)
-                
+                temp_file_8bit = tempfile.NamedTemporaryFile(suffix='.tif', delete=False)
                 cmd_convert = [
                     'gdal_translate',
                     '-of', 'GTiff',
                     '-ot', 'Byte',
                     '-scale',
                     input_path,
-                    temp_path
+                    temp_file_8bit.name
                 ]
                 logger.info(f"Running conversion: {' '.join(cmd_convert)}")
                 subprocess.run(cmd_convert, check=True)
-                processed_input = temp_path
+                processed_input = temp_file_8bit.name
                 logger.info("Conversion to 8-bit completed")
-                temp_files = [temp_path]
-            else:
-                temp_files = []
 
-            cmd = ['gdal2tiles.py', '-p', 'mercator', '-z', '0-18', processed_input, unique_output_dir]
-            logger.info(f"Generating raster tiles with command: {' '.join(cmd)}")
-            subprocess.run(cmd, check=True)
-            logger.info("Raster tiles generated successfully")
+            # Generate COG
+            cog_output = os.path.join(output_dir, 'raster.cog.tif')
+            # cmd_cog = [
+            #     'gdal_translate',
+            #     '-of', 'COG',
+            #     '-co', 'COMPRESS=LZW',
+            #     '-co', 'BIGTIFF=IF_SAFER',
+            #     processed_input,
+            #     cog_output
+            # ]
+            
+            cmd_cog = None
+            compression_method = None
+
+            try:
+                # First attempt: LZW compression
+                compression_method = "LZW"
+                cmd_cog = [
+                       'gdal_translate',
+                        '-of', 'COG',
+                        '-co', 'COMPRESS=LZW',
+                        # '-co', 'TILED=YES',
+                        '-co', 'BLOCKSIZE=256',
+                        '-co', 'BIGTIFF=IF_SAFER',
+                        processed_input,
+                        cog_output
+                ]
+                logger.info(f"Attempting {compression_method} compression")
+                subprocess.run(cmd_cog, check=True)
+            except Exception as e:
+                logger.warning(f"{compression_method} compression failed: {e}")
+                
+                try:
+                    # Second attempt: DEFLATE compression
+                    compression_method = "DEFLATE"
+                    cmd_cog = [
+                        'gdal_translate',
+                        '-of', 'COG',
+                        '-co', 'COMPRESS=DEFLATE',
+                        # '-co', 'TILED=YES',
+                        '-co', 'BLOCKSIZE=256',
+                        '-co', 'BIGTIFF=IF_SAFER',
+                        processed_input,
+                        cog_output
+                    ]
+                    logger.info(f"Attempting {compression_method} compression")
+                    subprocess.run(cmd_cog, check=True)
+                except Exception as e:
+                    logger.error(f"{compression_method} compression failed: {e}")
+                    raise Exception(f"Failed to open file as raster or vector: {e}")
+
+
+           
+
+
+            # logger.info(f"Generating COG with command: {' '.join(cmd_cog)}")
+            # subprocess.run(cmd_cog, check=True)
+            logger.info("COG generation completed")
+
+            # cmd_overviews = [
+            #     'gdaladdo',
+            #     '-r', 'average',
+            #     cog_output,
+            #     '2', '4', '8', '16'
+            # ]
+            # logger.info(f"Adding overviews: {' '.join(cmd_overviews)}")
+            # subprocess.run(cmd_overviews, check=True)
+            
+
+            temp_files = [temp_file_8bit] if temp_file_8bit else []
+
+            # Update the file field with the COG path
+            cog_relative_path = os.path.relpath(cog_output, settings.MEDIA_ROOT)
+            instance.file = cog_relative_path
+
+            # Delete original raster file after successful COG generation
+            if os.path.exists(input_path):
+                try:
+                    os.unlink(input_path)
+                    logger.info(f"Deleted original raster file: {input_path}")
+                except PermissionError as e:
+                    logger.warning(f"Failed to delete original raster file {input_path}: {e}")
 
         instance.tiles_generated = True
-        instance.tile_path = os.path.relpath(unique_output_dir, settings.MEDIA_ROOT)
-        instance.save(update_fields=['tiles_generated', 'tile_path'])
-        logger.info(f"Task completed successfully, tile path saved: {instance.tile_path}")
+        instance.tile_path = os.path.relpath(output_dir, settings.MEDIA_ROOT)
+        instance.save(update_fields=['file', 'tiles_generated', 'tile_path'])
+        logger.info(f"Task completed successfully, file updated to: {instance.file}, tile_path: {instance.tile_path}")
 
     except subprocess.CalledProcessError as e:
         logger.error(f"Error generating tiles: {e}")
-        if hasattr(e, 'stderr') and e.stderr:
+        if e.stderr:
             logger.error(f"Subprocess stderr: {e.stderr}")
         raise
     except Exception as e:
         logger.error(f"Error in task execution: {e}")
         raise
     finally:
-        # Clean up temporary files
         if 'temp_files' in locals():
             for temp_file in temp_files:
-                if temp_file and os.path.exists(temp_file):
-                    os.unlink(temp_file)
-                    logger.info(f"Cleaned up temporary file: {temp_file}")
+                if temp_file and os.path.exists(temp_file.name):
+                    try:
+                        os.unlink(temp_file.name)
+                        logger.info(f"Cleaned up temporary file: {temp_file.name}")
+                    except PermissionError as e:
+                        logger.warning(f"Failed to clean up temporary file {temp_file.name}: {e}")
+        cache.delete(lock_key)
+
+
+
+
 
 # from celery import shared_task
 # import subprocess

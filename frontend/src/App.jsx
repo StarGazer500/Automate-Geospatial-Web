@@ -16,9 +16,9 @@ function App() {
     <>
     {/* <Homepage/> */}
     {/* < DatasetView/> */}
-    {/* <GeospatialDataUpload/> */}
+    <GeospatialDataUpload/>
     {/* <DocumentDataUpload/> */}
-    <MapDataUpload/>   
+    {/* <MapDataUpload/>    */}
     
       
     </>

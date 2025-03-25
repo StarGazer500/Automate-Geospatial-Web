@@ -22,6 +22,17 @@ stopredis:
 	-@docker stop redis-server 2>/dev/null || true
 	-@docker rm redis-server 2>/dev/null || true
 
+
+stoptitiler:
+	-@docker stop titiler-container 2>/dev/null || true
+	-@docker rm titiler-container 2>/dev/null || true
+
+runtitiler: stoptitiler
+	-@docker run -d --name titiler-container \
+		-p 8001:8000 \
+		-v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media:/media \
+		ghcr.io/developmentseed/titiler:latest
+
 # Stop any running Celery processes
 stopcelery:
 	-@pkill -9 -f "celery.*-A automate_geoweb" || true
@@ -50,7 +61,7 @@ stopflower:
 	-pkill -f "celery -A automate_geoweb flower" || echo "No Flower running"
 
 # Run the Django server with Gunicorn and Channels
-runserver: runredis runcelery
+runserver: runredis runcelery runtitiler
 	@kill -9 $(shell lsof -t -i :8000) || true
 	@gunicorn --worker-class uvicorn_worker.UvicornWorker \
 	--workers 2 \

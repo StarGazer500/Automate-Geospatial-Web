@@ -101,7 +101,7 @@ export const DocumentDataUpload = () => {
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit} className="data-form">
-        <h2>Data Upload Form</h2>
+        <h2>Documnent Data Upload Form</h2>
 
         <div className="form-group">
           <label htmlFor="fileUpload">Data Upload (Max 2GB)</label>
@@ -272,7 +272,7 @@ export const MapDataUpload = () => {
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit} className="data-form">
-        <h2>Data Upload Form</h2>
+        <h2>Map Data Upload Form</h2>
 
         <div className="form-group">
           <label htmlFor="fileUpload">Data Upload (Max 2GB)</label>
@@ -478,7 +478,7 @@ export const GeospatialDataUpload = () => {
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit} className="data-form">
-        <h2>Data Upload Form</h2>
+        <h2>Geospatial Data Upload Form</h2>
         <div className="form-group">
           <label htmlFor="fileUpload">Data Upload (Max 2GB Total)</label>
           <div className='file-input-row'>
