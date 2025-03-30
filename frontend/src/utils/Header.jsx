@@ -15,7 +15,7 @@ function Header() {
         {/* Tabs on the right */}
         <ul className="tabs right">
           <li className="tab">
-            <a href="/datasets/">Datasets</a>
+            {/* <a href="/datasets/">Datasets</a> */}
             {/* <ul className="dropdown">
               <li>
                 <a href="/raster">Raster Dataset</a>
@@ -43,16 +43,16 @@ function Header() {
           </li>
 
           <li className="tab">
-            <a href="/maps/">Maps</a>
+            <a href="/home/">home</a>
           </li>
           <li className="tab">
-            <a href="/documents/">Documents</a>
+            <a href="/services/">services</a>
           </li>
           <li className="tab">
-            <a href="/analysis_references/">Dashboards</a>
+            <a href="/contact/">contact</a>
           </li>
           <li className="tab">
-            <a href="/analysis_references/">Analysis Resources</a>
+            <a href="/pricing/">pricing</a>
           </li>
         </ul>
       </nav>

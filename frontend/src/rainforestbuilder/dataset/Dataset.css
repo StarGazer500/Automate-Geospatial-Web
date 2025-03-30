@@ -14,7 +14,7 @@
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 10px;
   padding: 20px;
-  margin-left: 100px;
+  margin-left: 0px;
   margin-right: 100px;
   border: 1px solid whitesmoke;
   max-height: 70vh;
@@ -37,3 +37,7 @@
   justify-content: center;
   align-items: center;
  }
+
+ .upload_select option:first-child {
+  text-align: center;
+}

@@ -19,8 +19,7 @@ function Homepage(){
                 </section>
                 <section className="section">
                     <h1 >Manage Dataset</h1>
-                    <p >This platform assist the GIS Analyst to manage Collected/Raw Datasets and Analysis Results Datasets.
-                        The Dataset can be in the form of Raster Dataset or Vector Dataset. Users can add new datasets, view existing datasets, download, or conduct further analysis.
+                    <p >TThis platform is designed to support GIS Analysts in managing both raw and analysis result datasets, whether in raster or vector format. It enables users to easily upload, view, download, and export datasets in various formats such as GeoTIFF, Shapefile, and GeoJSON. Analysts can conduct spatial analyses, apply geospatial operations like reclassification, buffering, and raster algebra, and build automated workflows for repeated tasks. The platform also allows for the addition and viewing of metadata, ensuring clarity on dataset origins, resolution, and other critical attributes. Version control is integrated, allowing users to track changes over time, making it a comprehensive tool for dataset management and spatial analysis.
                     </p>
                     <button className='btn'>Datasets</button>
 
@@ -29,21 +28,22 @@ function Homepage(){
 
                 <section className="section">
                     <h1 >Manage Documents</h1>
-                    <p >This platform assist the GIS Analyst to manage Documents such as Pdfs and Reports. Users can add documents, view, share and download.
+                    <p >This platform is designed to help GIS Analysts manage documents like PDFs and reports related to their work. It allows users to easily upload, view, and organize documents, making it simple to store important resources such as research reports, project summaries, and analysis results. Users can also share documents with colleagues or external collaborators, ensuring smooth communication and data sharing. Additionally, the platform provides the ability to download documents for offline use or further processing, making it a versatile tool for document management within GIS projects.
+
                     </p>
                     <button className='btn'>Documents</button>                    
                 </section>
 
                 <section className="section">
                     <h1 >Manage Maps</h1>
-                    <p >This platform assist the GIS Analyst to manage Generated Maps. The User can add New Maps, view maps, edit maps download and share.
+                    <p >TThis platform is designed to help GIS Analysts efficiently manage generated maps, supporting a range of tasks from creation to sharing. Users can easily add new maps, view them in an interactive viewer, and edit map layers or symbology as needed. The platform also allows users to download maps in various formats (e.g., PNG, PDF, GeoPDF) for offline use or inclusion in reports. Additionally, maps can be shared with colleagues, stakeholders, or clients, ensuring seamless collaboration and communication of spatial data. Whether for analysis or presentation, the platform streamlines the management and dissemination of GIS maps.
                     </p>
                     <button className='btn'>Maps</button>                    
                 </section>
 
                 <section className="section">
                     <h1 >Manage Analysis Resources</h1>
-                    <p >This platform assist the GIS Analyst to manage Analysis Referenes. This allows the GIS Analyst to manage Analysis Results and their Associated Input data, output data, Results script, associated maps, reports and Analysis Discussion.
+                    <p >This platform helps GIS Analysts manage all resources related to their analyses in a centralized and organized way. It allows users to store and track analysis results alongside their associated input data, output data, and analysis scripts. Analysts can also link related resources, such as maps generated during the analysis, supporting reports, and discussions, ensuring everything is easily accessible and connected. Whether reviewing previous work or sharing results with colleagues, the platform provides a streamlined way to manage and document all aspects of the analytical process, facilitating better insights, collaboration, and reproducibility of analyses.
                     </p> 
                     <button className='btn'>Analysis Resources</button>                   
                 </section>

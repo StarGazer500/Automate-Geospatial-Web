@@ -236,6 +236,8 @@ from osgeo import gdal
 from osgeo import ogr
 import logging
 import tempfile
+from django.core.files import File
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -442,7 +444,109 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
         cache.delete(lock_key)
 
 
+@shared_task(bind=True, max_retries=3)
+def save_analysis_files(self, temp_file_paths, metadata):
+    try:
+        GeospatialData = apps.get_model('upload', 'GeospatialData')
+        DocumentData = apps.get_model('upload', 'DocumentData')
+        MapData = apps.get_model('upload', 'MapData')
+        AnalysispData = apps.get_model('upload', 'AnalysispData')
 
+        def parse_date(date_str):
+            if not date_str:
+                return datetime.now().date()
+            try:
+                return datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError as e:
+                logger.warning(f"Invalid date format: {date_str}, using today: {e}")
+                return datetime.now().date()
+
+        # Save Document
+        with open(temp_file_paths['document'], 'rb') as f:
+            doc_file = File(f, name=metadata['document_meta_data']['file_name'])
+            document_instance = DocumentData.objects.create(
+                file=doc_file,
+                description=metadata['document_meta_data']['description'],
+                date_captured=parse_date(metadata['document_meta_data']['date_captured'])
+            )
+
+        # Save Map
+        with open(temp_file_paths['map'], 'rb') as f:
+            map_file = File(f, name=metadata['map_meta_data']['file_name'])
+            map_instance = MapData.objects.create(
+                file=map_file,
+                description=metadata['map_meta_data']['description'],
+                date_captured=parse_date(metadata['map_meta_data']['date_captured'])
+            )
+
+        # Save Input Geospatial
+        input_file_paths = {}
+        for filename, file_path in temp_file_paths['input_geo'].items():
+            with open(file_path, 'rb') as f:
+                file_obj = File(f, name=filename)
+                input_file_paths[filename] = os.path.join('geotiffs', datetime.now().strftime('%Y/%m/%d'), filename)
+                dest_path = os.path.join(settings.MEDIA_ROOT, input_file_paths[filename])
+                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                with open(dest_path, 'wb') as dest:
+                    dest.write(file_obj.read())
+        
+        input_primary_file = next((f for f in input_file_paths.keys() if f.lower().endswith('.shp')), list(input_file_paths.keys())[0])
+        input_geo_instance = GeospatialData.objects.create(
+            file=input_file_paths[input_primary_file],
+            data_type=metadata['input_meta_data']['data_type'],
+            type_of_data=metadata['input_meta_data']['type_of_data'],
+            description=metadata['input_meta_data']['description'],
+            date_captured=parse_date(metadata['input_meta_data']['date_captured'])
+        )
+
+        # Save Output Geospatial
+        output_file_paths = {}
+        for filename, file_path in temp_file_paths['output_geo'].items():
+            with open(file_path, 'rb') as f:
+                file_obj = File(f, name=filename)
+                output_file_paths[filename] = os.path.join('geotiffs', datetime.now().strftime('%Y/%m/%d'), filename)
+                dest_path = os.path.join(settings.MEDIA_ROOT, output_file_paths[filename])
+                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                with open(dest_path, 'wb') as dest:
+                    dest.write(file_obj.read())
+        
+        output_primary_file = next((f for f in output_file_paths.keys() if f.lower().endswith('.shp')), list(output_file_paths.keys())[0])
+        output_geo_instance = GeospatialData.objects.create(
+            file=output_file_paths[output_primary_file],
+            data_type=metadata['output_meta_data']['data_type'],
+            type_of_data=metadata['output_meta_data']['type_of_data'],
+            description=metadata['output_meta_data']['description'],
+            date_captured=parse_date(metadata['output_meta_data']['date_captured'])
+        )
+
+        # Save Analysis Asset
+        with open(temp_file_paths['analysis'], 'rb') as f:
+            analysis_file = File(f, name=metadata['analysis_meta_data']['file_name'])
+            analysis_instance = AnalysispData.objects.create(
+                file=analysis_file,
+                map_data=map_instance,
+                document_data=document_instance,
+                input_data=input_geo_instance,
+                output_data=output_geo_instance,
+                description=metadata['analysis_meta_data']['description'],
+                date_captured=parse_date(metadata['analysis_meta_data']['date_captured'])
+            )
+            
+        return True, "Files saved successfully"
+    except Exception as e:
+        logger.error(f"Celery task failed: {str(e)}")
+        return False, f"Save failed: {str(e)}"
+    finally:
+        try:
+            for file_type, files in temp_file_paths.items():
+                if isinstance(files, dict):
+                    for filename, file_path in files.items():
+                        if os.path.exists(file_path):
+                            os.unlink(file_path)
+                elif files and os.path.exists(files):
+                    os.unlink(files)
+        except Exception as cleanup_error:
+            logger.error(f"Failed to cleanup temp files: {str(cleanup_error)}")
 
 
 # from celery import shared_task

@@ -61,6 +61,20 @@ createnpmproto3:
 	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload3_pb.esm.js
 	rm -f ./src/rainforestbuilder/dataset/grpc_setup/generated/file3_upload_pb.js
 
+createnpmproto4:
+	protoc \
+	  --proto_path=./src/rainforestbuilder/dataset/grpc_setup/proto \
+	  --js_out=import_style=commonjs,binary:./src/rainforestbuilder/dataset/grpc_setup/generated \
+	  ./src/rainforestbuilder/dataset/grpc_setup/proto/file_upload4.proto
+	npx esbuild ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload4_pb.js \
+	  --format=esm \
+	  --outfile=./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload4_pb.esm.js
+	sed -i 's/var jspb = require("google-protobuf");/import * as jspb from "google-protobuf";/' \
+	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload4_pb.esm.js
+	sed -i 's/goog.object.extend(exports, proto.upload);/export const { AnalysisFileUploadRequest, AnalysisInputFileMetaData,AnalysisOutputFileMetaData,AnalysisAnalysisAssetMetaData,AnalysisDocumentMetaData,AnalysisMapMetaData, AnalysisFileUploadResponse } = proto.upload;/' \
+	  ./src/rainforestbuilder/dataset/grpc_setup/generated/file_upload4_pb.esm.js
+	rm -f ./src/rainforestbuilder/dataset/grpc_setup/generated/file4_upload_pb.js
+
 install_protoc:
 	@echo "Installing Protocol Buffers Compiler (protoc)..."
 	# macOS

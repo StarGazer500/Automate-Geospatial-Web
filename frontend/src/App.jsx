@@ -5,6 +5,7 @@ import './App.css'
 import Homepage from './rainforestbuilder/homepage/Homepage'
 import  DatasetView from './rainforestbuilder/dataset/Dataset'
 import {GeospatialDataUpload, DocumentDataUpload,MapDataUpload} from './rainforestbuilder/dataset/Uploads'
+import FormSlider from './rainforestbuilder/dataset/FormSlider'
 // import DocumentDataUpload from './rainforestbuilder/dataset/Uploads'
 
 
@@ -16,9 +17,10 @@ function App() {
     <>
     {/* <Homepage/> */}
     {/* < DatasetView/> */}
-    <GeospatialDataUpload/>
+    {/* <GeospatialDataUpload/> */}
     {/* <DocumentDataUpload/> */}
     {/* <MapDataUpload/>    */}
+    <FormSlider />
     
       
     </>

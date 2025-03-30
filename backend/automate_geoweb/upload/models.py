@@ -26,6 +26,7 @@ class MapData(models.Model):
 
     def __str__(self):
         return self.file.name
+    
 
 
 class GeospatialData(models.Model):
@@ -71,4 +72,18 @@ class GeospatialData(models.Model):
             output_dir = os.path.join(settings.MEDIA_ROOT, 'tiles', str(self.id))
             os.makedirs(output_dir, exist_ok=True)
             generate_tiles_task.delay(self.file.path, output_dir, self.id)
+
+class AnalysispData(models.Model):
+    file = models.FileField(upload_to='analysisuploads/%Y/%m/%d/')
+    map_data = models.ForeignKey(MapData,on_delete=models.CASCADE)
+    document_data = models.ForeignKey(DocumentData,on_delete=models.CASCADE)
+    input_data = models.ForeignKey(GeospatialData, on_delete=models.CASCADE, related_name='input_analysis_data')
+    output_data = models.ForeignKey(GeospatialData, on_delete=models.CASCADE, related_name='output_analysis_data')
+    description = models.TextField()
+    date_captured = models.DateField()
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file.name
+    
 

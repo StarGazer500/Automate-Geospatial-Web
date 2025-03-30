@@ -42,6 +42,9 @@ function DatasetHeader() {
         </li> */}
 
          
+            <li className="tab">
+              <a href="/analysis_resource">Analysis Assests</a>
+            </li>
 
           <li className="tab">
               <a href="/documents">Documents</a>
@@ -51,12 +54,10 @@ function DatasetHeader() {
               <a href="/maps">Maps</a>
             </li>
 
-            <li className="tab">
-              <a href="/analysis_resource">Analysis Resources</a>
-            </li>
+            
 
             <li className="tab">
-            <a href="/all-dataset/">All Datasets</a>
+            <a href="/all-dataset/">All</a>
           </li>
 
         </ul>
