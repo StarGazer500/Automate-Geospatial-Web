@@ -1,6 +1,8 @@
 // DocumentDataSlide.jsx
-import React, { useState,useRef } from 'react';
+import React, { useState,useRef,useContext, useEffect } from 'react';
 import { DocumentDataUpload, GeospatialInputDataUpload, GeospatialOutputDataUpload, MapDataUpload, AnalysisAssetsUpload } from './Uploads';
+import {IsComponentUsedInFormSliderClickedContext} from '../../utils/context';
+
 
 const DocumentDataSlide = ({ nextSlide }) => {
   return (
@@ -111,6 +113,12 @@ const AnalysisAssetDataSlide = ({ prevSlide,analysisAssetsUploadRef }) => {
 const FormSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const analysisAssetsUploadRef = useRef();
+
+  const { sharedValue, setSharedValue } = useContext(IsComponentUsedInFormSliderClickedContext);
+  useEffect(()=>{
+    setSharedValue(true)
+
+  },[])
 
   const slides = [
     <DocumentDataSlide nextSlide={setCurrentSlide} />,

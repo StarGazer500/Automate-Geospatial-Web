@@ -1,5 +1,5 @@
 import React, { useState,useContext,forwardRef, useImperativeHandle } from 'react';
-import {InputGeospatatialContext,OutputGeospatatialContext,DocumentContext,MapContext,AnalysisAssetContext} from '../../utils/context';
+import {InputGeospatatialContext,OutputGeospatatialContext,DocumentContext,MapContext,IsComponentUsedInFormSliderClickedContext,AnalysisAssetContext} from '../../utils/context';
 import './Uploads.css';
 import { DocumentUploadRequest, DocumentMetaData, DocumentUploadResponse } from "./grpc_setup/generated/file_upload1_pb.esm";
 import { MapUploadRequest, MapMetaData, MapUploadResponse } from "./grpc_setup/generated/file_upload3_pb.esm";
@@ -20,6 +20,7 @@ export const DocumentDataUpload = () => {
   const [progress, setProgress] = useState(0); // Progress as a percentage
 
   const { sharedValue, setSharedValue } = useContext(DocumentContext);
+  const { sharedValue: isOpenInFormSlider } = useContext(IsComponentUsedInFormSliderClickedContext);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -164,7 +165,7 @@ export const DocumentDataUpload = () => {
           />
         </div>
 
-        <button type="submit" disabled={uploadStatus === 'Uploading...'}>Submit</button>
+        {isOpenInFormSlider?null:<button type="submit" disabled={uploadStatus === 'Uploading...'}>Submit</button>}
 
         {/* Progress and Status Display */}
         {uploadStatus && (
@@ -197,6 +198,7 @@ export const MapDataUpload = () => {
   const [progress, setProgress] = useState(0); // Progress as a percentage
 
   const { sharedValue, setSharedValue } = useContext(MapContext);
+  const { sharedValue: isOpenInFormSlider } = useContext(IsComponentUsedInFormSliderClickedContext);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -340,7 +342,7 @@ export const MapDataUpload = () => {
           />
         </div>
 
-        <button type="submit" disabled={uploadStatus === 'Uploading...'}>Submit</button>
+        {isOpenInFormSlider?null:<button type="submit" disabled={uploadStatus === 'Uploading...'}>Submit</button>}
 
         {/* Progress and Status Display */}
         {uploadStatus && (
@@ -759,7 +761,7 @@ export const GeospatialInputDataUpload = () => {
             required
           />
         </div>
-        <button type="submit" disabled={uploadStatus === 'Uploading...'}>Submit</button>
+        
         {uploadStatus && (
           <div className="upload-feedback">
             <p>{uploadStatus}</p>
@@ -960,7 +962,7 @@ export const GeospatialOutputDataUpload = () => {
             required
           />
         </div>
-        <button type="submit" disabled={uploadStatus === 'Uploading...'}>Submit</button>
+       
         {uploadStatus && (
           <div className="upload-feedback">
             <p>{uploadStatus}</p>
@@ -1677,7 +1679,7 @@ export const AnalysisAssetsUpload = forwardRef((props, ref) => {
             required
           />
         </div>
-        <button type="submit" disabled={uploadStatus === 'Uploading...'}>Submit</button>
+        
         {uploadStatus && (
           <div className="upload-feedback">
             <p>{uploadStatus}</p>

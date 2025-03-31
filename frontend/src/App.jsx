@@ -4,9 +4,10 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Homepage from './rainforestbuilder/homepage/Homepage'
 import  DatasetView from './rainforestbuilder/dataset/Dataset'
-import {GeospatialDataUpload, DocumentDataUpload,MapDataUpload} from './rainforestbuilder/dataset/Uploads'
+
 import FormSlider from './rainforestbuilder/dataset/FormSlider'
 // import DocumentDataUpload from './rainforestbuilder/dataset/Uploads'
+import { Route, Routes } from "react-router-dom";
 
 
 
@@ -20,7 +21,16 @@ function App() {
     {/* <GeospatialDataUpload/> */}
     {/* <DocumentDataUpload/> */}
     {/* <MapDataUpload/>    */}
-    <FormSlider />
+    {/* <FormSlider /> */}
+
+      
+    <Routes >
+             <Route path="/" element={<Homepage />} />
+            <Route path="/data-view" element={<DatasetView/>} />
+            <Route path="/homepage" element={<Homepage/>} />
+            
+           
+        </Routes>
     
       
     </>

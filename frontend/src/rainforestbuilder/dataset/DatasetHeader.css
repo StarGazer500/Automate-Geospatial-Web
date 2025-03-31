@@ -1,90 +1,107 @@
 .header {
-    /* left: 0; */
+  width: 100%;
+  z-index: 10;
+  background-color: seagreen;
+  box-shadow: 0 3px 2px rgba(0, 0, 0, 0.05);
+  height: 54px;
+}
 
-    /* top: 0; */
-    width: 100%;
-    z-index: 10;
-    background-color: seagreen;
-    box-shadow: 0 3px 2px rgba(0, 0, 0, 0.05);
-    height: 54px;
-  }
-  
-  .header .navbar {
-    margin: 0 16px 0 24px;
-    font-family: "Google Sans", "Roboto", sans-serif;
-    display: flex; /* Use flexbox to control alignment */
-    justify-content: space-between; /* Spread items out */
-    align-items: center; /* Vertically center items */
-    height: 100%; /* Ensure it takes full height of header */
-    
-  }
-  
-  .header .navbar .tabs {
-    list-style: none;
-    display: flex; /* Make tabs a horizontal list */
-  }
-  
-  .header .navbar ul,
-  .header .navbar li {
-    padding: 0;
-    margin: 0;
-  }
-  
-  .right {
-    float: right; /* This will still work with flexbox */
-  }
-  
-  .header .navbar .tabs .tab {
-    display: inline-block;
-    overflow: hidden;
-    margin: 0 15px; /* Add spacing between tab items */
-  }
-  
-  .header .navbar .tabs .tab ul.dropdown {
-    background-color: #fff;
-    border-radius: 0 0 2px 2px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+.header .navbar {
+  margin: 0 16px 0 24px;
+  font-family: "Google Sans", "Roboto", sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.header .navbar .tabs {
+  list-style: none;
+  display: flex;
+}
+
+.header .navbar ul,
+.header .navbar li {
+  padding: 0;
+  margin: 0;
+}
+
+.right {
+  float: right;
+}
+
+.header .navbar .tabs .tab {
+  display: inline-block;
+  overflow: hidden;
+  margin: 0 15px;
+  position: relative; /* Added for dropdown positioning */
+}
+
+.header .navbar .tabs .tab ul.dropdown {
+  background-color: #fff;
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
       0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    display: none;
-    list-style: none;
-    padding: 8px 0;
-    position: absolute;
-    top: 54px;
-  }
-  
-  /* .header .navbar .logo {
-    margin-left: -15px;
-    padding-top: 2px;
-  } */
-  
-  .header .navbar .logo img {
-    height:54px;
-    padding-right:3px;
-    width:256px
-  }
-  
-  .header a {
-    color:#000;
-    font-weight:500;
-    text-decoration:none
-  }
-  
-  header .navbar .hamburger {
-    display: none;
-  }
-  
-  /* Optional: Style links for better visuals */
-  .header .navbar .tabs .tab a {
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    padding: 10px 0; /* Add some padding for clickable area */
-    color: white;
-    text-decoration: underline;
-  }
-  
-  .header .navbar .tabs .tab a:hover {
-    color: #007bff; /* Example hover effect */
-  }
+  display: none;
+  list-style: none;
+  padding: 8px 0;
+  position: absolute;
+  top: 54px;
+}
 
-  
+.header .navbar .logo img {
+  height: 54px;
+  padding-right: 3px;
+  width: 256px;
+}
+
+.header a {
+  color: #000;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.header .navbar .tabs .tab a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  padding: 10px 0;
+  display: block; /* Makes the entire tab area clickable */
+  text-decoration: underline;
+}
+
+/* Active tab styling */
+.header .navbar .tabs .tab.active a {
+  color: #ffd700; /* Gold color for active tab - adjust as needed */
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.2); /* Slight white overlay */
+  border-radius: 4px; /* Rounded corners */
+  padding: 10px 8px; /* Adjusted padding for better appearance */
+}
+
+/* Hover effects */
+.header .navbar .tabs .tab a:hover {
+  color: #007bff;
+}
+
+/* Show dropdown on tab hover */
+.header .navbar .tabs .tab:hover ul.dropdown {
+  display: block;
+}
+
+/* Dropdown item styling */
+.header .navbar .tabs .tab ul.dropdown a {
+  color: #333;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Dropdown item hover */
+.header .navbar .tabs .tab ul.dropdown a:hover {
+  background-color: #f0f0f0;
+  color: #007bff;
+}
+
+header .navbar .hamburger {
+  display: none;
+}
