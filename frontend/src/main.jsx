@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 // import { ThemeProvider } from '@material-tailwind/react';
 import './index.css';
 import App from './App';
+
 import {InputGeospatialProvider,OutputGeospatialProvider,DocumentProvider,MapProvider,AnalysisAssetProvider,CategoryOfDataClickedProvider,IsComponentUsedInFormSliderClickedProvider} from './utils/provider';
 
 const root = createRoot(document.getElementById('root'));

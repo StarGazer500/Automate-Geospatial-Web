@@ -259,9 +259,15 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
         GeospatialData = apps.get_model('upload', 'GeospatialData')
         instance = GeospatialData.objects.get(id=instance_id)
 
+        # Initialize is_vector
         is_vector = False
+
+        # Validate input file
+        logger.info(f"Validating input file: {input_path}")
         try:
             ds = gdal.Open(input_path)
+            if ds is None:
+                raise ValueError("GDAL could not open the input file")
             logger.info("Detected raster input")
         except Exception as e:
             logger.info(f"gdal.Open failed: {e}, trying as vector")
@@ -320,6 +326,7 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
 
             processed_input = input_path
             temp_file_8bit = None
+            temp_file_tiled = None
             if data_type != 'Byte':
                 logger.info("Converting GeoTIFF to 8-bit format")
                 temp_file_8bit = tempfile.NamedTemporaryFile(suffix='.tif', delete=False)
@@ -332,86 +339,68 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
                     temp_file_8bit.name
                 ]
                 logger.info(f"Running conversion: {' '.join(cmd_convert)}")
-                subprocess.run(cmd_convert, check=True)
+                result = subprocess.run(cmd_convert, check=True, capture_output=True, text=True)
+                logger.info(f"gdal_translate output: {result.stdout}")
+                if result.stderr:
+                    logger.warning(f"gdal_translate stderr: {result.stderr}")
                 processed_input = temp_file_8bit.name
                 logger.info("Conversion to 8-bit completed")
 
-            # Generate COG
-            cog_output = os.path.join(output_dir, 'raster.cog.tif')
-            # cmd_cog = [
-            #     'gdal_translate',
-            #     '-of', 'COG',
-            #     '-co', 'COMPRESS=LZW',
-            #     '-co', 'BIGTIFF=IF_SAFER',
-            #     processed_input,
-            #     cog_output
-            # ]
-            
-            cmd_cog = None
-            compression_method = None
+            # Pre-tile the input to avoid strip issues
+            temp_file_tiled = tempfile.NamedTemporaryFile(suffix='.tif', delete=False)
+            cmd_tile = [
+                'gdal_translate',
+                '-of', 'GTiff',
+                '-co', 'TILED=YES',
+                '-co', 'BLOCKXSIZE=256',
+                '-co', 'BLOCKYSIZE=256',
+                processed_input,
+                temp_file_tiled.name
+            ]
+            logger.info(f"Pre-tiling input: {' '.join(cmd_tile)}")
+            result = subprocess.run(cmd_tile, check=True, capture_output=True, text=True)
+            logger.info(f"gdal_translate output: {result.stdout}")
+            if result.stderr:
+                logger.warning(f"gdal_translate stderr: {result.stderr}")
+            processed_input = temp_file_tiled.name
+            logger.info("Pre-tiling completed")
 
-            try:
-                # First attempt: LZW compression
-                compression_method = "LZW"
-                cmd_cog = [
-                       'gdal_translate',
-                        '-of', 'COG',
-                        '-co', 'COMPRESS=LZW',
-                        # '-co', 'TILED=YES',
-                        '-co', 'BLOCKSIZE=256',
-                        '-co', 'BIGTIFF=IF_SAFER',
-                        processed_input,
-                        cog_output
-                ]
-                logger.info(f"Attempting {compression_method} compression")
-                subprocess.run(cmd_cog, check=True)
-            except Exception as e:
-                logger.warning(f"{compression_method} compression failed: {e}")
-                
+            # Generate COG with internal overviews
+            cog_output = os.path.join(output_dir, 'raster.cog.tif')
+            compression_methods = ["LZW", "DEFLATE", "NONE"]
+            for compression_method in compression_methods:
                 try:
-                    # Second attempt: DEFLATE compression
-                    compression_method = "DEFLATE"
                     cmd_cog = [
                         'gdal_translate',
                         '-of', 'COG',
-                        '-co', 'COMPRESS=DEFLATE',
-                        # '-co', 'TILED=YES',
+                        '-co', f'COMPRESS={compression_method}',
                         '-co', 'BLOCKSIZE=256',
                         '-co', 'BIGTIFF=IF_SAFER',
+                        # '-co', 'NUM_THREADS=ALL_CPUS',
                         processed_input,
                         cog_output
                     ]
-                    logger.info(f"Attempting {compression_method} compression")
-                    subprocess.run(cmd_cog, check=True)
-                except Exception as e:
-                    logger.error(f"{compression_method} compression failed: {e}")
-                    raise Exception(f"Failed to open file as raster or vector: {e}")
+                    logger.info(f"Generating COG with {compression_method} compression: {' '.join(cmd_cog)}")
+                    result = subprocess.run(cmd_cog, check=True, capture_output=True, text=True)
+                    logger.info(f"gdal_translate output: {result.stdout}")
+                    if result.stderr:
+                        logger.warning(f"gdal_translate stderr: {result.stderr}")
+                    break  # Success, no need for gdaladdo since overviews are internal
+                except subprocess.CalledProcessError as e:
+                    logger.warning(f"{compression_method} compression failed: {e.stderr}")
+                    if compression_method == "NONE":
+                        raise Exception(f"All compression methods failed: {e.stderr}")
+                    continue
 
+            logger.info("COG generation with internal overviews completed")
 
-           
-
-
-            # logger.info(f"Generating COG with command: {' '.join(cmd_cog)}")
-            # subprocess.run(cmd_cog, check=True)
-            logger.info("COG generation completed")
-
-            # cmd_overviews = [
-            #     'gdaladdo',
-            #     '-r', 'average',
-            #     cog_output,
-            #     '2', '4', '8', '16'
-            # ]
-            # logger.info(f"Adding overviews: {' '.join(cmd_overviews)}")
-            # subprocess.run(cmd_overviews, check=True)
-            
-
-            temp_files = [temp_file_8bit] if temp_file_8bit else []
+            temp_files = [temp_file_8bit, temp_file_tiled] if temp_file_8bit else [temp_file_tiled]
 
             # Update the file field with the COG path
             cog_relative_path = os.path.relpath(cog_output, settings.MEDIA_ROOT)
             instance.file = cog_relative_path
 
-            # Delete original raster file after successful COG generation
+            # Delete original raster file
             if os.path.exists(input_path):
                 try:
                     os.unlink(input_path)
@@ -442,7 +431,6 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
                     except PermissionError as e:
                         logger.warning(f"Failed to clean up temporary file {temp_file.name}: {e}")
         cache.delete(lock_key)
-
 
 @shared_task(bind=True, max_retries=3)
 def save_analysis_files(self, temp_file_paths, metadata):

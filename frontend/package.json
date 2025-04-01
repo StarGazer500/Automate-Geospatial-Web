@@ -16,9 +16,12 @@
     "@vitejs/plugin-react": "^4.3.4",
     "google-protobuf": "^3.21.4",
     "grpc-web": "^1.5.0",
+    "http-proxy-middleware": "^3.0.3",
+    "leaflet": "^1.9.4",
     "protoc-ts": "^0.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.4.1",
     "tailwindcss": "^4.0.14"
   },

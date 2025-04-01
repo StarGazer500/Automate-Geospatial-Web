@@ -7,6 +7,8 @@ from django.views import View
 from datetime import datetime
 from django.utils import timezone
 
+
+# Get All Dataset
 class GeospatialDataView(View):
     async def get(self, request, *args, **kwargs):
         print("Entering get method")
@@ -293,3 +295,298 @@ class RetrieveAllDataset(View):
         except Exception as e:
             print(f"Error in get_paginated_data: {str(e)}")
             raise
+
+
+
+
+# Get Dataset by ID
+
+class GetUpdateDeleteDocumentView(View):
+    async def get(self, request, *args, **kwargs):
+        document_id = kwargs.get('document_id')
+        try:
+            document = await DocumentData.objects.aget(id=document_id)
+            
+            response_data = {
+                "id": document.id,
+                "file": document.file.url if document.file else None,
+                "description": document.description,
+                "date_captured": document.date_captured.isoformat(),
+                "uploaded_at":document.uploaded_at.isoformat()
+                
+            }
+            return JsonResponse(response_data)
+        except document.DoesNotExist:
+            return JsonResponse({"error": "Patient not found"}, status=404)
+
+    # async def put(self, request, *args, **kwargs):
+    #     patient_id = kwargs.get('patient_id')
+    #     try:
+    #         patient = await Patient.objects.aget(id=patient_id)
+    #         # Parse the incoming JSON data
+    #         data = json.loads(request.body)
+            
+    #         # Update patient fields if they are provided in the request
+    #         patient.first_name = data.get('first_name', patient.first_name)
+    #         patient.last_name = data.get('last_name', patient.last_name)
+    #         patient.date_of_birth = data.get('date_of_birth', patient.date_of_birth)
+    #         patient.gender = data.get('gender', patient.gender)
+    #         patient.contact_number = data.get('contact_number', patient.contact_number)
+    #         patient.email = data.get('email', patient.email)
+            
+    #         # Save the updated patient
+    #         await patient.asave()
+            
+    #         # Prepare response with updated data
+    #         response_data = {
+    #             "id": patient.id,
+    #             "first_name": patient.first_name,
+    #             "last_name": patient.last_name,
+    #             "date_of_birth": patient.date_of_birth,
+    #             "gender": patient.gender,
+    #             "contact_number": patient.contact_number,
+    #             "email": patient.email,
+    #         }
+    #         return JsonResponse(response_data)
+    #     except Patient.DoesNotExist:
+    #         return JsonResponse({"error": "Patient not found"}, status=404)
+    #     except json.JSONDecodeError:
+    #         return JsonResponse({"error": "Invalid JSON data"}, status=400)
+    #     except Exception as e:
+    #         return JsonResponse({"error": str(e)}, status=500)
+
+    # async def delete(self, request, *args, **kwargs):
+    #     patient_id = kwargs.get('patient_id')
+    #     try:
+    #         # Try to get the patient object to delete
+    #         patient = await Patient.objects.aget(id=patient_id)
+            
+    #         # Delete the patient
+    #         await patient.adelete()
+            
+    #         # Return success response
+    #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
+    #     except Patient.DoesNotExist:
+    #         return JsonResponse({"error": "Patient not found"}, status=404)
+    #     except Exception as e:
+    #         return JsonResponse({"error": str(e)}, status=500)
+
+
+class GetUpdateDeleteMapView(View):
+    async def get(self, request, *args, **kwargs):
+        map_id = kwargs.get('map_id')
+        try:
+            map = await MapData.objects.aget(id=map_id)
+            
+            response_data = {
+                "id": map.id,
+                "file": map.file.url if map.file else None,
+                "description": map.description,
+                "date_captured": map.date_captured.isoformat(),
+                "uploaded_at":map.uploaded_at.isoformat()
+                
+            }
+            return JsonResponse(response_data)
+        except map.DoesNotExist:
+            return JsonResponse({"error": "Patient not found"}, status=404)
+
+        # async def put(self, request, *args, **kwargs):
+        #     patient_id = kwargs.get('patient_id')
+        #     try:
+        #         patient = await Patient.objects.aget(id=patient_id)
+        #         # Parse the incoming JSON data
+        #         data = json.loads(request.body)
+                
+        #         # Update patient fields if they are provided in the request
+        #         patient.first_name = data.get('first_name', patient.first_name)
+        #         patient.last_name = data.get('last_name', patient.last_name)
+        #         patient.date_of_birth = data.get('date_of_birth', patient.date_of_birth)
+        #         patient.gender = data.get('gender', patient.gender)
+        #         patient.contact_number = data.get('contact_number', patient.contact_number)
+        #         patient.email = data.get('email', patient.email)
+                
+        #         # Save the updated patient
+        #         await patient.asave()
+                
+        #         # Prepare response with updated data
+        #         response_data = {
+        #             "id": patient.id,
+        #             "first_name": patient.first_name,
+        #             "last_name": patient.last_name,
+        #             "date_of_birth": patient.date_of_birth,
+        #             "gender": patient.gender,
+        #             "contact_number": patient.contact_number,
+        #             "email": patient.email,
+        #         }
+        #         return JsonResponse(response_data)
+        #     except Patient.DoesNotExist:
+        #         return JsonResponse({"error": "Patient not found"}, status=404)
+        #     except json.JSONDecodeError:
+        #         return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        #     except Exception as e:
+        #         return JsonResponse({"error": str(e)}, status=500)
+
+        # async def delete(self, request, *args, **kwargs):
+        #     patient_id = kwargs.get('patient_id')
+        #     try:
+        #         # Try to get the patient object to delete
+        #         patient = await Patient.objects.aget(id=patient_id)
+                
+        #         # Delete the patient
+        #         await patient.adelete()
+                
+        #         # Return success response
+        #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
+        #     except Patient.DoesNotExist:
+        #         return JsonResponse({"error": "Patient not found"}, status=404)
+        #     except Exception as e:
+        #         return JsonResponse({"error": str(e)}, status=500)
+
+class GetUpdateDeleteGeospatialView(View):
+    async def get(self, request, *args, **kwargs):
+        geo_id = kwargs.get('geo_id')
+        try:
+            geospatial = await GeospatialData.objects.aget(id=geo_id)
+            
+            response_data = {
+                "id": geospatial.id,
+                "file": geospatial.file.url if geospatial.file else None,
+                "data_type":geospatial.data_type,
+                "type_of_data":geospatial. type_of_data,
+                "description": geospatial.description,
+                "date_captured": geospatial.date_captured.isoformat(),
+                "tile_path":geospatial.tile_path
+                
+            }
+            print(response_data)
+            return JsonResponse(response_data)
+        except geospatial.DoesNotExist:
+            return JsonResponse({"error": "Patient not found"}, status=404)
+
+    # async def put(self, request, *args, **kwargs):
+    #     patient_id = kwargs.get('patient_id')
+    #     try:
+    #         patient = await Patient.objects.aget(id=patient_id)
+    #         # Parse the incoming JSON data
+    #         data = json.loads(request.body)
+            
+    #         # Update patient fields if they are provided in the request
+    #         patient.first_name = data.get('first_name', patient.first_name)
+    #         patient.last_name = data.get('last_name', patient.last_name)
+    #         patient.date_of_birth = data.get('date_of_birth', patient.date_of_birth)
+    #         patient.gender = data.get('gender', patient.gender)
+    #         patient.contact_number = data.get('contact_number', patient.contact_number)
+    #         patient.email = data.get('email', patient.email)
+            
+    #         # Save the updated patient
+    #         await patient.asave()
+            
+    #         # Prepare response with updated data
+    #         response_data = {
+    #             "id": patient.id,
+    #             "first_name": patient.first_name,
+    #             "last_name": patient.last_name,
+    #             "date_of_birth": patient.date_of_birth,
+    #             "gender": patient.gender,
+    #             "contact_number": patient.contact_number,
+    #             "email": patient.email,
+    #         }
+    #         return JsonResponse(response_data)
+    #     except Patient.DoesNotExist:
+    #         return JsonResponse({"error": "Patient not found"}, status=404)
+    #     except json.JSONDecodeError:
+    #         return JsonResponse({"error": "Invalid JSON data"}, status=400)
+    #     except Exception as e:
+    #         return JsonResponse({"error": str(e)}, status=500)
+
+    # async def delete(self, request, *args, **kwargs):
+    #     patient_id = kwargs.get('patient_id')
+    #     try:
+    #         # Try to get the patient object to delete
+    #         patient = await Patient.objects.aget(id=patient_id)
+            
+    #         # Delete the patient
+    #         await patient.adelete()
+            
+    #         # Return success response
+    #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
+    #     except Patient.DoesNotExist:
+    #         return JsonResponse({"error": "Patient not found"}, status=404)
+    #     except Exception as e:
+    #         return JsonResponse({"error": str(e)}, status=500)
+
+
+class GetUpdateDeleteAnalysisView(View):
+    async def get(self, request, *args, **kwargs):
+        analysis_id = kwargs.get('analysis_id')
+        try:
+            analysis = await AnalysispData.objects.select_related('input_data','output_data','map_data','document_data').aget(id=analysis_id)
+            
+            response_data = {
+                "id": analysis.id,
+                "file": analysis.file.url if analysis.file else None,
+                "input_data": analysis.input_data.id,
+                "output_data": analysis.output_data.id,
+                "map_data": analysis.map_data.id,
+                "document_data": analysis.document_data.id,
+                "description": analysis.description,
+                "date_captured": analysis.date_captured.isoformat(),
+                "uploaded_at":analysis.uploaded_at.isoformat(),
+                
+                
+            }
+            return JsonResponse(response_data)
+        except analysis.DoesNotExist:
+            return JsonResponse({"error": "Patient not found"}, status=404)
+
+    # async def put(self, request, *args, **kwargs):
+    #     patient_id = kwargs.get('patient_id')
+    #     try:
+    #         patient = await Patient.objects.aget(id=patient_id)
+    #         # Parse the incoming JSON data
+    #         data = json.loads(request.body)
+            
+    #         # Update patient fields if they are provided in the request
+    #         patient.first_name = data.get('first_name', patient.first_name)
+    #         patient.last_name = data.get('last_name', patient.last_name)
+    #         patient.date_of_birth = data.get('date_of_birth', patient.date_of_birth)
+    #         patient.gender = data.get('gender', patient.gender)
+    #         patient.contact_number = data.get('contact_number', patient.contact_number)
+    #         patient.email = data.get('email', patient.email)
+            
+    #         # Save the updated patient
+    #         await patient.asave()
+            
+    #         # Prepare response with updated data
+    #         response_data = {
+    #             "id": patient.id,
+    #             "first_name": patient.first_name,
+    #             "last_name": patient.last_name,
+    #             "date_of_birth": patient.date_of_birth,
+    #             "gender": patient.gender,
+    #             "contact_number": patient.contact_number,
+    #             "email": patient.email,
+    #         }
+    #         return JsonResponse(response_data)
+    #     except Patient.DoesNotExist:
+    #         return JsonResponse({"error": "Patient not found"}, status=404)
+    #     except json.JSONDecodeError:
+    #         return JsonResponse({"error": "Invalid JSON data"}, status=400)
+    #     except Exception as e:
+    #         return JsonResponse({"error": str(e)}, status=500)
+
+    # async def delete(self, request, *args, **kwargs):
+    #     patient_id = kwargs.get('patient_id')
+    #     try:
+    #         # Try to get the patient object to delete
+    #         patient = await Patient.objects.aget(id=patient_id)
+            
+    #         # Delete the patient
+    #         await patient.adelete()
+            
+    #         # Return success response
+    #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
+    #     except Patient.DoesNotExist:
+    #         return JsonResponse({"error": "Patient not found"}, status=404)
+    #     except Exception as e:
+    #         return JsonResponse({"error": str(e)}, status=500)

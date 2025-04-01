@@ -31,10 +31,26 @@ stoptitiler:
 	-@docker rm titiler-container 2>/dev/null || true
 
 runtitiler: stoptitiler
-	-@docker run -d --name titiler-container \
-		-p 8001:8000 \
-		-v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media:/media \
-		ghcr.io/developmentseed/titiler:latest
+	@docker run -d --name titiler-container \
+	--platform=linux/amd64 \
+	-p 8001:80 \
+	-v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media:/media \
+	-e TITILER_CORS="http://localhost:3000" \
+	-e LOG_LEVEL=debug \
+	--memory="2g" --cpus="4" \
+	--rm \
+	ghcr.io/developmentseed/titiler:latest
+
+# -@docker run -d --name titiler-container \
+#     --platform=linux/amd64 \
+#     -p 8001:8000 \
+#     -v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media:/media \
+#     -e TITILER_CORS="http://localhost:3000" \
+#     -e LOG_LEVEL=debug \
+#     --memory="2g" --cpus="2" \
+#     --rm \
+#     ghcr.io/developmentseed/titiler:latest
+
 
 # Stop any running Celery processes
 stopcelery:

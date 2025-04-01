@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Homepage from './rainforestbuilder/homepage/Homepage'
 import  DatasetView from './rainforestbuilder/dataset/Dataset'
+import {MapDetailView,DocumentDetailView,AnalysisDetailView,GeospatialDetailView} from './rainforestbuilder/dataset/DetailView'
 
 import FormSlider from './rainforestbuilder/dataset/FormSlider'
 // import DocumentDataUpload from './rainforestbuilder/dataset/Uploads'
@@ -16,18 +17,17 @@ function App() {
 
   return (
     <>
-    {/* <Homepage/> */}
-    {/* < DatasetView/> */}
-    {/* <GeospatialDataUpload/> */}
-    {/* <DocumentDataUpload/> */}
-    {/* <MapDataUpload/>    */}
-    {/* <FormSlider /> */}
+  
 
       
     <Routes >
              <Route path="/" element={<Homepage />} />
             <Route path="/data-view" element={<DatasetView/>} />
             <Route path="/homepage" element={<Homepage/>} />
+            <Route path="/map-detail-view" element={<MapDetailView/>} />
+            <Route path="/doc-detail-view" element={<DocumentDetailView/>} />
+            <Route path="/analysis-detail-view" element={<AnalysisDetailView/>} />
+            <Route path="/geo-detail-view" element={<GeospatialDetailView/>} />
             
            
         </Routes>

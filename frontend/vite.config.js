@@ -19,8 +19,18 @@ export default defineConfig({
 
  
   server: {
+    
     port: 3000,
-    open: true
+    open: true,
+    proxy: {
+      '/titiler': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/titiler/, ''),
+      },
+    }
+    
+    
   },
   build: {
     outDir: 'dist',
@@ -28,6 +38,7 @@ export default defineConfig({
     sourcemap: true
   }
 });
+
 
 
 

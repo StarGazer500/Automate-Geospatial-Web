@@ -13,6 +13,6 @@
       },
       "skipLibCheck": true
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "trial.js"],
     "exclude": ["node_modules", "dist"]
   }
