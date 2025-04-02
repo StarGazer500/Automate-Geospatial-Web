@@ -307,6 +307,7 @@ class GetUpdateDeleteDocumentView(View):
         try:
             document = await DocumentData.objects.aget(id=document_id)
             
+            
             response_data = {
                 "id": document.id,
                 "file": document.file.url if document.file else None,
@@ -447,10 +448,12 @@ class GetUpdateDeleteGeospatialView(View):
         geo_id = kwargs.get('geo_id')
         try:
             geospatial = await GeospatialData.objects.aget(id=geo_id)
+            check_file_type = geospatial.file.url if geospatial.file.url.split('.')[-1]=="tif" else f"/media/tiles/{geospatial.id}/tiles.mbtiles"
+            print("file type",check_file_type)
             
             response_data = {
                 "id": geospatial.id,
-                "file": geospatial.file.url if geospatial.file else None,
+                "file": check_file_type,
                 "data_type":geospatial.data_type,
                 "type_of_data":geospatial. type_of_data,
                 "description": geospatial.description,
