@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {InputGeospatatialContext,OutputGeospatatialContext,DocumentContext,MapContext,AnalysisAssetContext, CategoryOfDataClickedContext,IsComponentUsedInFormSliderClickedContext} from './context';
+import {InputGeospatatialContext,OutputGeospatatialContext,DocumentContext,MapContext,AnalysisAssetContext, CategoryOfDataClickedContext,IsComponentUsedInFormSliderClickedContext, DetailViewIdContext} from './context';
 
 export const InputGeospatialProvider = ({ children }) => {
   const [sharedValue, setSharedValue] = useState({
@@ -95,5 +95,16 @@ export const IsComponentUsedInFormSliderClickedProvider = ({ children }) => {
     <IsComponentUsedInFormSliderClickedContext.Provider value={{ sharedValue, setSharedValue }}>
       {children}
     </IsComponentUsedInFormSliderClickedContext.Provider>
+  );
+};
+
+
+export const DetailViewIdClickedProvider = ({ children }) => {
+  const [sharedValue, setSharedValue] = useState("");
+    
+  return (
+    <DetailViewIdContext.Provider value={{ sharedValue, setSharedValue }}>
+      {children}
+    </DetailViewIdContext.Provider>
   );
 };

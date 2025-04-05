@@ -2,18 +2,22 @@
 # from django.db import models
 
 from django.contrib.gis.db import models
-from .tasks import generate_tiles_task
+from .tasks import generate_tiles_task,generate_geo_thumbnail
 import os
 from django.conf import settings
 
+
 import logging
 logger = logging.getLogger(__name__)
+from celery import chain
+
 
 class DocumentData(models.Model):
     file = models.FileField(upload_to='documentuploads/%Y/%m/%d/')
     description = models.TextField()
     date_captured = models.DateField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
 
     def __str__(self):
         return self.file.name
@@ -23,6 +27,7 @@ class MapData(models.Model):
     description = models.TextField()
     date_captured = models.DateField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
 
     def __str__(self):
         return self.file.name
@@ -37,6 +42,7 @@ class GeospatialData(models.Model):
     date_captured = models.DateField()
     tiles_generated = models.BooleanField(default=False)
     tile_path = models.CharField(max_length=255, null=True, blank=True)  # Stores path to tiles
+    thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.file.name} ({self.date_captured})"
@@ -67,11 +73,18 @@ class GeospatialData(models.Model):
                 logger.error(f"Error deleting tiles directory {tile_path}: {e}")
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         super().save(*args, **kwargs)
-        if self.file and not self.tiles_generated:
+        if is_new or (self.file and not self.tiles_generated):
             output_dir = os.path.join(settings.MEDIA_ROOT, 'tiles', str(self.id))
             os.makedirs(output_dir, exist_ok=True)
-            generate_tiles_task.delay(self.file.path, output_dir, self.id)
+            logger.info(f"Queuing task chain for GeospatialData ID: {self.id}")
+            chain(
+                generate_tiles_task.s(self.file.path, output_dir, self.id),
+                generate_geo_thumbnail.si("upload.GeospatialData", self.id)  # Use .si() for immutable signature
+            ).delay()
+            logger.info("Task chain queued successfully")
+                
 
 class AnalysispData(models.Model):
     file = models.FileField(upload_to='analysisuploads/%Y/%m/%d/')
@@ -82,6 +95,7 @@ class AnalysispData(models.Model):
     description = models.TextField()
     date_captured = models.DateField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
 
     def __str__(self):
         return self.file.name

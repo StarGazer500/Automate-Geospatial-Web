@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 
-import {InputGeospatialProvider,OutputGeospatialProvider,DocumentProvider,MapProvider,AnalysisAssetProvider,CategoryOfDataClickedProvider,IsComponentUsedInFormSliderClickedProvider} from './utils/provider';
+import {InputGeospatialProvider,OutputGeospatialProvider,DocumentProvider,MapProvider,AnalysisAssetProvider,CategoryOfDataClickedProvider,IsComponentUsedInFormSliderClickedProvider,DetailViewIdClickedProvider} from './utils/provider';
 
 const root = createRoot(document.getElementById('root'));
 import { BrowserRouter } from 'react-router-dom'
@@ -14,6 +14,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
     <IsComponentUsedInFormSliderClickedProvider>
+      <DetailViewIdClickedProvider>
       
       <CategoryOfDataClickedProvider>
         <InputGeospatialProvider>
@@ -28,6 +29,7 @@ root.render(
             </OutputGeospatialProvider>
         </InputGeospatialProvider>
       </CategoryOfDataClickedProvider>
+      </DetailViewIdClickedProvider>
       </IsComponentUsedInFormSliderClickedProvider>
     </BrowserRouter>
   </React.StrictMode>

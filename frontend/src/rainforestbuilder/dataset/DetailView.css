@@ -12,19 +12,94 @@
    }
 
 
-   .item-container {
+ .item-container {
+  padding: 20px;
+  margin-left: 0px;
+  margin-right: 10px;
+ 
+  border: 1px solid whitesmoke;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 200px; /* Add this to prevent collapse */
+}
 
-        padding: 20px;
-        margin-left: 0px;
-        margin-top: 50px;
-        margin-right: 10px;
-        border: 1px solid whitesmoke;
-        max-height: 70vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        width: calc(100%);
-        box-sizing: border-box;
-        justify-content: center; /* Center grid items horizontally */
-        align-items: start; /* Align items to the start vertically */
-   
-   }
+/* notebook css */
+
+/* JupyterLab-like styling */
+.jupyter-notebook-container {
+  font-family: var(--jp-ui-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif);
+  background-color: var(--jp-layout-color0, white);
+  color: var(--jp-content-font-color1, #000);
+  line-height: var(--jp-content-line-height, 1.6);
+}
+
+/* Override the react-ipynb-renderer default styles */
+.jupyter-notebook-container .ipynb-renderer {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Style the cells similar to JupyterLab */
+.jupyter-notebook-container .cell {
+  padding: 5px 12px;
+  border-left: 5px solid transparent;
+  margin-bottom: 8px;
+  width: 100%;
+  text-align: left; /* Ensure text is left-aligned */
+  box-sizing: border-box;
+}
+
+/* Style code cells */
+.jupyter-notebook-container .code-cell {
+  font-family: var(--jp-code-font-family, 'Source Code Pro', monospace);
+  font-size: var(--jp-code-font-size, 13px);
+  line-height: var(--jp-code-line-height, 1.5);
+  padding-left: 65px; /* Space for prompt */
+  position: relative;
+}
+
+/* Style for input prompts */
+.jupyter-notebook-container .code-cell::before {
+  content: "In []";
+  position: absolute;
+  left: 8px;
+  color: #303F9F;
+  font-family: monospace;
+  opacity: 0.6;
+}
+
+/* Style markdown cells */
+.jupyter-notebook-container .markdown-cell {
+  text-align: left;
+  width: 100%;
+}
+
+/* Override default centering if it exists */
+.jupyter-notebook-container .ipynb-renderer-root,
+.jupyter-notebook-container .ipynb-renderer-root *,
+.jupyter-notebook-container .ipynb-renderer > div,
+.jupyter-notebook-container .ipynb-renderer .cell,
+.jupyter-notebook-container .ipynb-renderer .cell * {
+  text-align: left !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  width: 100% !important;
+}
+
+/* Make sure tables are properly aligned */
+.jupyter-notebook-container table {
+  margin-left: 0 !important;
+  text-align: left !important;
+}
+
+
+.jupyter-notebook-container::before {
+  content: attr(data-notebook-name);
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 12px;
+}

@@ -9,3 +9,5 @@ export const AnalysisAssetContext = createContext();
 
 export const CategoryOfDataClickedContext = createContext();
 export const IsComponentUsedInFormSliderClickedContext = createContext();
+
+export const DetailViewIdContext = createContext()

@@ -2,13 +2,14 @@ import './Dataset.css';
 import DatasetHeader from './DatasetHeader';
 import ItemsCard from './ItemsCard';
 import React, { useEffect, useContext, useState, useRef } from 'react';
-import { CategoryOfDataClickedContext } from '../../utils/context';
+import { CategoryOfDataClickedContext} from '../../utils/context';
 import Modal from '../../utils/Modal';
 import { GeospatialDataUpload, DocumentDataUpload, MapDataUpload } from './Uploads';
 import FormSlider from './FormSlider';
 
 function DatasetView() {
   const { sharedValue: buttonText } = useContext(CategoryOfDataClickedContext);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [data, setData] = useState([]);

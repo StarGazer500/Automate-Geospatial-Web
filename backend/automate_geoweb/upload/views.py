@@ -34,11 +34,14 @@ class GeospatialDataView(View):
             print(f"Querying with start={start}, end={end}")
             
             queryset = GeospatialData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured'
+                'id', 'file', 'description', 'date_captured','thumbnail'
             )[start:end]
             print("Queryset executed")
             
             data_list = list(queryset)
+            for item in data_list:
+                item['type'] = 'geospatial'
+           
             total_items = GeospatialData.objects.count()
             print(f"Total items: {total_items}")
             print(f"data: {data_list}")
@@ -56,6 +59,8 @@ class GeospatialDataView(View):
         except Exception as e:
             print(f"Error in get_paginated_data: {str(e)}")
             raise
+
+
 
 class RetrieveAllDocumentDataset(View):  # Added View base class
     async def get(self, request, *args, **kwargs):
@@ -82,11 +87,15 @@ class RetrieveAllDocumentDataset(View):  # Added View base class
             print(f"Querying with start={start}, end={end}")
             
             queryset = DocumentData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured'
+                'id', 'file', 'description', 'date_captured','thumbnail'
             )[start:end]
             print("Queryset executed")
             
             data_list = list(queryset)
+             
+            for item in data_list:
+                item['type'] = 'document'
+          
             total_items = DocumentData.objects.count()
             print(f"Total items: {total_items}")
             print(f"data: {data_list}")
@@ -130,11 +139,15 @@ class RetrieveAllMapDataset(View):  # Added View base class
             print(f"Querying with start={start}, end={end}")
             
             queryset = MapData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured'
+                'id', 'file', 'description', 'date_captured','thumbnail'
             )[start:end]
             print("Queryset executed")
             
             data_list = list(queryset)
+            
+            for item in data_list:
+                item['type'] = 'map'
+           
             total_items = MapData.objects.count()
             print(f"Total items: {total_items}")
             print(f"data: {data_list}")
@@ -185,10 +198,17 @@ class RetrieveAllAnalysisDataset(View):
             'input_data__file',
             'input_data__description',
             'output_data__file',
-            'output_data__description'
+            'output_data__description',
+            'thumbnail'
+
         )[start:end]
         
         data_list = list(queryset)
+         
+        
+        for item in data_list:
+            item['type'] = 'analysis'
+            
         total_items = AnalysispData.objects.count()
         paginator = Paginator(range(total_items), page_size)
         has_next = page_number < paginator.num_pages
@@ -228,13 +248,13 @@ class RetrieveAllDataset(View):
 
             # Fetch data from all models
             geo_data = list(GeospatialData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured'
+                'id', 'file', 'description', 'date_captured','thumbnail'
             ))
             doc_data = list(DocumentData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured'
+                'id', 'file', 'description', 'date_captured','thumbnail'
             ))
             map_data = list(MapData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured'
+                'id', 'file', 'description', 'date_captured','thumbnail'
             ))
             analysis_data = list(AnalysispData.objects.select_related(
                 'map_data', 'document_data', 'input_data', 'output_data'
@@ -243,7 +263,7 @@ class RetrieveAllDataset(View):
                 'map_data__file', 'map_data__description',
                 'document_data__file', 'document_data__description',
                 'input_data__file', 'input_data__description',
-                'output_data__file', 'output_data__description'
+                'output_data__file', 'output_data__description','thumbnail'
             ))
 
             # Add type field to distinguish models
@@ -313,12 +333,21 @@ class GetUpdateDeleteDocumentView(View):
                 "file": document.file.url if document.file else None,
                 "description": document.description,
                 "date_captured": document.date_captured.isoformat(),
-                "uploaded_at":document.uploaded_at.isoformat()
+                "uploaded_at":document.uploaded_at.isoformat(),
+                'thumbnail':document.thumbnail.url if document.thumbnail else None
                 
             }
             return JsonResponse(response_data)
-        except document.DoesNotExist:
-            return JsonResponse({"error": "Patient not found"}, status=404)
+        except Exception as e:
+            if e=="DocumentData matching query does not exist":
+                print("Exception data  not found ",e)
+                return JsonResponse({"error": "Document not found"}, status=404)
+            else:
+                print("Unknown Error ",e)
+                return JsonResponse({"error": "Unknown Error"}, status=500)
+
+            
+            
 
     # async def put(self, request, *args, **kwargs):
     #     patient_id = kwargs.get('patient_id')
@@ -384,12 +413,19 @@ class GetUpdateDeleteMapView(View):
                 "file": map.file.url if map.file else None,
                 "description": map.description,
                 "date_captured": map.date_captured.isoformat(),
-                "uploaded_at":map.uploaded_at.isoformat()
+                "uploaded_at":map.uploaded_at.isoformat(),
+                "thumbnail":map.thumbnail.url if map.thumbnail else None
                 
             }
             return JsonResponse(response_data)
-        except map.DoesNotExist:
-            return JsonResponse({"error": "Patient not found"}, status=404)
+        except Exception as e:
+            if e=="MapData matching query does not exist":
+                print("Exception data  not found ",e)
+                return JsonResponse({"error": "Map not found"}, status=404)
+            else:
+                print("Unknown Error ",e)
+                return JsonResponse({"error": "Unknown Error"}, status=500)
+
 
         # async def put(self, request, *args, **kwargs):
         #     patient_id = kwargs.get('patient_id')
@@ -458,13 +494,19 @@ class GetUpdateDeleteGeospatialView(View):
                 "type_of_data":geospatial. type_of_data,
                 "description": geospatial.description,
                 "date_captured": geospatial.date_captured.isoformat(),
-                "tile_path":geospatial.tile_path
+                "tile_path":geospatial.tile_path,
+                "thumbnail":geospatial.thumbnail.url if geospatial.thumbnail else None
                 
             }
             print(response_data)
             return JsonResponse(response_data)
-        except geospatial.DoesNotExist:
-            return JsonResponse({"error": "Patient not found"}, status=404)
+        except Exception as e:
+            if e=="GeospartialpData matching query does not exist":
+                print("Exception data  not found ",e)
+                return JsonResponse({"error": "Geospatial not found"}, status=404)
+            else:
+                print("Unknown Error ",e)
+                return JsonResponse({"error": "Unknown Error"}, status=500)
 
     # async def put(self, request, *args, **kwargs):
     #     patient_id = kwargs.get('patient_id')
@@ -524,23 +566,33 @@ class GetUpdateDeleteAnalysisView(View):
         analysis_id = kwargs.get('analysis_id')
         try:
             analysis = await AnalysispData.objects.select_related('input_data','output_data','map_data','document_data').aget(id=analysis_id)
+            check_input_file_type =analysis.input_data.file.url if analysis.input_data.file.url.split('.')[-1]=="tif" else f"/media/tiles/{analysis.input_data.id}/tiles.mbtiles"
+            check_output_file_type = analysis.output_data.file.url if analysis.output_data.file.url.split('.')[-1]=="tif" else f"/media/tiles/{analysis.output_data.id}/tiles.mbtiles"
             
             response_data = {
                 "id": analysis.id,
                 "file": analysis.file.url if analysis.file else None,
                 "input_data": analysis.input_data.id,
                 "output_data": analysis.output_data.id,
+                "input_file_path": check_input_file_type,
+                "output_file_path": check_output_file_type,
                 "map_data": analysis.map_data.id,
                 "document_data": analysis.document_data.id,
                 "description": analysis.description,
                 "date_captured": analysis.date_captured.isoformat(),
                 "uploaded_at":analysis.uploaded_at.isoformat(),
+                "thumbnail":analysis.thumbnail.url if analysis.thumbnail else None
                 
                 
             }
             return JsonResponse(response_data)
-        except analysis.DoesNotExist:
-            return JsonResponse({"error": "Patient not found"}, status=404)
+        except Exception as e:
+            if e=="AnalysisData matching query does not exist":
+                print("Exception data  not found ",e)
+                return JsonResponse({"error": "Analysis not found"}, status=404)
+            else:
+                print("Unknown Error ",e)
+                return JsonResponse({"error": "Unknown Error"}, status=500)
 
     # async def put(self, request, *args, **kwargs):
     #     patient_id = kwargs.get('patient_id')

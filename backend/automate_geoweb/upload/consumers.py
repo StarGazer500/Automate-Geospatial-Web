@@ -7,10 +7,12 @@ import tempfile
 import os
 from django.conf import settings
 import logging
-from .models import GeospatialData, DocumentData,MapData
-from .tasks import save_analysis_files
-
+from .models import GeospatialData, DocumentData,MapData,AnalysispData
+from .tasks import save_analysis_files,generate_thumbnail
+# generate_thumbnail(self,instance, file_instance_id)
 logger = logging.getLogger(__name__)
+
+
 
 class DocumentUploadConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -42,6 +44,7 @@ class DocumentUploadConsumer(AsyncWebsocketConsumer):
             self.chunk_number += 1
             await self.send_response(True, f"Chunk {self.chunk_number} received", self.chunk_number)
         elif request.HasField('end_signal'):
+            print("meta data",self.metadata)
             await self.save_file()
             if not self.close:
                 await self.send_response(True, f"Upload completed: {self.metadata.file_name}", self.chunk_number)
@@ -60,15 +63,19 @@ class DocumentUploadConsumer(AsyncWebsocketConsumer):
             return
 
         try:
+            
             self.temp_file.close()
             file_name = self.metadata.file_name
             with open(self.temp_file.name, 'rb') as f:
                 file_obj = File(f, name=file_name)
-                await  DocumentData.objects.acreate(
+                document = await  DocumentData.objects.acreate(
                     file=file_obj,
                     description=self.metadata.description,
                     date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
                 )
+            
+            generate_thumbnail.delay("upload.DocumentData", document.id)
+           
         except Exception as e:
             if not self.close:
                 await self.send_response(False, f"Save failed: {str(e)}", self.chunk_number)
@@ -132,11 +139,12 @@ class MapUploadConsumer(AsyncWebsocketConsumer):
             file_name = self.metadata.file_name
             with open(self.temp_file.name, 'rb') as f:
                 file_obj = File(f, name=file_name)
-                await  MapData.objects.acreate(
+                map = await  MapData.objects.acreate(
                     file=file_obj,
                     description=self.metadata.description,
                     date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
                 )
+            generate_thumbnail.delay("upload.MapData", map.id)
         except Exception as e:
             if not self.close:
                 await self.send_response(False, f"Save failed: {str(e)}", self.chunk_number)
@@ -235,10 +243,12 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
                 date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
             )
 
-            from .tasks import generate_tiles_task
-            output_dir = os.path.join(settings.MEDIA_ROOT, 'tiles', str(instance.id))
-            os.makedirs(output_dir, exist_ok=True)
-            generate_tiles_task.delay(file_paths[primary_file], output_dir, instance.id)
+            
+
+            # from .tasks import generate_tiles_task
+            # output_dir = os.path.join(settings.MEDIA_ROOT, 'tiles', str(instance.id))
+            # os.makedirs(output_dir, exist_ok=True)
+            # generate_tiles_task.delay(file_paths[primary_file], output_dir, instance.id)
 
             tile_path = f"tiles/{instance.id}"
             await self.send_response(True, f"Upload completed: {self.metadata.file_name}, tiles at {tile_path}", self.chunk_number)
@@ -469,6 +479,7 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
 
 class AnalysisUploadConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        
         # Temporary storage for all file types
         self.temp_files = {
             'input_geo': {},
@@ -650,6 +661,8 @@ class AnalysisUploadConsumer(AsyncWebsocketConsumer):
 
         # Launch celery task
         task = save_analysis_files.delay(temp_file_paths, serialized_metadata)
+        
+
         self.temp_files_deleted = True
         
         return task.id
