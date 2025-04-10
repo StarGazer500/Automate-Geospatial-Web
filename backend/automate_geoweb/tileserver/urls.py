@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from .views import *
 
 urlpatterns = [
-    path('<int:user_id>/tiles', views.tilejson, name='mbtiles_tilejson'),
-    path('<int:user_id>/tiles/<int:z>/<int:x>/<str:y>', views.get_tile, name='mbtiles_tile'),
+    path('<str:tile_path>/<int:user_id>/tiles', TileJsonView.as_view(), name='mbtiles_tilejson'),
+    path('<str:tile_path>/<int:user_id>/tiles/<int:z>/<int:x>/<str:y>', TileView.as_view(), name='mbtiles_tile'),
 ]

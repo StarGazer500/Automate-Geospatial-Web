@@ -339,83 +339,100 @@ export function DocumentDetailView() {
   };
 
 
-  export function AnalysisGeospatialDetailView({ data_file_path,title_type }) {
+  export function AnalysisGeospatialDetailView({ data_file_path,tiles_id,isGeoPath,title_type }) {
     const [tileJson, setTileJson] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
   
+  
     useEffect(() => {
+      
       if (!data_file_path) return;
-      console.log("input path", data_file_path);
-  
-      const fileExtension = data_file_path.split('.').pop().toLowerCase();
-      const isCog = ['cog', 'tif', 'tiff'].includes(fileExtension);
-      const isMbtiles = fileExtension === 'mbtiles';
-      let tileJsonUrl = null;
-  
-      if (isCog) {
-        tileJsonUrl = `http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(data_file_path)}`;
-      } else if (isMbtiles) {
-        const userId = data_file_path.match(/\/media\/tiles\/(\d+)\/tiles\.mbtiles/)?.[1];
-        console.log('Extracted userId:', userId);
-        if (userId) {
-          tileJsonUrl = `http://127.0.0.1:8000/tileserver/${userId}/tiles`;
+      console.log("in the analysis component",data_file_path,tiles_id,title_type)
+      console.log("path", data_file_path);
+      const tile_urls = data_file_path;
+
+      const fetchTileJson = async () => {
+        
+        const tileJsonDataArray = [];
+        for (let i = 0; i < tile_urls.length; i++) { // Fixed loop condition
+          const file = tile_urls[i];
+          const fileExtension = file.split('.').pop().toLowerCase(); // Use current file
+          const isCog = ['cog', 'tif', 'tiff'].includes(fileExtension);
+          const isMbtiles = fileExtension === 'mbtiles';
+          let tileJsonUrl = null;
+          console.log("file",file)
+      
+          if (isCog) {
+            tileJsonUrl = `http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(`/media/tiles/${tiles_id}/${file}`)}`;
+          } else if (isMbtiles) {
+            tileJsonUrl = `http://127.0.0.1:8000/tileserver/${file}/${tiles_id}/tiles`;
+          }
+      
+          console.log('TileJSON URL:', tileJsonUrl);
+      
+          if (tileJsonUrl) {
+            setLoading(true);
+            console.log('Fetching TileJSON from:', tileJsonUrl);
+            try {
+              const res = await fetch(tileJsonUrl, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+              });
+              console.log('Response Status:', res.status);
+              if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+              const tileJsonData = await res.json();
+              console.log('Parsed TileJSON Data:', tileJsonData);
+              tileJsonDataArray.push(tileJsonData);
+            } catch (error) {
+              console.error('TileJSON Fetch Error:', error.message);
+              setError(error.message);
+            }
+            setLoading(false);
+          }
         }
-      }
-  
-      console.log('TileJSON URL:', tileJsonUrl);
-  
-      if (tileJsonUrl) {
-        setLoading(true);
-        fetch(tileJsonUrl, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-        })
-          .then((res) => {
-            console.log('Response Status:', res.status);
-            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-            return res.json();
-          })
-          .then((tileJsonData) => {
-            console.log('Parsed TileJSON Data:', tileJsonData);
-            setTileJson(tileJsonData);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error('TileJSON Fetch Error:', error.message);
-            setError(error.message);
-            setLoading(false);
-          });
-      }
+        setTileJson(tileJsonDataArray); // Set all TileJSON data at once
+      };
+
+      fetchTileJson();
     }, [data_file_path]);
   
     const getTileLayer = () => {
-      if (!tileJson) return null;
+      if (!tileJson || !tileJson.length) return null;
       console.log('TileJSON:', tileJson);
     
-      const isVector = tileJson.tiles[0].endsWith('.pbf') || tileJson.tiles[0].endsWith('.mvt') || data_file_path.endsWith('.mbtiles');
-      console.log('Is Vector:', isVector);
-    
-      if (isVector) {
-        return (
-          <VectorTileLayer
-            url={tileJson.tiles[0]}
-            attribution={tileJson.attribution || ''}
-            minZoom={tileJson.minzoom}
-            maxZoom={tileJson.maxzoom}
-          />
-        );
-      } else {
-        return (
-          <TileLayer
-            url={tileJson.tiles[0]}
-            attribution={tileJson.attribution || ''}
-            minZoom={tileJson.minzoom}
-            maxZoom={tileJson.maxzoom}
-          />
-        );
+      let vectorLayers = [];
+      let rasterLayers = [];
+      for (let i = 0; i < tileJson.length; i++) { // Fixed loop condition
+        const file = data_file_path[i];
+        // Get corresponding file for isVector check
+        const isVector = tileJson[i].tiles[0].endsWith('.pbf') || tileJson[i].tiles[0].endsWith('.mvt') || file.endsWith('.mbtiles');
+        console.log('Is Vector:', isVector);
+        if (isVector) {
+          vectorLayers.push(
+            <VectorTileLayer
+              key={`vector-${i}`} // Added key
+              url={tileJson[i].tiles[0]}
+              attribution={tileJson[i].attribution || ''}
+              minZoom={tileJson[i].minzoom}
+              maxZoom={tileJson[i].maxzoom}
+            />
+          );
+        } else {
+          rasterLayers.push(
+            <TileLayer
+              key={`raster-${i}`} // Added key
+              url={tileJson[i].tiles[0]}
+              attribution={tileJson[i].attribution || ''}
+              minZoom={tileJson[i].minzoom}
+              maxZoom={tileJson[i].maxzoom}
+            />
+          );
+        }
       }
+
+      return [...vectorLayers, ...rasterLayers];
     };
   
     return (
@@ -429,9 +446,9 @@ export function DocumentDetailView() {
             <p style={{ color: 'red' }}>Error: {error}</p>
           ) : tileJson ? (
             <MapContainer
-              center={tileJson.center.slice(0, 2)}
-              zoom={tileJson.minzoom}
-              style={{ height: '100%', width: '100%' }}
+            center={tileJson[0].center ? tileJson[0].center.slice(0, 2) : [0, 0]}
+            zoom={tileJson[0].minzoom || 2}
+            style={{ height: '100%', width: '100%' }}
             >
               <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -440,7 +457,7 @@ export function DocumentDetailView() {
             />
               
               {getTileLayer()}
-              <MapUpdater bounds={tileJson.bounds} />
+              <MapUpdater bounds={tileJson[0].bounds} />
               
             </MapContainer>
           ) : (
@@ -454,16 +471,16 @@ export function DocumentDetailView() {
 
   export function AnalysisDetailView() {
     const [analysisContent, setAnalysisContent] = useState(null);
-    const [data,setData]= useState(null)
+    const [data, setData] = useState(null);
     const [error, setError] = useState(null);
-    const [isGeoGath,setIsGeoGath] = useState(false)
-    const { sharedValue:ItemId} = useContext(DetailViewIdContext);
- 
-    const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId}/`; // Django endpoint
+    const [isGeoGath, setIsGeoGath] = useState(false);
   
+    const { sharedValue: ItemId } = useContext(DetailViewIdContext);
+    const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId}/`;
+  
+    // Fetch data
     useEffect(() => {
-      // Step 1: Fetch document metadata from Django
-      fetch(apiUrl,{
+      fetch(apiUrl, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -475,16 +492,14 @@ export function DocumentDetailView() {
           return response.json();
         })
         .then(data => {
-          setData(data)
-          setIsGeoGath(true)
-          const fileUrl = "http://127.0.0.1:8000" + data.file; // Get the file URL from the response
+          setData(data);
+          const fileUrl = "http://127.0.0.1:8000" + data.file;
           if (!fileUrl) {
             setError('No file available for this document');
             return;
           }
   
-          // Step 2: Fetch the file itself and determine its type
-          fetch(fileUrl,{
+          fetch(fileUrl, {
             method: 'GET',
             credentials: 'include',
           })
@@ -494,29 +509,21 @@ export function DocumentDetailView() {
             })
             .then(({ contentType, blob }) => {
               if (contentType.includes('text/plain')) {
-                blob.text().then(text => setDocumentContent(<pre>{text}</pre>));
+                blob.text().then(text => setAnalysisContent(<pre>{text}</pre>));
               } else if (contentType.includes('image/')) {
                 const imageUrl = URL.createObjectURL(blob);
                 setAnalysisContent(<img src={imageUrl} alt="Document" style={{ maxWidth: '100%' }} />);
               } else if (contentType.includes('application/pdf')) {
                 const pdfUrl = URL.createObjectURL(blob);
-                setAnalysisContent(
-                  <embed src={pdfUrl} type="application/pdf" width="100%" height="100%" />
-                );
+                setAnalysisContent(<embed src={pdfUrl} type="application/pdf" width="100%" height="100%" />);
               } else if (contentType.includes('text/html')) {
                 blob.text().then(html => setAnalysisContent(<div dangerouslySetInnerHTML={{ __html: html }} />));
-              }else if (contentType.includes('application/octet-stream')) {
-            
-                if (data.file?.endsWith('.ipynb')){
-                  const url = "http://127.0.0.1:8000" + data.file
-                  console.log("url",url)
-                  setAnalysisContent(<IpynbComponent url={url} />)
-                  
-                  // setDocumentContent(<IpynbRenderer ipynb={url} />)
-  
+              } else if (contentType.includes('application/octet-stream')) {
+                if (data.file?.endsWith('.ipynb')) {
+                  const url = "http://127.0.0.1:8000" + data.file;
+                  setAnalysisContent(<IpynbComponent url={url} />);
                 }
-              } 
-               else {
+              } else {
                 setError(`Unsupported file type: ${contentType}`);
               }
             })
@@ -531,16 +538,26 @@ export function DocumentDetailView() {
         });
     }, [apiUrl]);
   
-      return (
-        <div>
-          <div className="content-wrapper">
-                <DatasetHeader />
-                <div className="flex h-full">
-                    <div className="h-full flex-[7] flex-col">
-                    <p className='text-green'>Loading document...</p>
-                    <div className="flex-col  h-[500px] item-container">
-                <div className="h-full w-full"> {/* Adjust height, remove flex-[8] */}
-                  <h1 className='text-[green]'>Analysis Script</h1>
+    // Update isGeoGath based on data
+    useEffect(() => {
+      if (data) {
+        // Define what makes it geospatial (e.g., presence of tile paths)
+        const isGeospatial = data.input_tile_paths?.length > 0 || data.output_tile_paths?.length > 0;
+        setIsGeoGath(isGeospatial);
+        console.log("isGeoGath updated to:", isGeospatial);
+      }
+    }, [data]);
+  
+    return (
+      <div>
+        <div className="content-wrapper">
+          <DatasetHeader />
+          <div className="flex h-full">
+            <div className="h-full flex-[7] flex-col">
+              <p className="text-green">Loading document...</p>
+              <div className="flex-col h-[500px] item-container">
+                <div className="h-full w-full">
+                  <h1 className="text-[green]">Analysis Script</h1>
                   {error ? (
                     <p>{error}</p>
                   ) : analysisContent ? (
@@ -549,54 +566,55 @@ export function DocumentDetailView() {
                     <p>Loading document...</p>
                   )}
                 </div>
+                {console.log("Geospatial block entered, rendering with data:", data)}
                 {isGeoGath ? (
                   <div className="flex mt-0 flex gap-2 w-full h-full">
                     <div className="flex-1 w-full h-full">
-                    
-                      <AnalysisGeospatialDetailView data_file_path={data.input_file_path} title_type={<h1 className='text-[green]'>Input Data</h1>} />
+                      <AnalysisGeospatialDetailView
+                        data_file_path={data.input_tile_paths}
+                        tiles_id={data.input_id}
+                        title_type={<h1 className="text-[green]">Input Data</h1>}
+                      />
                     </div>
                     <div className="flex-1 h-full">
-                      <AnalysisGeospatialDetailView data_file_path={data.output_file_path} title_type={<h1 className='text-[green]'>Output Data</h1>} />
+                      <AnalysisGeospatialDetailView
+                        data_file_path={data.output_tile_paths}
+                        tiles_id={data.output_id}
+                        title_type={<h1 className="text-[green]">Output Data</h1>}
+                      />
                     </div>
                   </div>
                 ) : null}
               </div>
-    
-                    </div>
-                    <div className="flex-col full  flex-3 bg-white items-start justify-start border-2 border-[whitesmoke] pl-0 w-full">
-                    {data && (
-                  <div className="flex-col mt-[50px] h-full flex-3 bg-white items-start justify-start border-2 border-[whitesmoke] p-[20x] pl-0 w-full">
-                    <label className="text-[seagreen] mb-10">Data Properties</label>
-                    <div className="flex mb-5">
-                      <label style={{ textAlign: 'left' }} className="text-black pd-0">file url</label>
-                      <p>{data.file}</p>
-                    </div>
-                    
-                    
-                    <div className="flex mb-5">
-                      <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
-                      <p>{data.description}</p>
-                    </div>
-                    <div className="flex mb-5">
-                      <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
-                      <p>{data.date_captured}</p>
-                    </div>
-                    <div className="flex mb-5">
-                      <label style={{ textAlign: 'left' }} className="text-black pd-0">uploaded at</label>
-                      <p>{data.uploaded_at}</p>
-                    </div>
+            </div>
+            <div className="flex-col full flex-3 bg-white items-start justify-start border-2 border-[whitesmoke] pl-0 w-full">
+              {data && (
+                <div className="flex-col mt-[50px] h-full flex-3 bg-white items-start justify-start border-2 border-[whitesmoke] p-[20x] pl-0 w-full">
+                  <label className="text-[seagreen] mb-10">Data Properties</label>
+                  <div className="flex mb-5">
+                    <label style={{ textAlign: 'left' }} className="text-black pd-0">file url</label>
+                    <p>{data.file}</p>
                   </div>
-                )}
-                        
-                    </div>
+                  <div className="flex mb-5">
+                    <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
+                    <p>{data.description}</p>
+                  </div>
+                  <div className="flex mb-5">
+                    <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
+                    <p>{data.date_captured}</p>
+                  </div>
+                  <div className="flex mb-5">
+                    <label style={{ textAlign: 'left' }} className="text-black pd-0">uploaded at</label>
+                    <p>{data.uploaded_at}</p>
+                  </div>
                 </div>
+              )}
+            </div>
+          </div>
         </div>
-    
-          
-        </div>
-      );
+      </div>
+    );
   }
-
 
 
 
@@ -806,11 +824,12 @@ export function DocumentDetailView() {
   
   export function GeospatialDetailView() {
     const [data, setData] = useState(null);
-    const [tileJson, setTileJson] = useState(null);
+    const [tileJson, setTileJson] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const hasFetched = useRef(false);
-    const { sharedValue:ItemId} = useContext(DetailViewIdContext);
+    const { sharedValue: ItemId } = useContext(DetailViewIdContext);
+
     async function fetchGeospatialData(id) {
       try {
         const response = await fetch(
@@ -844,81 +863,92 @@ export function DocumentDetailView() {
         setLoading(false);
       }
       handleFetch();
-    }, []);
+    }, [ItemId]); // Added ItemId to dependency array
   
     useEffect(() => {
-      if (!data) return;
-      console.log("path",data.file)
-  
-      const fileExtension = data.file.split('.').pop().toLowerCase();
-      const isCog = ['cog', 'tif', 'tiff'].includes(fileExtension);
-      const isMbtiles = fileExtension === 'mbtiles';
-      let tileJsonUrl = null;
-  
-      if (isCog) {
-        tileJsonUrl = `http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(data.file)}`;
-      } else if (isMbtiles) {
-        const userId = data.file.match(/\/media\/tiles\/(\d+)\/tiles\.mbtiles/)?.[1];
-        console.log('Extracted userId:', userId);
-        if (userId) {
-          tileJsonUrl = `http://127.0.0.1:8000/tileserver/${userId}/tiles`;
+      if (!data || !data.tile_paths) return;
+      console.log("path", data.tile_paths);
+      const tile_urls = data.tile_paths;
+
+      const fetchTileJson = async () => {
+        const tileJsonDataArray = [];
+        for (let i = 0; i < tile_urls.length; i++) { // Fixed loop condition
+          const file = tile_urls[i];
+          const fileExtension = file.split('.').pop().toLowerCase(); // Use current file
+          const isCog = ['cog', 'tif', 'tiff'].includes(fileExtension);
+          const isMbtiles = fileExtension === 'mbtiles';
+          let tileJsonUrl = null;
+          console.log("file",file)
+      
+          if (isCog) {
+            tileJsonUrl = `http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(`/media/tiles/${data.id}/${file}`)}`;
+          } else if (isMbtiles) {
+            tileJsonUrl = `http://127.0.0.1:8000/tileserver/${file}/${data.id}/tiles`;
+          }
+      
+          console.log('TileJSON URL:', tileJsonUrl);
+      
+          if (tileJsonUrl) {
+            setLoading(true);
+            console.log('Fetching TileJSON from:', tileJsonUrl);
+            try {
+              const res = await fetch(tileJsonUrl, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+              });
+              console.log('Response Status:', res.status);
+              if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+              const tileJsonData = await res.json();
+              console.log('Parsed TileJSON Data:', tileJsonData);
+              tileJsonDataArray.push(tileJsonData);
+            } catch (error) {
+              console.error('TileJSON Fetch Error:', error.message);
+              setError(error.message);
+            }
+            setLoading(false);
+          }
         }
-      }
-  
-      console.log('TileJSON URL:', tileJsonUrl);
-  
-      if (tileJsonUrl) {
-        setLoading(true);
-        console.log('Fetching TileJSON from:', tileJsonUrl);
-        fetch(tileJsonUrl, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-        })
-          .then((res) => {
-            console.log('Response Status:', res.status);
-            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-            return res.json();
-          })
-          .then((tileJsonData) => {
-            console.log('Parsed TileJSON Data:', tileJsonData);
-            setTileJson(tileJsonData);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error('TileJSON Fetch Error:', error.message);
-            setError(error.message);
-            setLoading(false);
-          });
-      }
+        setTileJson(tileJsonDataArray); // Set all TileJSON data at once
+      };
+
+      fetchTileJson();
     }, [data]);
   
     const getTileLayer = () => {
-      if (!tileJson) return null;
+      if (!tileJson || !tileJson.length) return null;
       console.log('TileJSON:', tileJson);
     
-      const isVector = tileJson.tiles[0].endsWith('.pbf') || tileJson.tiles[0].endsWith('.mvt') || data.file.endsWith('.mbtiles');
-      console.log('Is Vector:', isVector);
-    
-      if (isVector) {
-        return (
-          <VectorTileLayer
-            url={tileJson.tiles[0]}
-            attribution={tileJson.attribution || ''}
-            minZoom={tileJson.minzoom}
-            maxZoom={tileJson.maxzoom}
-          />
-        );
-      } else {
-        return (
-          <TileLayer
-            url={tileJson.tiles[0]}
-            attribution={tileJson.attribution || ''}
-            minZoom={tileJson.minzoom}
-            maxZoom={tileJson.maxzoom}
-          />
-        );
+      let vectorLayers = [];
+      let rasterLayers = [];
+      for (let i = 0; i < tileJson.length; i++) { // Fixed loop condition
+        const file = data.tile_paths[i]; // Get corresponding file for isVector check
+        const isVector = tileJson[i].tiles[0].endsWith('.pbf') || tileJson[i].tiles[0].endsWith('.mvt') || file.endsWith('.mbtiles');
+        console.log('Is Vector:', isVector);
+        if (isVector) {
+          vectorLayers.push(
+            <VectorTileLayer
+              key={`vector-${i}`} // Added key
+              url={tileJson[i].tiles[0]}
+              attribution={tileJson[i].attribution || ''}
+              minZoom={tileJson[i].minzoom}
+              maxZoom={tileJson[i].maxzoom}
+            />
+          );
+        } else {
+          rasterLayers.push(
+            <TileLayer
+              key={`raster-${i}`} // Added key
+              url={tileJson[i].tiles[0]}
+              attribution={tileJson[i].attribution || ''}
+              minZoom={tileJson[i].minzoom}
+              maxZoom={tileJson[i].maxzoom}
+            />
+          );
+        }
       }
+
+      return [...vectorLayers, ...rasterLayers];
     };
   
     return (
@@ -932,19 +962,19 @@ export function DocumentDetailView() {
                   <p style={{ color: 'black' }}>Loading geospatial data...</p>
                 ) : error ? (
                   <p style={{ color: 'red' }}>Error: {error}</p>
-                ) : tileJson ? (
+                ) : tileJson && tileJson.length > 0 ? (
                   <MapContainer
-                    center={tileJson.center.slice(0, 2)}
-                    zoom={tileJson.minzoom}
+                    center={tileJson[0].center.slice(0, 2)} // Fixed index
+                    zoom={tileJson[0].minzoom} // Fixed index
                     style={{ height: '100%', width: '100%' }}
                   >
-                     <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        zIndex={1} // Explicitly set as baselayer
-                          />
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      zIndex={1} // Explicitly set as baselayer
+                    />
                     {getTileLayer()}
-                    <MapUpdater bounds={tileJson.bounds} />
+                    <MapUpdater bounds={tileJson[0].bounds} />
                   </MapContainer>
                 ) : (
                   <p style={{ color: 'black' }}>No tile data available</p>

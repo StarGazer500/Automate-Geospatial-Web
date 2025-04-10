@@ -271,9 +271,12 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
         ogr.UseExceptions()
 
         GeospatialData = apps.get_model('upload', 'GeospatialData')
-        instance = GeospatialData.objects.get(id=instance_id)
+        try:
+            instance = GeospatialData.objects.get(id=instance_id)
+        except GeospatialData.DoesNotExist:
+            logger.error(f"GeospatialData with id {instance_id} does not exist")
+            raise
         
-
         # Initialize is_vector
         is_vector = False
 
@@ -314,7 +317,7 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
                 logger.warning(f"ogr2ogr stderr: {result.stderr}")
             logger.info("Conversion to GeoJSON completed")
 
-            vector_output = os.path.join(output_dir, 'tiles.mbtiles')
+            vector_output = os.path.join(output_dir, f'{os.path.basename(input_path)}.mbtiles')
             cmd_vector = [
                 'tippecanoe',
                 '-o', vector_output,
@@ -333,6 +336,8 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
 
             processed_input = None
             temp_files = [temp_file_geojson]
+
+            return vector_output
         else:
             # Raster COG generation
             band = ds.GetRasterBand(1)
@@ -381,7 +386,7 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
             logger.info("Pre-tiling completed")
 
             # Generate COG with internal overviews
-            cog_output = os.path.join(output_dir, 'raster.cog.tif')
+            cog_output = os.path.join(output_dir, f'{os.path.basename(processed_input)}.cog.tif')
             compression_methods = ["LZW", "DEFLATE", "NONE"]
             for compression_method in compression_methods:
                 try:
@@ -391,7 +396,6 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
                         '-co', f'COMPRESS={compression_method}',
                         '-co', 'BLOCKSIZE=256',
                         '-co', 'BIGTIFF=IF_SAFER',
-                        # '-co', 'NUM_THREADS=ALL_CPUS',
                         processed_input,
                         cog_output
                     ]
@@ -411,10 +415,6 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
 
             temp_files = [temp_file_8bit, temp_file_tiled] if temp_file_8bit else [temp_file_tiled]
 
-            # Update the file field with the COG path
-            cog_relative_path = os.path.relpath(cog_output, settings.MEDIA_ROOT)
-            instance.file = cog_relative_path
-
             # Delete original raster file
             if os.path.exists(input_path):
                 try:
@@ -424,9 +424,10 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
                     logger.warning(f"Failed to delete original raster file {input_path}: {e}")
 
         instance.tiles_generated = True
-        instance.tile_path = os.path.relpath(output_dir, settings.MEDIA_ROOT)
-        instance.save(update_fields=['file', 'tiles_generated', 'tile_path'])
-        logger.info(f"Task completed successfully, file updated to: {instance.file}, tile_path: {instance.tile_path}")
+        instance.tiles_path = os.path.relpath(output_dir, settings.MEDIA_ROOT)  # Update tiles_path
+        instance.save(update_fields=['tiles_generated', 'tiles_path'])
+        logger.info(f"Task completed successfully, tile_path: {instance.tiles_path}")
+        return cog_output if not is_vector else vector_output
 
     except subprocess.CalledProcessError as e:
         logger.error(f"Error generating tiles: {e}")
@@ -486,43 +487,90 @@ def save_analysis_files(self, temp_file_paths, metadata):
         generate_thumbnail.delay("upload.MapData", map_instance.id)
         # Save Input Geospatial
         input_file_paths = {}
-        for filename, file_path in temp_file_paths['input_geo'].items():
-            with open(file_path, 'rb') as f:
-                file_obj = File(f, name=filename)
-                input_file_paths[filename] = os.path.join('geotiffs', datetime.now().strftime('%Y/%m/%d'), filename)
-                dest_path = os.path.join(settings.MEDIA_ROOT, input_file_paths[filename])
-                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-                with open(dest_path, 'wb') as dest:
-                    dest.write(file_obj.read())
         
-        input_primary_file = next((f for f in input_file_paths.keys() if f.lower().endswith('.shp')), list(input_file_paths.keys())[0])
+        
+        
         input_geo_instance = GeospatialData.objects.create(
-            file=input_file_paths[input_primary_file],
+            files_dir='',
             data_type=metadata['input_meta_data']['data_type'],
             type_of_data=metadata['input_meta_data']['type_of_data'],
             description=metadata['input_meta_data']['description'],
             date_captured=parse_date(metadata['input_meta_data']['date_captured'])
         )
 
-        # Save Output Geospatial
-        output_file_paths = {}
-        for filename, file_path in temp_file_paths['output_geo'].items():
+        input_geo_upload_dir = os.path.join(settings.MEDIA_ROOT, 'geospatial', str(input_geo_instance.id))
+        os.makedirs(input_geo_upload_dir, exist_ok=True)
+
+        for filename, file_path in temp_file_paths['input_geo'].items():
             with open(file_path, 'rb') as f:
                 file_obj = File(f, name=filename)
-                output_file_paths[filename] = os.path.join('geotiffs', datetime.now().strftime('%Y/%m/%d'), filename)
-                dest_path = os.path.join(settings.MEDIA_ROOT, output_file_paths[filename])
-                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                input_file_paths[filename] = os.path.join(input_geo_upload_dir,filename)
+                dest_path = os.path.join(settings.MEDIA_ROOT, input_file_paths[filename])
+                # os.makedirs(os.path.dirname(dest_path), exist_ok=True)
                 with open(dest_path, 'wb') as dest:
                     dest.write(file_obj.read())
+
+        if not input_file_paths:
+                raise ValueError("No files were uploaded successfully")
+
+            # Determine the primary file (e.g., .shp file or the first file)
+            
+            
+            # Update the instance with the relative path to the primary file
+        input_relative_path = os.path.relpath(input_geo_upload_dir, settings.MEDIA_ROOT)
+        input_geo_instance.files_dir = input_relative_path
+        input_geo_instance.save(update_fields=['files_dir'])  # Save the updated instance with the file path
+
+
+
+
+
+
+        # Save Output Geospatial
+        output_file_paths = {}
         
-        output_primary_file = next((f for f in output_file_paths.keys() if f.lower().endswith('.shp')), list(output_file_paths.keys())[0])
+        
+        # output_primary_file = next((f for f in output_file_paths.keys() if f.lower().endswith('.shp')), list(output_file_paths.keys())[0])
         output_geo_instance = GeospatialData.objects.create(
-            file=output_file_paths[output_primary_file],
+            # file=output_file_paths[output_primary_file],
+            files_dir='',
             data_type=metadata['output_meta_data']['data_type'],
             type_of_data=metadata['output_meta_data']['type_of_data'],
             description=metadata['output_meta_data']['description'],
             date_captured=parse_date(metadata['output_meta_data']['date_captured'])
         )
+
+        output_geo_upload_dir = os.path.join(settings.MEDIA_ROOT, 'geospatial', str(output_geo_instance.id))
+        os.makedirs(output_geo_upload_dir, exist_ok=True)
+
+        for filename, file_path in temp_file_paths['output_geo'].items():
+            with open(file_path, 'rb') as f:
+                file_obj = File(f, name=filename)
+                output_file_paths[filename] = os.path.join(output_geo_upload_dir,filename)
+                dest_path = os.path.join(settings.MEDIA_ROOT, output_file_paths[filename])
+                # os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                with open(dest_path, 'wb') as dest:
+                    dest.write(file_obj.read())
+
+        if not output_file_paths:
+                raise ValueError("No files were uploaded successfully")
+
+            # Determine the primary file (e.g., .shp file or the first file)
+            
+            
+            # Update the instance with the relative path to the primary file
+        # relative_path = os.path.relpath(output_file_paths[output_primary_file], settings.MEDIA_ROOT)
+        output_relative_path = os.path.relpath(output_geo_upload_dir, settings.MEDIA_ROOT)
+        output_geo_instance.files_dir = output_relative_path
+        output_geo_instance.save(update_fields=['files_dir'])  # Save the updated instance with the file path
+
+
+        # relative_path = os.path.relpath(upload_dir, settings.MEDIA_ROOT)
+        #     instance.files_dir = relative_path
+                        
+        #     # Explicitly specify that we want to update the files_dir field
+        #     await instance.asave(update_fields=['files_dir'])
+
 
         # Save Analysis Asset
         with open(temp_file_paths['analysis'], 'rb') as f:
@@ -699,7 +747,7 @@ def generate_thumbnail(self, model_name, file_instance_id):
         os.makedirs(thumbnail_dir, exist_ok=True)
 
         mime_type, _ = mimetypes.guess_type(file_path)
-        thumbnail_size = (100, 100)
+        thumbnail_size = (304, 192)
 
         if mime_type and mime_type.startswith('image/'):
             logger.info("Processing as image")
@@ -1108,31 +1156,32 @@ def generate_thumbnail(self, model_name, file_instance_id):
     
 
 @shared_task(bind=True, max_retries=3)
-def generate_geo_thumbnail(self, model_name, file_instance_id, previous_result=None):
-    logger.info(f"Starting geo thumbnail generation with model_name: {model_name}, ID: {file_instance_id}, previous_result: {previous_result}")
+def generate_geo_thumbnail(self, previous_result, model_name, file_instance_id, file_path, thumbnail_dir):
+    logger.info(f"Starting geo thumbnail generation with model_name: {model_name}, ID: {file_instance_id}, file_path: {file_path}, thumbnail_dir: {thumbnail_dir}, previous_result: {previous_result}")
     try:
-        if not model_name:
-            raise ValueError("model_name cannot be None")
-        
-        instance = apps.get_model(model_name)
-        file_instance = instance.objects.get(id=file_instance_id)
-        file_path = file_instance.file.path 
+        if not model_name == 'upload.GeospatialData':
+            logger.error(f"Invalid model_name: {model_name}, expected 'upload.GeospatialData'")
+            raise ValueError("model_name must be 'upload.GeospatialData'")
+                
+        instance_model = apps.get_model(model_name)
+        file_instance = instance_model.objects.get(id=file_instance_id)
+
+        if previous_result:
+            file_path = previous_result
+            logger.info(f"Using file_path from previous task: {file_path}")
+        elif not file_path:
+            logger.warning(f"No file_path provided for ID: {file_instance_id}")
+            return
         
         if file_path.split('.')[-1] == "tif":
-            file_instance.thumbnail = None
-            file_instance.save()
             logger.info(f"Set thumbnail to None for TIFF file ID: {file_instance_id}")
             return
-        else:
-            file_path = f"{settings.MEDIA_ROOT}/tiles/{file_instance_id}/tiles.mbtiles"
-
+        
         filename = os.path.basename(file_path)
         file_ext = os.path.splitext(filename)[1].lower()
-        thumbnail_dir = os.path.join(settings.MEDIA_ROOT, 'thumbnails')
-        os.makedirs(thumbnail_dir, exist_ok=True)
-
-        thumbnail_size = (100, 100)  # Fixed thumbnail size
-        thumb_path = os.path.join(thumbnail_dir, f"{filename}_thumb.jpg")
+        
+        thumbnail_size = (304, 192)
+        thumb_path = os.path.join(settings.MEDIA_ROOT, thumbnail_dir, f"{filename}_thumb.jpg")
 
         if file_ext == '.mbtiles':
             conn = sqlite3.connect(file_path)
@@ -1215,10 +1264,8 @@ def generate_geo_thumbnail(self, model_name, file_instance_id, previous_result=N
                 box_height = max_y - min_y
 
                 # Determine the scaling factor to fit the entire content within thumbnail_size
-                # Use the largest dimension to determine the scale, preserving aspect ratio
                 scale = max(thumbnail_size[0] / box_width if box_width > 0 else 1.0,
                             thumbnail_size[1] / box_height if box_height > 0 else 1.0)
-                # Adjust scale to ensure the content fits within both dimensions
                 scale_factor = min(1.0, scale)  # Cap scale at 1.0 to avoid upscaling
 
                 # Calculate the scaled dimensions
@@ -1236,7 +1283,6 @@ def generate_geo_thumbnail(self, model_name, file_instance_id, previous_result=N
                 # Draw features with scaling and centering
                 max_features = 200
                 feature_count = 0
-                color_index = 0
 
                 for layer_name, layer in tile.items():
                     for feature in layer['features']:
@@ -1303,14 +1349,7 @@ def generate_geo_thumbnail(self, model_name, file_instance_id, previous_result=N
 
                 centered_img.save(thumb_path, 'JPEG', quality=90)
 
-            with open(thumb_path, 'rb') as f:
-                file_instance.thumbnail.save(f"{filename}_thumb.jpg", File(f), save=False)
-
-        else:
-            file_instance.thumbnail = None
-
-        file_instance.save()
-        logger.info(f"Geo thumbnail generation completed for ID: {file_instance_id}")
+            logger.info(f"Geo thumbnail generation completed for ID: {file_instance_id}")
 
     except Exception as e:
         logger.error(f"Error generating geo thumbnail for file {file_instance_id}: {e}")

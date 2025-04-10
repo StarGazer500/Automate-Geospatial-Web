@@ -6,7 +6,10 @@ from asgiref.sync import sync_to_async
 from django.views import View
 from datetime import datetime
 from django.utils import timezone
+from pathlib import Path
+import os
 
+from django.conf import settings
 
 # Get All Dataset
 class GeospatialDataView(View):
@@ -34,13 +37,16 @@ class GeospatialDataView(View):
             print(f"Querying with start={start}, end={end}")
             
             queryset = GeospatialData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured','thumbnail'
+                'id', 'files_dir','tiles_path', 'description', 'date_captured','thumbnails_dir','tiles_path'
             )[start:end]
             print("Queryset executed")
             
             data_list = list(queryset)
             for item in data_list:
                 item['type'] = 'geospatial'
+                item['thumbnail_paths'] = os.listdir(os.path.join(settings.MEDIA_ROOT,item['thumbnails_dir']))
+                item['tile_paths'] = os.listdir(os.path.join(settings.MEDIA_ROOT,item['tiles_path']))
+                
            
             total_items = GeospatialData.objects.count()
             print(f"Total items: {total_items}")
@@ -191,14 +197,14 @@ class RetrieveAllAnalysisDataset(View):
             'description',
             'date_captured',
             'uploaded_at',
-            'map_data__file',
-            'map_data__description',
-            'document_data__file',
-            'document_data__description',
-            'input_data__file',
-            'input_data__description',
-            'output_data__file',
-            'output_data__description',
+            # 'map_data__file',
+            # 'map_data__description',
+            # 'document_data__file',
+            # 'document_data__description',
+            # 'input_data__file',
+            # 'input_data__description',
+            # 'output_data__file',
+            # 'output_data__description',
             'thumbnail'
 
         )[start:end]
@@ -248,7 +254,7 @@ class RetrieveAllDataset(View):
 
             # Fetch data from all models
             geo_data = list(GeospatialData.objects.all().order_by('-date_captured').values(
-                'id', 'file', 'description', 'date_captured','thumbnail'
+                'id', 'description', 'date_captured','thumbnails_dir','tiles_path'
             ))
             doc_data = list(DocumentData.objects.all().order_by('-date_captured').values(
                 'id', 'file', 'description', 'date_captured','thumbnail'
@@ -259,16 +265,18 @@ class RetrieveAllDataset(View):
             analysis_data = list(AnalysispData.objects.select_related(
                 'map_data', 'document_data', 'input_data', 'output_data'
             ).order_by('-uploaded_at').values(
-                'id', 'file', 'description', 'date_captured', 'uploaded_at',
-                'map_data__file', 'map_data__description',
-                'document_data__file', 'document_data__description',
-                'input_data__file', 'input_data__description',
-                'output_data__file', 'output_data__description','thumbnail'
+                'id', 'file', 'description', 'date_captured', 'uploaded_at','thumbnail'
+                # 'map_data__file', 'map_data__description',
+                # 'document_data__file', 'document_data__description',
+                # 'input_data__file', 'input_data__description',
+                
             ))
 
             # Add type field to distinguish models
             for item in geo_data:
                 item['type'] = 'geospatial'
+                item['thumbnail_paths'] = os.listdir(os.path.join(settings.MEDIA_ROOT,item['thumbnails_dir']))
+                item['tile_paths'] = os.listdir(os.path.join(settings.MEDIA_ROOT,item['tiles_path']))
             for item in doc_data:
                 item['type'] = 'document'
             for item in map_data:
@@ -484,18 +492,18 @@ class GetUpdateDeleteGeospatialView(View):
         geo_id = kwargs.get('geo_id')
         try:
             geospatial = await GeospatialData.objects.aget(id=geo_id)
-            check_file_type = geospatial.file.url if geospatial.file.url.split('.')[-1]=="tif" else f"/media/tiles/{geospatial.id}/tiles.mbtiles"
-            print("file type",check_file_type)
+            # check_file_type = geospatial.file.url if geospatial.file.url.split('.')[-1]=="tif" else f"/media/tiles/{geospatial.id}/tiles.mbtiles"
+            # print("file type",check_file_type)
             
             response_data = {
                 "id": geospatial.id,
-                "file": check_file_type,
+                "file_paths": os.listdir(os.path.join(settings.MEDIA_ROOT, geospatial.files_dir)),
                 "data_type":geospatial.data_type,
                 "type_of_data":geospatial. type_of_data,
                 "description": geospatial.description,
                 "date_captured": geospatial.date_captured.isoformat(),
-                "tile_path":geospatial.tile_path,
-                "thumbnail":geospatial.thumbnail.url if geospatial.thumbnail else None
+                "tile_paths": os.listdir(os.path.join(settings.MEDIA_ROOT, geospatial.tiles_path)),
+                "thumbnail_paths":os.listdir(os.path.join(settings.MEDIA_ROOT,geospatial.thumbnails_dir))
                 
             }
             print(response_data)
@@ -566,16 +574,16 @@ class GetUpdateDeleteAnalysisView(View):
         analysis_id = kwargs.get('analysis_id')
         try:
             analysis = await AnalysispData.objects.select_related('input_data','output_data','map_data','document_data').aget(id=analysis_id)
-            check_input_file_type =analysis.input_data.file.url if analysis.input_data.file.url.split('.')[-1]=="tif" else f"/media/tiles/{analysis.input_data.id}/tiles.mbtiles"
-            check_output_file_type = analysis.output_data.file.url if analysis.output_data.file.url.split('.')[-1]=="tif" else f"/media/tiles/{analysis.output_data.id}/tiles.mbtiles"
+            # check_input_file_type =analysis.input_data.file.url if analysis.input_data.file.url.split('.')[-1]=="tif" else f"/media/tiles/{analysis.input_data.id}/tiles.mbtiles"
+            # check_output_file_type = analysis.output_data.file.url if analysis.output_data.file.url.split('.')[-1]=="tif" else f"/media/tiles/{analysis.output_data.id}/tiles.mbtiles"
             
             response_data = {
                 "id": analysis.id,
                 "file": analysis.file.url if analysis.file else None,
-                "input_data": analysis.input_data.id,
-                "output_data": analysis.output_data.id,
-                "input_file_path": check_input_file_type,
-                "output_file_path": check_output_file_type,
+                "input_tile_paths": os.listdir(os.path.join(settings.MEDIA_ROOT, analysis.input_data.tiles_path)),
+                "output_tile_paths": os.listdir(os.path.join(settings.MEDIA_ROOT, analysis.output_data.tiles_path)),
+                "input_id":analysis.input_data.id,
+                "output_id":analysis.output_data.id,
                 "map_data": analysis.map_data.id,
                 "document_data": analysis.document_data.id,
                 "description": analysis.description,

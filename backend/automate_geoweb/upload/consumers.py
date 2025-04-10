@@ -213,12 +213,75 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
         response.chunk_number = chunk_number
         await self.send(bytes_data=response.SerializeToString())
 
+    # async def save_files(self):
+    #     if not self.metadata or not self.temp_files:
+    #         logger.warning("No metadata or files to save")
+    #         return
+    #     try:
+    #         upload_dir = os.path.join(settings.MEDIA_ROOT, 'geotiffs', datetime.now().strftime('%Y-%m-%d_%H%M%S'))
+    #         os.makedirs(upload_dir, exist_ok=True)
+
+    #         file_paths = {}
+    #         for filename, temp_file in self.temp_files.items():
+    #             temp_file.close()
+    #             with open(temp_file.name, 'rb') as f:
+    #                 file_obj = File(f, name=filename)
+    #                 dest_path = os.path.join(upload_dir, filename)
+    #                 with open(dest_path, 'wb') as dest:
+    #                     dest.write(file_obj.read())
+    #             file_paths[filename] = dest_path
+
+    #         if not file_paths:
+    #             raise ValueError("No files were uploaded successfully")
+
+    #         primary_file = next((f for f in file_paths.keys() if f.lower().endswith('.shp')), list(file_paths.keys())[0])
+    #         instance = await GeospatialData.objects.acreate(
+    #             file=os.path.relpath(file_paths[primary_file], settings.MEDIA_ROOT),
+    #             data_type=self.metadata.data_type,
+    #             type_of_data=self.metadata.type_of_data,
+    #             description=self.metadata.description,
+    #             date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
+    #         )
+
+            
+
+    #         # from .tasks import generate_tiles_task
+    #         # output_dir = os.path.join(settings.MEDIA_ROOT, 'tiles', str(instance.id))
+    #         # os.makedirs(output_dir, exist_ok=True)
+    #         # generate_tiles_task.delay(file_paths[primary_file], output_dir, instance.id)
+
+    #         tile_path = f"tiles/{instance.id}"
+    #         await self.send_response(True, f"Upload completed: {self.metadata.file_name}, tiles at {tile_path}", self.chunk_number)
+
+    #     except Exception as e:
+    #         logger.error(f"Save failed: {str(e)}")
+    #         if not self.close:
+    #             await self.send_response(False, f"Save failed: {str(e)}", self.chunk_number)
+    #     finally:
+    #         if not self.temp_files_deleted:
+    #             for temp_file in self.temp_files.values():
+    #                 if os.path.exists(temp_file.name):
+    #                     os.unlink(temp_file.name)
+    #             if os.path.exists(self.temp_dir):
+    #                 os.rmdir(self.temp_dir)
+    #             self.temp_files_deleted = True
+
     async def save_files(self):
         if not self.metadata or not self.temp_files:
             logger.warning("No metadata or files to save")
             return
         try:
-            upload_dir = os.path.join(settings.MEDIA_ROOT, 'geotiffs', datetime.now().strftime('%Y-%m-%d_%H%M%S'))
+            # First, create the instance without the final file path (we'll update it later)
+            instance = await GeospatialData.objects.acreate(
+                files_dir='',  # Temporarily empty; we'll update this after determining the path
+                data_type=self.metadata.data_type,
+                type_of_data=self.metadata.type_of_data,
+                description=self.metadata.description,
+                date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
+            )
+
+            # Now create the directory using the instance ID
+            upload_dir = os.path.join(settings.MEDIA_ROOT, 'geospatial', str(instance.id))
             os.makedirs(upload_dir, exist_ok=True)
 
             file_paths = {}
@@ -229,34 +292,32 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
                     dest_path = os.path.join(upload_dir, filename)
                     with open(dest_path, 'wb') as dest:
                         dest.write(file_obj.read())
-                file_paths[filename] = dest_path
+                    file_paths[filename] = dest_path
 
             if not file_paths:
                 raise ValueError("No files were uploaded successfully")
 
-            primary_file = next((f for f in file_paths.keys() if f.lower().endswith('.shp')), list(file_paths.keys())[0])
-            instance = await GeospatialData.objects.acreate(
-                file=os.path.relpath(file_paths[primary_file], settings.MEDIA_ROOT),
-                data_type=self.metadata.data_type,
-                type_of_data=self.metadata.type_of_data,
-                description=self.metadata.description,
-                date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
-            )
-
+            # Determine the primary file (e.g., .shp file or the first file)
+            # primary_file = next((f for f in file_paths.keys() if f.lower().endswith('.shp')), list(file_paths.keys())[0])
             
+            # Update the instance with the relative path to the primary file
+            relative_path = os.path.relpath(upload_dir, settings.MEDIA_ROOT)
+            instance.files_dir = relative_path
+                        
+            # Explicitly specify that we want to update the files_dir field
+            await instance.asave(update_fields=['files_dir'])
 
-            # from .tasks import generate_tiles_task
-            # output_dir = os.path.join(settings.MEDIA_ROOT, 'tiles', str(instance.id))
-            # os.makedirs(output_dir, exist_ok=True)
-            # generate_tiles_task.delay(file_paths[primary_file], output_dir, instance.id)
-
-            tile_path = f"tiles/{instance.id}"
-            await self.send_response(True, f"Upload completed: {self.metadata.file_name}, tiles at {tile_path}", self.chunk_number)
+            # Optional: Generate tiles or other tasks
+            
+            await self.send_response(True, f"Upload completed: {self.metadata.file_name},", self.chunk_number)
 
         except Exception as e:
             logger.error(f"Save failed: {str(e)}")
             if not self.close:
                 await self.send_response(False, f"Save failed: {str(e)}", self.chunk_number)
+            # Optionally delete the instance if it was created but saving files failed
+            if 'instance' in locals():
+                await instance.adelete()
         finally:
             if not self.temp_files_deleted:
                 for temp_file in self.temp_files.values():
@@ -265,7 +326,6 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
                 if os.path.exists(self.temp_dir):
                     os.rmdir(self.temp_dir)
                 self.temp_files_deleted = True
-
 
 
 
