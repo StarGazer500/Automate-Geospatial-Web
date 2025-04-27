@@ -250,6 +250,8 @@ import cairocffi as cairo  # Use cairocffi instead of pycairo for broader compat
 import gzip
 from io import BytesIO
 from PIL import Image, ImageDraw,ImageEnhance
+from .utils import get_sentence_transformer_model_sync
+# from sentence_transformers import SentenceTransformer
 
 
 
@@ -386,7 +388,7 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
             logger.info("Pre-tiling completed")
 
             # Generate COG with internal overviews
-            cog_output = os.path.join(output_dir, f'{os.path.basename(processed_input)}.cog.tif')
+            cog_output = os.path.join(output_dir, f'{os.path.basename(input_path)}.cog.tif')
             compression_methods = ["LZW", "DEFLATE", "NONE"]
             for compression_method in compression_methods:
                 try:
@@ -1353,4 +1355,23 @@ def generate_geo_thumbnail(self, previous_result, model_name, file_instance_id, 
 
     except Exception as e:
         logger.error(f"Error generating geo thumbnail for file {file_instance_id}: {e}")
+        raise self.retry(exc=e, countdown=5)
+    
+@shared_task(bind=True, max_retries=3)
+def generate_embedding_task(self, instance_id, model_name):
+    try:
+        instance_model = apps.get_model(model_name)
+        instance = instance_model.objects.get(id=instance_id)
+        if instance.description:
+            model = get_sentence_transformer_model_sync()
+            embedding = model.encode(instance.description)
+            instance.desc_embedding = embedding
+            instance.save(update_fields=['desc_embedding'])  # Fixed field name
+            logger.info(f"Generated embedding for {model_name} ID: {instance_id} encoding:{embedding} enc_field{ instance.desc_embedding}")
+        else:
+            logger.warning(f"No description found for {model_name} ID: {instance_id}")
+    except instance_model.DoesNotExist:
+        logger.error(f"{model_name} ID: {instance_id} does not exist")
+    except Exception as e:
+        logger.error(f"Error generating embedding for {model_name} ID: {instance_id}: {e}")
         raise self.retry(exc=e, countdown=5)

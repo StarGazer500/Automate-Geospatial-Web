@@ -2,6 +2,7 @@
 import React, { useState,useRef,useContext, useEffect } from 'react';
 import { DocumentDataUpload, GeospatialInputDataUpload, GeospatialOutputDataUpload, MapDataUpload, AnalysisAssetsUpload } from './Uploads';
 import {IsComponentUsedInFormSliderClickedContext} from '../../utils/context';
+import { useNavigate} from 'react-router-dom';
 
 
 const DocumentDataSlide = ({ nextSlide }) => {
@@ -113,6 +114,28 @@ const AnalysisAssetDataSlide = ({ prevSlide,analysisAssetsUploadRef }) => {
 const FormSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const analysisAssetsUploadRef = useRef();
+
+  const navigate = useNavigate()
+  useEffect(() => {
+    // This will set the CSRF cookie
+    async function fetchisAuthData(){
+    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      alert("User is Logged out, Redirecting to login");
+      navigate('/login-user', { state: { from: window.location.pathname } });
+      // return null;
+    }
+    // const data = await response.json();
+    console.log("User is Logged In")
+  }
+
+  fetchisAuthData()
+  
+  }, []);
 
   const { sharedValue, setSharedValue } = useContext(IsComponentUsedInFormSliderClickedContext);
   useEffect(()=>{

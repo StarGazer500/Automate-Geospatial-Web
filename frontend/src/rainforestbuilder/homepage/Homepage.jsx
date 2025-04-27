@@ -1,9 +1,9 @@
 import './Homepage.css'
 import Header from '../../utils/Header'
 import RainforestBuilder from './RainforestBuilder.png'
-import { Link,useNavigate} from 'react-router-dom';
+import { Link,useNavigate,} from 'react-router-dom';
 import{CategoryOfDataClickedContext} from '../../utils/context'
-import { useContext} from 'react';
+import { useContext,useEffect} from 'react';
 
 
 
@@ -18,7 +18,11 @@ function Homepage(){
         }
         setTimeout(() => navigate('/data-view'), 0);
 
+
     }
+
+
+ // In your App.js or similar initialization component
 
 
     return(

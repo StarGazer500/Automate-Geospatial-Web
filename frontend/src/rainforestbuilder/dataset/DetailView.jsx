@@ -3,6 +3,7 @@ import DatasetHeader from './DatasetHeader';
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { MapContainer, TileLayer ,useMap, LayersControl} from 'react-leaflet';
 import { IpynbRenderer } from "react-ipynb-renderer";
+import { useNavigate} from 'react-router-dom';
 
 // Jupyter theme
 import "react-ipynb-renderer/dist/styles/monokai.css";
@@ -21,7 +22,30 @@ export function MapDetailView() {
   const [error, setError] = useState(null);
   const { sharedValue:ItemId} = useContext(DetailViewIdContext);
 
+    const navigate = useNavigate()
+    useEffect(() => {
+      // This will set the CSRF cookie
+      async function fetchisAuthData(){
+      const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        alert("User is Logged out, Redirecting to login");
+        navigate('/login-user', { state: { from: window.location.pathname } });
+        // return null;
+      }
+      // const data = await response.json();
+      console.log("User is Logged In")
+    }
+  
+    fetchisAuthData()
+    
+    }, []);
+
   const apiUrl = `http://localhost:8000/manage-data/get-update-delete-map/${ItemId}/`; // Django endpoint
+  
 
   useEffect(() => {
     // Step 1: Fetch document metadata from Django
@@ -145,7 +169,31 @@ export function DocumentDetailView() {
   const [error, setError] = useState(null);
   const { sharedValue:ItemId} = useContext(DetailViewIdContext);
 
+    const navigate = useNavigate()
+    useEffect(() => {
+      // This will set the CSRF cookie
+      async function fetchisAuthData(){
+      const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        alert("User is Logged out, Redirecting to login");
+        navigate('/login-user', { state: { from: window.location.pathname } });
+        // return null;
+      }
+      // const data = await response.json();
+      console.log("User is Logged In")
+    }
+  
+    fetchisAuthData()
+    
+    }, []);
+
   const apiUrl = `http://localhost:8000/manage-data/get-update-delete-document/${ItemId}/`; // Django endpoint
+
+
    
 
   useEffect(() => {
@@ -476,6 +524,30 @@ export function DocumentDetailView() {
     const [isGeoGath, setIsGeoGath] = useState(false);
   
     const { sharedValue: ItemId } = useContext(DetailViewIdContext);
+
+
+      const navigate = useNavigate()
+      useEffect(() => {
+        // This will set the CSRF cookie
+        async function fetchisAuthData(){
+        const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+          alert("User is Logged out, Redirecting to login");
+          navigate('/login-user', { state: { from: window.location.pathname } });
+          // return null;
+        }
+        // const data = await response.json();
+        console.log("User is Logged In")
+      }
+    
+      fetchisAuthData()
+      
+      }, []);
+
     const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId}/`;
   
     // Fetch data
@@ -829,6 +901,28 @@ export function DocumentDetailView() {
     const [error, setError] = useState(null);
     const hasFetched = useRef(false);
     const { sharedValue: ItemId } = useContext(DetailViewIdContext);
+
+      const navigate = useNavigate()
+      useEffect(() => {
+        // This will set the CSRF cookie
+        async function fetchisAuthData(){
+        const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+          alert("User is Logged out, Redirecting to login");
+          navigate('/login-user', { state: { from: window.location.pathname } });
+          // return null;
+        }
+        // const data = await response.json();
+        console.log("User is Logged In")
+      }
+    
+      fetchisAuthData()
+      
+      }, []);
 
     async function fetchGeospatialData(id) {
       try {

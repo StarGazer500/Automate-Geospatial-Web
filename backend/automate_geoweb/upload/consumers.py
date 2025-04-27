@@ -8,7 +8,8 @@ import os
 from django.conf import settings
 import logging
 from .models import GeospatialData, DocumentData,MapData,AnalysispData
-from .tasks import save_analysis_files,generate_thumbnail
+from .tasks import save_analysis_files,generate_thumbnail,generate_embedding_task
+from .consumer_utils import consumer_authenticate
 # generate_thumbnail(self,instance, file_instance_id)
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,13 @@ logger = logging.getLogger(__name__)
 
 class DocumentUploadConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        # session = self.scope["session"]
+        # is_authenticated = await consumer_authenticate(session)
+        # print(is_authenticated)
+        # if not is_authenticated:
+        #     self.send("You are Loggeded Out")
+        #     # await self.close()
+            
         self.temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.tif')
         self.metadata = None
         self.chunk_number = 0
@@ -23,7 +31,7 @@ class DocumentUploadConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        if self.metadata and not self.close:
+        if self.metadata and not self.temp_file_deleted :
             await self.save_file()
         # Clean up temp file only if it hasn’t been deleted
         if hasattr(self, 'temp_file') and not self.temp_file_deleted:
@@ -46,17 +54,17 @@ class DocumentUploadConsumer(AsyncWebsocketConsumer):
         elif request.HasField('end_signal'):
             print("meta data",self.metadata)
             await self.save_file()
-            if not self.close:
-                await self.send_response(True, f"Upload completed: {self.metadata.file_name}", self.chunk_number)
+
+            await self.send_response(True, f"Upload completed: {self.metadata.file_name}", self.chunk_number)
             await self.close()
 
     async def send_response(self, success, message, chunk_number):
-        if not self.close:
-            response = file_upload1_pb2. DocumentUploadResponse()
-            response.success = success
-            response.message = message
-            response.chunk_number = chunk_number
-            await self.send(bytes_data=response.SerializeToString())
+       
+        response = file_upload1_pb2. DocumentUploadResponse()
+        response.success = success
+        response.message = message
+        response.chunk_number = chunk_number
+        await self.send(bytes_data=response.SerializeToString())
 
     async def save_file(self):
         if not self.metadata:
@@ -75,10 +83,15 @@ class DocumentUploadConsumer(AsyncWebsocketConsumer):
                 )
             
             generate_thumbnail.delay("upload.DocumentData", document.id)
+            
            
         except Exception as e:
+            logger.error(f"Save failed: {str(e)}")
             if not self.close:
                 await self.send_response(False, f"Save failed: {str(e)}", self.chunk_number)
+            # Optionally delete the instance if it was created but saving files failed
+            if 'instance' in locals():
+                await document.adelete()
         finally:
             # Clean up temp file and mark it as deleted
             if not self.temp_file_deleted and os.path.exists(self.temp_file.name):

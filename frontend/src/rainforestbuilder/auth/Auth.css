@@ -1,0 +1,29 @@
+form{
+    margin-bottom: 15px;
+    width: 400px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 13px;
+    background-color: rgb(247, 243, 243);
+    
+  }
+  
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+    text-align: left;
+  }
+  
+
+form input[type="email"],input[type="password"]{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 13px;
+    color: #333;
+  }

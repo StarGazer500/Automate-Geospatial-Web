@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'corsheaders',
     'tileserver',
-    'upload',
+    'upload.apps.UploadConfig',
     'channels',
     
 ]
@@ -111,6 +111,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+         'upload': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     },
 }
 
@@ -126,7 +131,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000", "http://localhost:3000", "http://localhost", "http://127.0.0.1"]
 
-
+SESSION_COOKIE_SAMESITE = 'None'  # 'Lax' works for most cases; use 'None' if issues persist
+SESSION_COOKIE_SECURE = True  # Set to True in production with HTTPS
+# SESSION_COOKIE_HTTPONLY = True
 
 ASGI_APPLICATION = 'automate_geoweb.asgi.application'
 
