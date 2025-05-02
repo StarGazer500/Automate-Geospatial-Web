@@ -87,7 +87,7 @@ class DocumentData(models.Model):
     class Meta:
         indexes = [
            HnswIndex(
-                name='mapdata_desc_idx',
+                name='documentdata_desc_idx',
                 fields=['desc_embedding'],
                 m=16,
                 ef_construction=64,
