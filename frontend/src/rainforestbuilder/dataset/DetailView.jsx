@@ -18,6 +18,36 @@ import {DetailViewIdContext } from '../../utils/context';
 
 const { BaseLayer } = LayersControl;
 
+const downloadFile = async (url) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Download failed');
+
+    const blob = await response.blob();
+    // Extract file name from Content-Disposition header or URL
+    let fileName = 'downloaded-file';
+    const disposition = response.headers.get('Content-Disposition');
+    if (disposition && disposition.includes('attachment')) {
+      const match = disposition.match(/filename="?(.+)"?/i);
+      if (match) fileName = match[1];
+    } else {
+      // Fallback to URL's last segment
+      fileName = url.split('/').pop().split('?')[0] || fileName;
+    }
+
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Download failed:', error);
+  }
+};
+
 export function MapDetailView() {
   const [mapContent, setMapContent] = useState(null);
   const [data,setData]= useState(null)
@@ -38,7 +68,7 @@ export function MapDetailView() {
     console.log(`Editing ${item}`);
     const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
     console.log("The text key id",dataKey)
-    setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} />)
+    setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={null} />)
     setIsModalOpen(true);
     // Your download logic here
     setOpenDropdownIndex(null); // Close dropdown after action
@@ -48,6 +78,7 @@ export function MapDetailView() {
   
   const handleDownload = (item) => {
     console.log(`Downloading ${item}`);
+    downloadFile(item) 
     // Your download logic here
     setOpenDropdownIndex(null); // Close dropdown after action
   };
@@ -190,15 +221,9 @@ export function MapDetailView() {
                             </button>
                             <button 
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.file)}
+                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
                             >
                               Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.file)}
-                            >
-                              Delete
                             </button>
                           </div>
                         )}
@@ -226,18 +251,7 @@ export function MapDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.description)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.description)}
-                            >
-                              Delete
-                            </button>
+                            
                           </div>
                         )}
                       </div>
@@ -263,18 +277,7 @@ export function MapDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.date_captured)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.type_of_data)}
-                            >
-                              Delete
-                            </button>
+                           
                           </div>
                         )}
                       </div>
@@ -300,18 +303,7 @@ export function MapDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(ddata.uploaded_atd)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.uploaded_at)}
-                            >
-                              Delete
-                            </button>
+                          
                           </div>
                         )}
                       </div>
@@ -353,7 +345,7 @@ export function DocumentDetailView() {
     console.log(`Editing ${item}`);
     const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
     console.log("The text key id",dataKey)
-    setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} />)
+    setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={null}  />)
     setIsModalOpen(true);
     // Your download logic here
     setOpenDropdownIndex(null); // Close dropdown after action
@@ -510,15 +502,9 @@ export function DocumentDetailView() {
                             </button>
                             <button 
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.file)}
+                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
                             >
                               Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.file)}
-                            >
-                              Delete
                             </button>
                           </div>
                         )}
@@ -546,18 +532,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.description)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.description)}
-                            >
-                              Delete
-                            </button>
+                            
                           </div>
                         )}
                       </div>
@@ -583,18 +558,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.date_captured)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.type_of_data)}
-                            >
-                              Delete
-                            </button>
+                            
                           </div>
                         )}
                       </div>
@@ -620,18 +584,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(ddata.uploaded_atd)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.uploaded_at)}
-                            >
-                              Delete
-                            </button>
+                          
                           </div>
                         )}
                       </div>
@@ -876,11 +829,11 @@ export function DocumentDetailView() {
     };
 
 
-    const handleEdit = (item,inputType,dataCategory) => {
+    const handleEdit = (item,inputType,dataCategory,is_analysis_id=null) => {
       console.log(`Editing ${item}`);
       const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
       console.log("The text key id",dataKey)
-      setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} />)
+      setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={is_analysis_id}/>)
       setIsModalOpen(true);
       // Your download logic here
       setOpenDropdownIndex(null); // Close dropdown after action
@@ -893,6 +846,47 @@ export function DocumentDetailView() {
       // Your download logic here
       setOpenDropdownIndex(null); // Close dropdown after action
     };
+
+    const handleGeospatialDownload = (item,data_id) => {
+      console.log(`Downloading ${item}`);
+  const fileExtension = item.split('.').pop().toLowerCase(); // Get file extension
+  const isRaster = ['cog', 'tif', 'tiff'].includes(fileExtension);
+  const isVector = ['shp', 'geojson'].includes(fileExtension);
+  let url = null;
+
+  if (isRaster) {
+    url = `http://localhost:8000/media/tiles/${data_id}/${item}`;
+  } else if (isVector) {
+    const nameWithoutExt = item.slice(0, item.lastIndexOf('.')); // Remove extension
+    if (fileExtension === 'shp') {
+      // Array of URLs for shapefile components
+      url = [
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.shp`,
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.shx`,
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.prj`,
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.dbf`,
+      ];
+    } else {
+      // Single file for GeoJSON
+      url = `http://localhost:8000/media/geospatial/${data_id}/${item}`;
+    }
+  }
+  console.log("url",url)
+  if (Array.isArray(url)) {
+    // Download each file in the array
+    for (let i = 0; i < url.length; i++) {
+      downloadFile(url[i]);
+    }
+  } else if (url) {
+    // Download single file
+    downloadFile(url);
+  } else {
+    console.error('Invalid file type or URL');
+  }
+      // Your download logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+    
     
     const handleDelete = (item) => {
       console.log(`Deleting ${item}`);
@@ -1061,16 +1055,11 @@ export function DocumentDetailView() {
                             </button>
                             <button 
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.file)}
+                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
                             >
                               Download
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.file)}
-                            >
-                              Delete
-                            </button>
+                           
                           </div>
                         )}
                       </div>
@@ -1095,18 +1084,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.description)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.description)}
-                            >
-                              Delete
-                            </button>
+                           
                           </div>
                         )}
                       </div>
@@ -1132,18 +1110,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.date_captured)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.type_of_data)}
-                            >
-                              Delete
-                            </button>
+                            
                           </div>
                         )}
                       </div>
@@ -1161,7 +1128,7 @@ export function DocumentDetailView() {
                           actions ▾
                         </button>
                         
-                        {openDropdownIndex === data.date_captured && (
+                        {openDropdownIndex === data.uploaded_at && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
@@ -1169,18 +1136,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(ddata.uploaded_atd)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.uploaded_at)}
-                            >
-                              Delete
-                            </button>
+                            
                           </div>
                         )}
                       </div>
@@ -1215,22 +1171,17 @@ export function DocumentDetailView() {
                                         <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                                           <button 
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                            onClick={() => handleEdit(nameWithoutExt,"file","geospatial")}
+                                            onClick={() => handleEdit(nameWithoutExt,"file","geospatial",data.input_id)}
                                           >
                                             Edit
                                           </button>
                                           <button 
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                            onClick={() => handleDownload(item)}
+                                            onClick={() => handleGeospatialDownload(isGeoFormat?item:nameWithoutExt)}
                                           >
                                             Download
                                           </button>
-                                          <button 
-                                            className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                            onClick={() => handleDelete(item)}
-                                          >
-                                            Delete
-                                          </button>
+                                         
                                         </div>
                                       )}
                                     </div>
@@ -1262,22 +1213,17 @@ export function DocumentDetailView() {
                                         <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                                           <button 
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                            onClick={() => handleEdit(nameWithoutExt,"file","geospatial")}
+                                            onClick={() => handleEdit(nameWithoutExt,"file","geospatial",data.output_id)}
                                           >
                                             Edit
                                           </button>
                                           <button 
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                            onClick={() => handleDownload(item)}
+                                            onClick={() => handleGeospatialDownload(isGeoFormat?item:nameWithoutExt,data.output_id)}
                                           >
                                             Download
                                           </button>
-                                          <button 
-                                            className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                            onClick={() => handleDelete(item)}
-                                          >
-                                            Delete
-                                          </button>
+                                          
                                         </div>
                                       )}
                                     </div>
@@ -1530,7 +1476,7 @@ export function DocumentDetailView() {
       console.log(`Editing ${item}`);
       const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
       console.log("The text key id",dataKey)
-      setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} />)
+      setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={null} />)
       setIsModalOpen(true);
       // Your download logic here
       setOpenDropdownIndex(null); // Close dropdown after action
@@ -1540,6 +1486,40 @@ export function DocumentDetailView() {
     
     const handleDownload = (item) => {
       console.log(`Downloading ${item}`);
+  const fileExtension = item.split('.').pop().toLowerCase(); // Get file extension
+  const isRaster = ['cog', 'tif', 'tiff'].includes(fileExtension);
+  const isVector = ['shp', 'geojson'].includes(fileExtension);
+  let url = null;
+
+  if (isRaster) {
+    url = `http://localhost:8000/media/tiles/${data.id}/${item}`;
+  } else if (isVector) {
+    const nameWithoutExt = item.slice(0, item.lastIndexOf('.')); // Remove extension
+    if (fileExtension === 'shp') {
+      // Array of URLs for shapefile components
+      url = [
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.shp`,
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.shx`,
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.prj`,
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.dbf`,
+      ];
+    } else {
+      // Single file for GeoJSON
+      url = `http://localhost:8000/media/geospatial/${data.id}/${item}`;
+    }
+  }
+
+  if (Array.isArray(url)) {
+    // Download each file in the array
+    for (let i = 0; i < url.length; i++) {
+      downloadFile(url[i]);
+    }
+  } else if (url) {
+    // Download single file
+    downloadFile(url);
+  } else {
+    console.error('Invalid file type or URL');
+  }
       // Your download logic here
       setOpenDropdownIndex(null); // Close dropdown after action
     };
@@ -1749,18 +1729,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.type_of_data)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.type_of_data)}
-                            >
-                              Delete
-                            </button>
+                           
                           </div>
                         )}
                       </div>
@@ -1788,18 +1757,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.data_type)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.data_type)}
-                            >
-                              Delete
-                            </button>
+                           
                           </div>
                         )}
                       </div>
@@ -1824,18 +1782,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.description)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.description)}
-                            >
-                              Delete
-                            </button>
+                            
                           </div>
                         )}
                       </div>
@@ -1860,18 +1807,7 @@ export function DocumentDetailView() {
                             >
                               Edit
                             </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload(data.date_captured)}
-                            >
-                              Download
-                            </button>
-                            <button 
-                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDelete(data.type_of_data)}
-                            >
-                              Delete
-                            </button>
+                           
                           </div>
                         )}
                       </div>
@@ -1909,16 +1845,11 @@ export function DocumentDetailView() {
                               </button>
                               <button 
                                 className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                onClick={() => handleDownload(item)}
+                                onClick={() => handleDownload(isGeoFormat?item:nameWithoutExt)}
                               >
                                 Download
                               </button>
-                              <button 
-                                className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                                onClick={() => handleDelete(item)}
-                              >
-                                Delete
-                              </button>
+                              
                             </div>
                           )}
                         </div>

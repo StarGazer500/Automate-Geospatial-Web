@@ -7,7 +7,7 @@ import { FileUploadRequest1, FileMetaData1, FileUploadResponse1 } from "./grpc_s
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
 const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024; // 2GB limit
 
-export const EditData = ({inputType,dataCategory,dataToEdit,dataKey}) => {
+export const EditData = ({inputType,dataCategory,dataToEdit,dataKey,is_analysis_id}) => {
  const [data, setData] = useState(null);
 //   const [inputType, setInputType] = useState('text');
   const [error, setError] = useState(null);
@@ -110,13 +110,13 @@ export const EditData = ({inputType,dataCategory,dataToEdit,dataKey}) => {
     console.log("key name",dataKey)
     if (inputType==='text' && data){
       if (dataCategory==="geospatial"){
-      await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-geospatial/${ItemId}/`,data)
+      await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-geospatial/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else if (dataCategory==="document"){
-        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-document/${ItemId}/`,data)
+        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-document/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else if (dataCategory==="map"){
-        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-map/${ItemId}/`,data)
+        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-map/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else if (dataCategory==="analysis"){
-        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId}/`,data)
+        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-analysis/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else{
         console.log("no category found")
         return
@@ -172,7 +172,7 @@ export const EditData = ({inputType,dataCategory,dataToEdit,dataKey}) => {
                  const metaRequest = new FileUploadRequest1();
                  const metadata = new FileMetaData1();
                  metadata.setFileName(primaryFile.name);
-                 metadata.setFileId(ItemId);
+                 metadata.setFileId(is_analysis_id?is_analysis_id:ItemId);
                  metadata.setDataCategory(dataCategory);
                  metaRequest.setMetaData(metadata);
                  metaRequest.setFileName(primaryFile.name);

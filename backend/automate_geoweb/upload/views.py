@@ -454,21 +454,21 @@ class GetUpdateDeleteDocumentView(View):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-    # async def delete(self, request, *args, **kwargs):
-    #     patient_id = kwargs.get('patient_id')
-    #     try:
-    #         # Try to get the patient object to delete
-    #         patient = await Patient.objects.aget(id=patient_id)
+    async def delete(self, request, *args, **kwargs):
+        document_id = kwargs.get('document_id')
+        try:
             
-    #         # Delete the patient
-    #         await patient.adelete()
+            patient = await DocumentData.objects.aget(id=document_id)
             
-    #         # Return success response
-    #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
-    #     except Patient.DoesNotExist:
-    #         return JsonResponse({"error": "Patient not found"}, status=404)
-    #     except Exception as e:
-    #         return JsonResponse({"error": str(e)}, status=500)
+            
+            await patient.adelete()
+            
+            # Return success response
+            return JsonResponse({"message": "Document deleted successfully"}, status=200)
+        except DocumentData.DoesNotExist:
+            return JsonResponse({"error": "Document not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class GetUpdateDeleteMapView(View):
@@ -541,21 +541,22 @@ class GetUpdateDeleteMapView(View):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-        # async def delete(self, request, *args, **kwargs):
-        #     patient_id = kwargs.get('patient_id')
-        #     try:
-        #         # Try to get the patient object to delete
-        #         patient = await Patient.objects.aget(id=patient_id)
-                
-        #         # Delete the patient
-        #         await patient.adelete()
-                
-        #         # Return success response
-        #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
-        #     except Patient.DoesNotExist:
-        #         return JsonResponse({"error": "Patient not found"}, status=404)
-        #     except Exception as e:
-        #         return JsonResponse({"error": str(e)}, status=500)
+    async def delete(self, request, *args, **kwargs):
+        map_id = kwargs.get('map_id')
+        try:
+            
+            map = await MapData.objects.aget(id=map_id)
+            
+            
+            await map.adelete()
+            
+            # Return success response
+            return JsonResponse({"message": "Map deleted successfully"}, status=200)
+        except MapData.DoesNotExist:
+            return JsonResponse({"error": "Map not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+            
 @method_decorator(csrf_exempt, name='dispatch')
 class GetUpdateDeleteGeospatialView(View):
     async def get(self, request, *args, **kwargs):
@@ -643,21 +644,21 @@ class GetUpdateDeleteGeospatialView(View):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-    # async def delete(self, request, *args, **kwargs):
-    #     patient_id = kwargs.get('patient_id')
-    #     try:
-    #         # Try to get the patient object to delete
-    #         patient = await Patient.objects.aget(id=patient_id)
+    async def delete(self, request, *args, **kwargs):
+        geo_id = kwargs.get('geo_id')
+        try:
+          
+            geo_data = await GeospatialData.objects.aget(id=geo_id)
             
-    #         # Delete the patient
-    #         await patient.adelete()
+           
+            await geo_data.adelete()
             
-    #         # Return success response
-    #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
-    #     except Patient.DoesNotExist:
-    #         return JsonResponse({"error": "Patient not found"}, status=404)
-    #     except Exception as e:
-    #         return JsonResponse({"error": str(e)}, status=500)
+            # Return success response
+            return JsonResponse({"message": "Geospatial deleted successfully"}, status=200)
+        except GeospatialData.DoesNotExist:
+            return JsonResponse({"error": "Geospatial not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class GetUpdateDeleteAnalysisView(View):
@@ -739,21 +740,21 @@ class GetUpdateDeleteAnalysisView(View):
             return JsonResponse({"error": str(e)}, status=500)
         
 
-    # async def delete(self, request, *args, **kwargs):
-    #     patient_id = kwargs.get('patient_id')
-    #     try:
-    #         # Try to get the patient object to delete
-    #         patient = await Patient.objects.aget(id=patient_id)
+    async def delete(self, request, *args, **kwargs):
+        analysis_id= kwargs.get('analysis_id')
+        try:
+           
+            analysis = await AnalysispData.objects.aget(id=analysis_id)
             
-    #         # Delete the patient
-    #         await patient.adelete()
+         
+            await analysis.adelete()
             
-    #         # Return success response
-    #         return JsonResponse({"message": "Patient deleted successfully"}, status=200)
-    #     except Patient.DoesNotExist:
-    #         return JsonResponse({"error": "Patient not found"}, status=404)
-    #     except Exception as e:
-    #         return JsonResponse({"error": str(e)}, status=500)
+           
+            return JsonResponse({"message": "Analysis deleted successfully"}, status=200)
+        except AnalysispData.DoesNotExist:
+            return JsonResponse({"error": "Analysis not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
 
 class CreateDepartmentView(View):

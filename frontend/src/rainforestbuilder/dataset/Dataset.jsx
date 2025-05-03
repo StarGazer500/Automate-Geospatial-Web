@@ -380,7 +380,7 @@ const handleKeyDown = async(event) => {
                   Filter
                 </button>
                 <input
-                  placeholder="search item"
+                  placeholder="AI Search"
                   value={search_query}
                   onChange={handleValueChange}
                   onKeyDown={handleKeyDown}

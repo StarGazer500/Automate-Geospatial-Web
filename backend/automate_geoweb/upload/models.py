@@ -2,6 +2,7 @@
 # from django.db import models
 
 from django.contrib.gis.db import models
+from django.db import transaction
 from .tasks import generate_tiles_task,generate_geo_thumbnail,generate_embedding_task
 import os
 from django.conf import settings
@@ -11,6 +12,7 @@ from pgvector.django import VectorField,HnswIndex
 import logging
 logger = logging.getLogger(__name__)
 from celery import chain
+import shutil
 
 
 class Departments(models.Model):
@@ -174,23 +176,19 @@ class GeospatialData(models.Model):
         return f"{self.files_dir} ({self.date_captured})"
 
     def delete(self, *args, **kwargs):
-        tile_path = os.path.join(settings.MEDIA_ROOT, self.tiles_path) if self.tiles_path else None
-        thumbnail_path = os.path.join(settings.MEDIA_ROOT, self.thumbnails_dir) if self.thumbnails_dir else None
-        super().delete(*args, **kwargs)
-        if tile_path and os.path.exists(tile_path):
-            try:
-                import shutil
+        with transaction.atomic():
+            tile_path = os.path.join(settings.MEDIA_ROOT, self.tiles_path) if self.tiles_path else None
+            thumbnail_path = os.path.join(settings.MEDIA_ROOT, self.thumbnails_dir) if self.thumbnails_dir else None
+            if tile_path and os.path.exists(tile_path):
+                
                 shutil.rmtree(tile_path)
                 logger.info(f"Deleted tiles directory: {tile_path}")
-            except Exception as e:
-                logger.error(f"Error deleting tiles directory {tile_path}: {e}")
-        if thumbnail_path and os.path.exists(thumbnail_path):
-            try:
-                import shutil
+            if thumbnail_path and os.path.exists(thumbnail_path):
                 shutil.rmtree(thumbnail_path)
                 logger.info(f"Deleted thumbnails directory: {thumbnail_path}")
-            except Exception as e:
-                logger.error(f"Error deleting thumbnails directory {thumbnail_path}: {e}")
+            super().delete(*args, **kwargs)
+
+        
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
