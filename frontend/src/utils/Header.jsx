@@ -43,17 +43,14 @@ function Header() {
           </li>
 
           <li className="tab">
-            <a href="/home/">home</a>
+            <a href="/data-view/">Datasets</a>
           </li>
+
           <li className="tab">
-            <a href="/services/">services</a>
+            <a href="/dashboard/">dashboard</a>
           </li>
-          <li className="tab">
-            <a href="/contact/">contact</a>
-          </li>
-          <li className="tab">
-            <a href="/pricing/">pricing</a>
-          </li>
+          
+          
         </ul>
       </nav>
     </div>

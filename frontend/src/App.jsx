@@ -5,6 +5,7 @@ import './App.css'
 import Homepage from './rainforestbuilder/homepage/Homepage'
 import  DatasetView from './rainforestbuilder/dataset/Dataset'
 import {MapDetailView,DocumentDetailView,AnalysisDetailView,GeospatialDetailView} from './rainforestbuilder/dataset/DetailView'
+import {Dashboard} from './rainforestbuilder/dashboard/Dashboard'
 
 import FormSlider from './rainforestbuilder/dataset/FormSlider'
 // import DocumentDataUpload from './rainforestbuilder/dataset/Uploads'
@@ -28,6 +29,7 @@ function App() {
             <Route path="/doc-detail-view" element={<DocumentDetailView/>} />
             <Route path="/analysis-detail-view" element={<AnalysisDetailView/>} />
             <Route path="/geo-detail-view" element={<GeospatialDetailView/>} />
+            <Route path="/dashboard" element={<Dashboard/>} />
             
            
         </Routes>

@@ -23,7 +23,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('manage-data/',include('upload.urls')),
-     path('tileserver/', include('tileserver.urls')),
+    path('tileserver/', include('tileserver.urls')),
+    # path('dashboard/', include('dashboard.urls')),
    
     
 ]
