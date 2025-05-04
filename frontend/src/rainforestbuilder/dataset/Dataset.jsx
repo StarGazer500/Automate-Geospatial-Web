@@ -11,6 +11,7 @@ import FormSlider from './FormSlider';
 function DatasetView() {
   const { sharedValue: buttonText } = useContext(CategoryOfDataClickedContext);
   const [ search_query, setSearch_Query] = useState('')
+  const [shareItemLink,setShareItemLink]  =useState('')
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -309,6 +310,34 @@ const handleKeyDown = async(event) => {
     setModalContent(null);
   };
 
+  useEffect(() => {
+    if (shareItemLink) {
+      console.log("shareItemLink updated:", shareItemLink);
+      setModalContent(
+        <div>
+          <p>Share this link:</p>
+          <input
+            type="text"
+            value={shareItemLink}
+            readOnly
+            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            onClick={(e) => e.target.select()} // Select text on click for easy copying
+          />
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(shareItemLink);
+              alert("Link copied to clipboard!");
+            }}
+            style={{ backgroundColor: 'seagreen', color: 'white', padding: '8px 16px', borderRadius: '5px' }}
+          >
+            Copy Link
+          </button>
+        </div>
+      );
+      setIsModalOpen(true);
+    }
+  }, [shareItemLink]); // Run when shareItemLink changes
+
   return (
     <div>
       <div className="content-wrapper">
@@ -425,7 +454,7 @@ const handleKeyDown = async(event) => {
             <div className="flex-[9] grid-container" ref={gridRef} key={buttonText}>
               {data.length > 0 ? (
                 data.map((item) => (
-                  <ItemsCard key={`${item.type}-${item.id}`} item={item} />
+                  <ItemsCard key={`${item.type}-${item.id}`} item={item} setShareItemLink={setShareItemLink} />
                 ))
               ) : (
                 <p style={{ textAlign: 'center', color: 'seagreen' }}>

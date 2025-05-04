@@ -61,30 +61,30 @@ class DocumentData(models.Model):
     def __str__(self):
         return self.file.name
     
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
      
-        is_new = self.pk is None
+    #     is_new = self.pk is None
         
-        # Get original description if existing object
-        if not is_new:
-            original = DocumentData.objects.get(pk=self.pk)
-            old_description = original.description
-        else:
-            old_description = ""
+    #     # Get original description if existing object
+    #     if not is_new:
+    #         original = DocumentData.objects.get(pk=self.pk)
+    #         old_description = original.description
+    #     else:
+    #         old_description = ""
      
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
 
-        if self.description and (is_new or old_description != self.description):
+    #     if self.description and (is_new or old_description != self.description):
            
-            logger.debug(f"Triggering embedding generation for DocumentData ID: {self.pk}")
-            generate_embedding_task.delay(self.pk, 'upload.DocumentData')
+    #         logger.debug(f"Triggering embedding generation for DocumentData ID: {self.pk}")
+    #         generate_embedding_task.delay(self.pk, 'upload.DocumentData')
          
         
-        else:
-            logger.debug(f"Skipping embedding generation for DocumentData ID: {self.pk} (update_embedding=False)")
+    #     else:
+    #         logger.debug(f"Skipping embedding generation for DocumentData ID: {self.pk} (update_embedding=False)")
 
-    async def asave(self, *args, **kwargs):
-        await sync_to_async(self.save)(*args, **kwargs)
+    # async def asave(self, *args, **kwargs):
+    #     await sync_to_async(self.save)(*args, **kwargs)
 
     class Meta:
         indexes = [
@@ -111,36 +111,36 @@ class MapData(models.Model):
         return self.file.name
     
     # For the DocumentData model:
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
      
-        is_new = self.pk is None
+    #     is_new = self.pk is None
         
-        # Get original description if existing object
-        if not is_new:
+    #     # Get original description if existing object
+    #     if not is_new:
             
-            original = MapData.objects.get(pk=self.pk)
-            old_description = original.description
+    #         original = MapData.objects.get(pk=self.pk)
+    #         old_description = original.description
            
-        else:
-            old_description = ""
+    #     else:
+    #         old_description = ""
        
         
         
         
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
 
-        if self.description and (is_new or old_description != self.description):
+    #     if self.description and (is_new or old_description != self.description):
           
-            logger.debug(f"Triggering embedding generation for MapData ID: {self.pk}")
-            generate_embedding_task.delay(self.pk, 'upload.MapData')
+    #         logger.debug(f"Triggering embedding generation for MapData ID: {self.pk}")
+    #         generate_embedding_task.delay(self.pk, 'upload.MapData')
         
         
-        else:
+    #     else:
             
-            logger.debug(f"Skipping embedding generation for MapData ID: {self.pk} (update_embedding=False)")
+    #         logger.debug(f"Skipping embedding generation for MapData ID: {self.pk} (update_embedding=False)")
     
-    async def asave(self, *args, **kwargs):
-        await sync_to_async(self.save)(*args, **kwargs)
+    # async def asave(self, *args, **kwargs):
+    #     await sync_to_async(self.save)(*args, **kwargs)
 
 
     class Meta:
@@ -214,8 +214,8 @@ class GeospatialData(models.Model):
         else:
             super().save(*args, **kwargs)
 
-        if self.description and (is_new or old_description != self.description):
-            generate_embedding_task.delay(self.id, 'upload.GeospatialData')
+        # if self.description and (is_new or old_description != self.description):
+        #     generate_embedding_task.delay(self.id, 'upload.GeospatialData')
             
             
         
@@ -276,36 +276,36 @@ class AnalysispData(models.Model):
     def __str__(self):
         return self.file.name
     
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
      
-        is_new = self.pk is None
+    #     is_new = self.pk is None
         
-        # Get original description if existing object
-        if not is_new:  
-            original = AnalysispData.objects.get(pk=self.pk)
-            old_description = original.description
-        else:
-            old_description = ""
+    #     # Get original description if existing object
+    #     if not is_new:  
+    #         original = AnalysispData.objects.get(pk=self.pk)
+    #         old_description = original.description
+    #     else:
+    #         old_description = ""
         
       
-        # Queue embedding task only if:
-        # 1. update_embedding flag is True (not coming from the task itself)
-        # 2. There's a description
-        # 3. It's a new record OR the description changed
-        super().save(*args, **kwargs)
+    #     # Queue embedding task only if:
+    #     # 1. update_embedding flag is True (not coming from the task itself)
+    #     # 2. There's a description
+    #     # 3. It's a new record OR the description changed
+    #     super().save(*args, **kwargs)
 
-        if self.description and (is_new or old_description != self.description):
+    #     if self.description and (is_new or old_description != self.description):
            
-            logger.debug(f"Triggering embedding generation for AnalysispData ID: {self.pk}")
-            generate_embedding_task.delay(self.pk, 'upload.AnalysispData')
+    #         logger.debug(f"Triggering embedding generation for AnalysispData ID: {self.pk}")
+    #         generate_embedding_task.delay(self.pk, 'upload.AnalysispData')
            
         
-        else:
+    #     else:
            
-            logger.debug(f"Skipping embedding generation for AnalysispData: {self.pk} (update_embedding=False)")
+    #         logger.debug(f"Skipping embedding generation for AnalysispData: {self.pk} (update_embedding=False)")
 
-    async def asave(self, *args, **kwargs):
-        await sync_to_async(self.save)(*args, **kwargs)
+    # async def asave(self, *args, **kwargs):
+    #     await sync_to_async(self.save)(*args, **kwargs)
 
     class Meta:
         indexes = [

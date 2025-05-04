@@ -8,7 +8,7 @@ import os
 from django.conf import settings
 import logging
 from .models import GeospatialData, DocumentData,MapData,AnalysispData
-from .tasks import save_analysis_files,generate_thumbnail,generate_geo_thumbnail,generate_tiles_task
+from .tasks import save_analysis_files,generate_thumbnail,generate_geo_thumbnail,generate_tiles_task,generate_embedding_task
 from .consumer_utils import consumer_authenticate
 # generate_thumbnail(self,instance, file_instance_id)
 logger = logging.getLogger(__name__)
@@ -80,10 +80,15 @@ class DocumentUploadConsumer(AsyncWebsocketConsumer):
                 document = await  DocumentData.objects.acreate(
                     file=file_obj,
                     description=self.metadata.description,
-                    date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
+                    date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date(),
+                    desc_embedding=None
                 )
             
-            generate_thumbnail.delay("upload.DocumentData", document.id)
+                generate_thumbnail.delay("upload.DocumentData", document.id)
+                generate_embedding_task.delay(document.id, 'upload.DocumentData')
+              
+
+            
             
            
         except Exception as e:
@@ -156,9 +161,13 @@ class MapUploadConsumer(AsyncWebsocketConsumer):
                 map = await  MapData.objects.acreate(
                     file=file_obj,
                     description=self.metadata.description,
-                    date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
+                    date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date(),
+                    desc_embedding=None
                 )
-            generate_thumbnail.delay("upload.MapData", map.id)
+                generate_thumbnail.delay("upload.MapData", map.id)
+                generate_embedding_task.delay(map.id, 'upload.MapData')
+                
+
         except Exception as e:
             if not self.close:
                 await self.send_response(False, f"Save failed: {str(e)}", self.chunk_number)
@@ -239,7 +248,8 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
                 data_type=self.metadata.data_type,
                 type_of_data=self.metadata.type_of_data,
                 description=self.metadata.description,
-                date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date()
+                date_captured=datetime.strptime(self.metadata.date_captured, '%Y-%m-%d').date(),
+                desc_embedding=None
             )
 
             # Now create the directory using the instance ID
@@ -268,6 +278,9 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
                         
             # Explicitly specify that we want to update the files_dir field
             await instance.asave(update_fields=['files_dir'])
+
+            generate_embedding_task.delay(instance.id, 'upload.GeospatialData')
+            
 
             # Optional: Generate tiles or other tasks
             

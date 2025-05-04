@@ -111,8 +111,10 @@ export function MapDetailView() {
     fetchisAuthData()
     
     }, []);
+  const searchParams = new URLSearchParams(window.location.search);
+  const linkIdParam = searchParams.get("LinkId");
 
-  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-map/${ItemId}/`; // Django endpoint
+  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-map/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
   
 
   useEffect(() => {
@@ -389,8 +391,10 @@ export function DocumentDetailView() {
     fetchisAuthData()
     
     }, []);
-
-  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-document/${ItemId}/`; // Django endpoint
+  const searchParams = new URLSearchParams(window.location.search);
+  const linkIdParam = searchParams.get("LinkId");
+  console.log("LinkId",linkIdParam)
+  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-document/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
 
 
    
@@ -918,7 +922,10 @@ export function DocumentDetailView() {
       
       }, []);
 
-    const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId}/`;
+    const searchParams = new URLSearchParams(window.location.search);
+    const linkIdParam = searchParams.get("LinkId");
+    console.log("LinkId",linkIdParam)
+    const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId?ItemId:linkIdParam}/`;
   
     // Fetch data
     useEffect(() => {
@@ -1581,8 +1588,10 @@ export function DocumentDetailView() {
       async function handleFetch() {
         if (hasFetched.current) return;
         hasFetched.current = true;
-      
-        await fetchGeospatialData(ItemId);
+        const searchParams = new URLSearchParams(window.location.search);
+        const linkIdParam = searchParams.get("LinkId");
+        console.log("LinkId",linkIdParam)
+        await fetchGeospatialData(ItemId?ItemId:linkIdParam);
         setLoading(false);
       }
       handleFetch();

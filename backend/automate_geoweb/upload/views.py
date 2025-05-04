@@ -434,6 +434,8 @@ class GetUpdateDeleteDocumentView(View):
                 document.description= data_payload
                
                 generate_embedding_task.delay(item_id, 'upload.DocumentData')
+                
+                
             
             
             await document.asave() 
@@ -458,10 +460,10 @@ class GetUpdateDeleteDocumentView(View):
         document_id = kwargs.get('document_id')
         try:
             
-            patient = await DocumentData.objects.aget(id=document_id)
+            document = await DocumentData.objects.aget(id=document_id)
             
             
-            await patient.adelete()
+            await document.adelete()
             
             # Return success response
             return JsonResponse({"message": "Document deleted successfully"}, status=200)
@@ -518,6 +520,7 @@ class GetUpdateDeleteMapView(View):
                 map.description= data_payload
                
                 generate_embedding_task.delay(item_id, 'upload.MapData')
+                
         
             # Save the updated patient
           
@@ -614,6 +617,8 @@ class GetUpdateDeleteGeospatialView(View):
                 geospatial.description= data_payload
                 
                 generate_embedding_task.delay(item_id, 'upload.GeospatialData')
+              
+
         
             elif key == 'data_type':
                 geospatial.data_type= data_payload
@@ -716,6 +721,7 @@ class GetUpdateDeleteAnalysisView(View):
                 analysis.description= data_payload
                
                 generate_embedding_task.delay(item_id, 'upload.AnalysispData')
+                
            
             
            
