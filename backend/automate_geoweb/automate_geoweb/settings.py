@@ -83,19 +83,36 @@ TEMPLATES = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': os.environ.get('POSTGRES_DB', 'generic_planning_gh'),
+#         'USER': os.environ.get('POSTGRES_USER', 'u_rb_generic'),
+#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'p_rb_generic'),
+#         'HOST': os.environ.get('DB_HOST', '13.51.126.88'),
+#         'PORT': os.environ.get('POSTGRES_PORT', '5433'),
+#         'OPTIONS': {
+#             'options': '-c search_path=planning_department,public'
+#         },
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': os.environ.get('POSTGRES_DB', 'generic_planning_gh'),
-        'USER': os.environ.get('POSTGRES_USER', 'u_rb_generic'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'p_rb_generic'),
-        'HOST': os.environ.get('DB_HOST', '13.51.126.88'),
-        'PORT': os.environ.get('POSTGRES_PORT', '5433'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '0549martin'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
         'OPTIONS': {
             'options': '-c search_path=planning_department,public'
         },
     }
 }
+
+
 
 LOGGING = {
     'version': 1,
