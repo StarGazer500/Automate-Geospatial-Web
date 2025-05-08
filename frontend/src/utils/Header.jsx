@@ -54,8 +54,16 @@ function Header() {
             <a href="/services/">datasets</a>
           </li>
           <li className="tab">
-            <a href="/home/">home</a>
+            <a href="/data-view/">Datasets</a>
           </li>
+
+
+          <li className="tab">
+            <a href="/dashboard/">dashboard</a>
+          </li>
+          
+          
+
         </ul>
       </nav>
     </div>
