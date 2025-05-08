@@ -238,6 +238,7 @@ import logging
 import tempfile
 from django.core.files import File
 from datetime import datetime
+from django.db import transaction
 
 
 import sqlite3
@@ -250,6 +251,8 @@ import cairocffi as cairo  # Use cairocffi instead of pycairo for broader compat
 import gzip
 from io import BytesIO
 from PIL import Image, ImageDraw,ImageEnhance
+from .utils import get_sentence_transformer_model_sync
+# from sentence_transformers import SentenceTransformer
 
 
 
@@ -386,7 +389,7 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
             logger.info("Pre-tiling completed")
 
             # Generate COG with internal overviews
-            cog_output = os.path.join(output_dir, f'{os.path.basename(processed_input)}.cog.tif')
+            cog_output = os.path.join(output_dir, f'{os.path.basename(input_path)}.cog.tif')
             compression_methods = ["LZW", "DEFLATE", "NONE"]
             for compression_method in compression_methods:
                 try:
@@ -449,6 +452,127 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
         cache.delete(lock_key)
 
 @shared_task(bind=True, max_retries=3)
+def save_embedding(self, instance_id, model_name, embedding_list):
+    try:
+        instance_model = apps.get_model(model_name)
+        instance = instance_model.objects.get(id=instance_id)
+        
+        # Check if embedding_list is valid
+        if embedding_list is None or not isinstance(embedding_list, list):
+            logger.error(f"Invalid embedding for {model_name} ID: {instance_id}. Type: {type(embedding_list)}")
+            return None
+            
+        # Ensure embeddings are proper float values
+        embedding_list = [float(val) for val in embedding_list]
+        
+        # Force update the field directly
+        instance.desc_embedding = embedding_list
+        instance.save(update_fields=['desc_embedding'])
+        
+        # Verify the embedding was saved
+        refreshed_instance = instance_model.objects.get(id=instance_id)
+        if refreshed_instance.desc_embedding is None:
+            logger.error(f"Embedding failed to save for {model_name} ID: {instance_id} after verification")
+        else:
+            logger.info(f"Embedding saved and verified for {model_name} ID: {instance_id}")
+            
+        return True
+        
+    except instance_model.DoesNotExist:
+        logger.error(f"{model_name} ID: {instance_id} does not exist")
+        return None
+    except Exception as e:
+        logger.error(f"Error saving embedding for {model_name} ID: {instance_id}: {e}")
+        raise self.retry(exc=e, countdown=5)
+    
+
+# @shared_task(bind=True, max_retries=3)
+# def generate_embedding_task(self, instance_id, model_name):
+#     try:
+#         instance_model = apps.get_model(model_name)
+#         instance = instance_model.objects.get(id=instance_id)
+#         if instance.description:
+#             model = get_sentence_transformer_model_sync()
+#             embedding = model.encode(instance.description)
+#             # instance.desc_embedding = embedding
+#             # instance.save(update_fields=['desc_embedding'])  # Fixed field name
+#             logger.info("Embedding generated", embedding)
+#             return embedding
+#             # logger.info("Embedding", embedding)
+#             # logger.info(f"Generated embedding for {model_name} ID: {instance_id} encoding:{embedding} enc_field{ instance.desc_embedding}")
+#         else:
+#             logger.warning(f"No description found for {model_name} ID: {instance_id}")
+#     except instance_model.DoesNotExist:
+#         logger.error(f"{model_name} ID: {instance_id} does not exist")
+#     except Exception as e:
+#         logger.error(f"Error generating embedding for {model_name} ID: {instance_id}: {e}")
+#         raise self.retry(exc=e, countdown=5)
+
+@shared_task
+def debug_embedding(instance_id, model_name):
+    try:
+        instance_model = apps.get_model(model_name)
+        instance = instance_model.objects.get(id=instance_id)
+        
+        if instance.desc_embedding is None:
+            logger.error(f"Embedding is None for {model_name} ID: {instance_id}")
+        else:
+            embedding_info = {
+                "type": type(instance.desc_embedding).__name__,
+                "length": len(instance.desc_embedding) if hasattr(instance.desc_embedding, "__len__") else "N/A",
+                "sample": str(instance.desc_embedding[:5]) if hasattr(instance.desc_embedding, "__getitem__") else "N/A"
+            }
+            logger.info(f"Embedding for {model_name} ID: {instance_id}: {embedding_info}")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Error debugging embedding for {model_name} ID: {instance_id}: {e}")
+        return None
+
+
+@shared_task(bind=True, max_retries=3)
+def generate_embedding_task(self, instance_id, model_name):
+    try:
+        instance_model = apps.get_model(model_name)
+        instance = instance_model.objects.get(id=instance_id)
+        
+        if not instance.description:
+            logger.warning(f"No description found for {model_name} ID: {instance_id}")
+            return None
+            
+        try:
+            model = get_sentence_transformer_model_sync()
+            embedding = model.encode(instance.description)
+            embedding_list = embedding.tolist()  # Convert NumPy array to list
+            
+            # Check embedding dimensions
+            expected_dim = 384  # Based on your VectorField dimensions
+            if len(embedding_list) != expected_dim:
+                logger.error(f"Generated embedding has incorrect dimensions: {len(embedding_list)} (expected {expected_dim})")
+                return None
+                
+            logger.info(f"Embedding generated for {model_name} ID: {instance_id}, length: {len(embedding_list)}")
+            
+            # Chain the save_embedding task and wait for result
+            result = save_embedding.delay(instance_id, model_name, embedding_list)
+            
+            # Add debug task
+            debug_embedding.delay(instance_id, model_name)
+            
+            return embedding_list
+        except Exception as e:
+            logger.error(f"Error in embedding generation: {e}")
+            raise
+            
+    except instance_model.DoesNotExist:
+        logger.error(f"{model_name} ID: {instance_id} does not exist")
+        return None
+    except Exception as e:
+        logger.error(f"Error generating embedding for {model_name} ID: {instance_id}: {e}")
+        raise self.retry(exc=e, countdown=5)
+
+
+@shared_task(bind=True, max_retries=3)
 def save_analysis_files(self, temp_file_paths, metadata):
     try:
         GeospatialData = apps.get_model('upload', 'GeospatialData')
@@ -471,9 +595,12 @@ def save_analysis_files(self, temp_file_paths, metadata):
             document_instance = DocumentData.objects.create(
                 file=doc_file,
                 description=metadata['document_meta_data']['description'],
-                date_captured=parse_date(metadata['document_meta_data']['date_captured'])
+                date_captured=parse_date(metadata['document_meta_data']['date_captured']),
+                desc_embedding=None
             )
-        generate_thumbnail.delay("upload.DocumentData", document_instance.id)
+            generate_thumbnail.delay("upload.DocumentData", document_instance.id)
+            generate_embedding_task.delay(document_instance.id, 'upload.DocumentData')
+          
 
         # Save Map
         with open(temp_file_paths['map'], 'rb') as f:
@@ -481,10 +608,14 @@ def save_analysis_files(self, temp_file_paths, metadata):
             map_instance = MapData.objects.create(
                 file=map_file,
                 description=metadata['map_meta_data']['description'],
-                date_captured=parse_date(metadata['map_meta_data']['date_captured'])
+                date_captured=parse_date(metadata['map_meta_data']['date_captured']),
+                desc_embedding=None
+
             )
          
-        generate_thumbnail.delay("upload.MapData", map_instance.id)
+            generate_thumbnail.delay("upload.MapData", map_instance.id)
+            generate_embedding_task.delay(map_instance.id, 'upload.MapData')
+            
         # Save Input Geospatial
         input_file_paths = {}
         
@@ -495,7 +626,8 @@ def save_analysis_files(self, temp_file_paths, metadata):
             data_type=metadata['input_meta_data']['data_type'],
             type_of_data=metadata['input_meta_data']['type_of_data'],
             description=metadata['input_meta_data']['description'],
-            date_captured=parse_date(metadata['input_meta_data']['date_captured'])
+            date_captured=parse_date(metadata['input_meta_data']['date_captured']),
+            desc_embedding=None
         )
 
         input_geo_upload_dir = os.path.join(settings.MEDIA_ROOT, 'geospatial', str(input_geo_instance.id))
@@ -519,8 +651,16 @@ def save_analysis_files(self, temp_file_paths, metadata):
             # Update the instance with the relative path to the primary file
         input_relative_path = os.path.relpath(input_geo_upload_dir, settings.MEDIA_ROOT)
         input_geo_instance.files_dir = input_relative_path
+
+        generate_embedding_task.delay(input_geo_instance.id, 'upload.GeospatialData')
+        
+       
+
         input_geo_instance.save(update_fields=['files_dir'])  # Save the updated instance with the file path
 
+
+
+       
 
 
 
@@ -537,7 +677,8 @@ def save_analysis_files(self, temp_file_paths, metadata):
             data_type=metadata['output_meta_data']['data_type'],
             type_of_data=metadata['output_meta_data']['type_of_data'],
             description=metadata['output_meta_data']['description'],
-            date_captured=parse_date(metadata['output_meta_data']['date_captured'])
+            date_captured=parse_date(metadata['output_meta_data']['date_captured']),
+            desc_embedding=None
         )
 
         output_geo_upload_dir = os.path.join(settings.MEDIA_ROOT, 'geospatial', str(output_geo_instance.id))
@@ -562,7 +703,13 @@ def save_analysis_files(self, temp_file_paths, metadata):
         # relative_path = os.path.relpath(output_file_paths[output_primary_file], settings.MEDIA_ROOT)
         output_relative_path = os.path.relpath(output_geo_upload_dir, settings.MEDIA_ROOT)
         output_geo_instance.files_dir = output_relative_path
+
+        generate_embedding_task.delay(output_geo_instance.id, 'upload.GeospatialData')
+      
+
         output_geo_instance.save(update_fields=['files_dir'])  # Save the updated instance with the file path
+
+        
 
 
         # relative_path = os.path.relpath(upload_dir, settings.MEDIA_ROOT)
@@ -582,9 +729,12 @@ def save_analysis_files(self, temp_file_paths, metadata):
                 input_data=input_geo_instance,
                 output_data=output_geo_instance,
                 description=metadata['analysis_meta_data']['description'],
-                date_captured=parse_date(metadata['analysis_meta_data']['date_captured'])
+                date_captured=parse_date(metadata['analysis_meta_data']['date_captured']),
+                desc_embedding=None
             )
         # generate_thumbnail.delay(AnalysispData, analysis_instance.id)
+        generate_embedding_task.delay(analysis_instance.id, 'upload.AnalysispData')
+        
         
             
         return True, "Files saved successfully"
@@ -1354,3 +1504,4 @@ def generate_geo_thumbnail(self, previous_result, model_name, file_instance_id, 
     except Exception as e:
         logger.error(f"Error generating geo thumbnail for file {file_instance_id}: {e}")
         raise self.retry(exc=e, countdown=5)
+    

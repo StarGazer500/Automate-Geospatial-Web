@@ -30,7 +30,11 @@ function DatasetHeader() {
       '/maps': 'Maps',
       '/documents': 'Documents',
       '/raster': 'Geospatial Datasets',
-      '/all-dataset/': 'All'
+      '/all-dataset/': 'All',
+      '/departments/':'Departments',
+      '/compartments/':'Compartments'
+
+
     };
 
     // Check if the current buttonText matches this tab
@@ -50,6 +54,12 @@ function DatasetHeader() {
 
         {/* Tabs on the right */}
         <ul className="tabs right">
+        {/* <li className={getTabClass('/departments/')}>
+            <a onClick={handleNavigateToDataView} href="#">Departments</a>
+          </li>
+          <li className={getTabClass('/compartments/')}>
+            <a onClick={handleNavigateToDataView} href="#">Compartments</a>
+          </li> */}
           <li className={getTabClass('/raster')}>
             <a onClick={handleNavigateToDataView} href="#">Geospatial Datasets</a>
             <ul className="dropdown">
@@ -77,6 +87,7 @@ function DatasetHeader() {
           <li className={getTabClass('/all-dataset/')}>
             <a onClick={handleNavigateToDataView} href="#">All</a>
           </li>
+         
         </ul>
       </nav>
     </div>

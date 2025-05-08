@@ -1,10 +1,12 @@
-import React, { useState,useContext,forwardRef, useImperativeHandle } from 'react';
+import React, { useState,useEffect,useContext,forwardRef, useImperativeHandle } from 'react';
 import {InputGeospatatialContext,OutputGeospatatialContext,DocumentContext,MapContext,IsComponentUsedInFormSliderClickedContext,AnalysisAssetContext} from '../../utils/context';
 import './Uploads.css';
 import { DocumentUploadRequest, DocumentMetaData, DocumentUploadResponse } from "./grpc_setup/generated/file_upload1_pb.esm";
 import { MapUploadRequest, MapMetaData, MapUploadResponse } from "./grpc_setup/generated/file_upload3_pb.esm";
 import { FileUploadRequest, FileMetaData, FileUploadResponse } from "./grpc_setup/generated/file_upload2_pb.esm";
 import { AnalysisFileUploadRequest, AnalysisInputFileMetaData,AnalysisOutputFileMetaData,AnalysisAnalysisAssetMetaData,AnalysisDocumentMetaData,AnalysisMapMetaData, AnalysisFileUploadResponse } from './grpc_setup/generated/file_upload4_pb.esm'
+import { useNavigate} from 'react-router-dom';
+
 
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
 const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024; // 2GB limit
@@ -21,6 +23,29 @@ export const DocumentDataUpload = () => {
 
   const { sharedValue, setSharedValue } = useContext(DocumentContext);
   const { sharedValue: isOpenInFormSlider } = useContext(IsComponentUsedInFormSliderClickedContext);
+
+  const navigate = useNavigate()
+  useEffect(() => {
+    // This will set the CSRF cookie
+    async function fetchisAuthData(){
+    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      alert("User is Logged out, Redirecting to login");
+      navigate('/login-user', { state: { from: window.location.pathname } });
+      // return null;
+    }
+    // const data = await response.json();
+    console.log("User is Logged In")
+  }
+
+  fetchisAuthData()
+  
+  }, []);
+  
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -200,6 +225,28 @@ export const MapDataUpload = () => {
   const { sharedValue, setSharedValue } = useContext(MapContext);
   const { sharedValue: isOpenInFormSlider } = useContext(IsComponentUsedInFormSliderClickedContext);
 
+  const navigate = useNavigate()
+  useEffect(() => {
+    // This will set the CSRF cookie
+    async function fetchisAuthData(){
+    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      alert("User is Logged out, Redirecting to login");
+      navigate('/login-user', { state: { from: window.location.pathname } });
+      // return null;
+    }
+    // const data = await response.json();
+    console.log("User is Logged In")
+  }
+
+  fetchisAuthData()
+  
+  }, []);
+
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
       const selectedFile = e.target.files[0];
@@ -216,6 +263,8 @@ export const MapDataUpload = () => {
       }
     }
   };
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -389,6 +438,28 @@ export const GeospatialDataUpload = () => {
   const [filePaths, setFilePaths] = useState([]);
   const [uploadStatus, setUploadStatus] = useState('');
   const [progress, setProgress] = useState(0);
+
+  const navigate = useNavigate()
+  useEffect(() => {
+    // This will set the CSRF cookie
+    async function fetchisAuthData(){
+    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      alert("User is Logged out, Redirecting to login");
+      navigate('/login-user', { state: { from: window.location.pathname } });
+      // return null;
+    }
+    // const data = await response.json();
+    console.log("User is Logged In")
+  }
+
+  fetchisAuthData()
+  
+  }, []);
 
   
   const handleFileChange = (e) => {

@@ -1,0 +1,23 @@
+syntax = "proto3";
+package upload;
+
+message FileUploadRequest1 {
+  string file_name = 1;  // Add this outside oneof for all cases
+  oneof data {
+    FileMetaData1 meta_data = 2;
+    bytes chunk_data = 3;
+    bool end_signal = 4;  // Signals upload completion
+  }
+}
+
+message FileMetaData1 {
+  string file_name = 1;  // Keep this for consistency, though redundant now
+  int32 file_id = 2;
+  string data_category = 3;
+}
+
+message FileUploadResponse1 {
+  bool success = 1;
+  string message = 2;
+  int32 chunk_number = 3;  // For progress tracking
+}

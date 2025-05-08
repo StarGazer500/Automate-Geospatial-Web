@@ -3,12 +3,15 @@ import DatasetHeader from './DatasetHeader';
 import ItemsCard from './ItemsCard';
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { CategoryOfDataClickedContext} from '../../utils/context';
+import { useNavigate} from 'react-router-dom';
 import Modal from '../../utils/Modal';
 import { GeospatialDataUpload, DocumentDataUpload, MapDataUpload } from './Uploads';
 import FormSlider from './FormSlider';
 
 function DatasetView() {
   const { sharedValue: buttonText } = useContext(CategoryOfDataClickedContext);
+  const [ search_query, setSearch_Query] = useState('')
+  const [shareItemLink,setShareItemLink]  =useState('')
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -20,6 +23,92 @@ function DatasetView() {
   const currentUrl = useRef(null);
   const lastFetchedPage = useRef(0);
   const isFetching = useRef(false); // Prevent concurrent fetches
+
+
+  const handleValueChange = (event) => {
+    setSearch_Query(event.target.value);
+};
+
+
+const handleKeyDown = async(event) => {
+  
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    let url=''
+    if (buttonText ==="Geospatial Datasets"){
+      url = "http://127.0.0.1:8000/manage-data/semantic-search-geospatial/";
+    }
+    if (buttonText ==="Maps"){
+      url = "http://127.0.0.1:8000/manage-data/semantic-search-map/";
+      
+    }
+    if (buttonText ==="Analysis Assets"){
+      url = "http://127.0.0.1:8000/manage-data/semantic-search-analysis/";
+    }
+    if (buttonText ==="Documents"){
+      url = "http://127.0.0.1:8000/manage-data/semantic-search-document/";
+      
+    }
+
+    if (buttonText ==="All"){
+      url = "http://127.0.0.1:8000/manage-data/semantic-search-all/";
+      
+    }
+
+       if (search_query){
+        
+          
+          // setError(null); // Clear previous errors
+          try {
+            const response = await fetch(
+              url,
+              {
+                method: 'POST',
+                credentials: 'include', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  search_query 
+                  
+                })
+              }
+            );
+      
+            // Log the raw response for debugging
+            const rawResponse = await response.text();
+            console.log('Raw response:', rawResponse);
+      
+            if (!response.ok) {
+              let errorData;
+              try {
+                errorData = JSON.parse(rawResponse);
+              } catch {
+                errorData = { error: `Server returned status ${response.status}` };
+              }
+              console.log('Submission failed:', response.status, errorData.error || 'Unknown error');
+              // setError(errorData.error || 'Login failed');
+              return null;
+            }
+      
+            // Parse JSON only if response is OK
+            const result = JSON.parse(rawResponse);
+          
+            setData(result.data || [])
+            
+            // setError(null);
+            console.log('Login successful:', data);
+            return data;
+          } catch (error) {
+            console.error('Fetch Error:', error.message);
+            setError(`Network error: ${error.message}`);
+            return null;
+          }
+        };
+
+       } 
+
+
+
+}
 
   const fetchData = async (pageNum, url) => {
     if (isFetching.current || pageNum <= lastFetchedPage.current) {
@@ -76,6 +165,29 @@ function DatasetView() {
     }
   };
 
+
+  const navigate = useNavigate()
+  useEffect(() => {
+    // This will set the CSRF cookie
+    async function fetchisAuthData(){
+    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      // alert("User is Logged out, Redirecting to login");
+      navigate('/login-user', { state: { from: window.location.pathname } });
+      // return null;
+    }
+    // const data = await response.json();
+    console.log("User is Logged In")
+  }
+
+  fetchisAuthData()
+  
+  }, []);
+
   useEffect(() => {
     console.log('buttonText changed to:', buttonText);
   
@@ -88,22 +200,31 @@ function DatasetView() {
     isFetching.current = false;
   
     let url;
-    switch (buttonText) {
-      case "Geospatial Datasets":
-        url = "http://127.0.0.1:8000/manage-data/geospatial-data";
-        break;
-      case "Maps":
-        url = "http://127.0.0.1:8000/manage-data/map-data";
-        break;
-      case "Documents":
-        url = "http://127.0.0.1:8000/manage-data/document-data";
-        break;
-      case "Analysis Assets":
-        url = "http://127.0.0.1:8000/manage-data/analysis-data";
-        break;
-      default:
-        url = "http://127.0.0.1:8000/manage-data/all-data";
-    }
+
+  if (buttonText === "Geospatial Datasets" && !search_query) {
+    url = "http://127.0.0.1:8000/manage-data/geospatial-data";
+  } else if (buttonText === "Maps"  && !search_query) {
+    url = "http://127.0.0.1:8000/manage-data/map-data";
+  } else if (buttonText === "Documents" && !search_query) {
+    url = "http://127.0.0.1:8000/manage-data/document-data";
+  } else if (buttonText === "Analysis Assets" && !search_query) {
+    url = "http://127.0.0.1:8000/manage-data/analysis-data";
+  } else if (buttonText==="All" && !search_query) {
+    url = "http://127.0.0.1:8000/manage-data/all-data";
+  }
+
+  else if (buttonText === "Geospatial Datasets" && search_query) {
+    url = "http://127.0.0.1:8000/manage-data/semantic-search-geospatial/";
+  } 
+  else if (buttonText === "Maps"  && search_query) {
+    url = "http://127.0.0.1:8000/manage-data/semantic-search-map";
+  } else if (buttonText === "Documents" && search_query) {
+    url = "http://127.0.0.1:8000/manage-data/semantic-search-document";
+  } else if (buttonText === "Analysis Assets" && search_query) {
+    url = "http://127.0.0.1:8000/manage-data/semantic-search-analysis";
+  } else if (buttonText==="All" && search_query) {
+    url = "http://127.0.0.1:8000/manage-data/semantic-search-all";
+  }
   
     currentUrl.current = url;
     fetchData(1, url);
@@ -189,6 +310,34 @@ function DatasetView() {
     setModalContent(null);
   };
 
+  useEffect(() => {
+    if (shareItemLink) {
+      console.log("shareItemLink updated:", shareItemLink);
+      setModalContent(
+        <div>
+          <p>Share this link:</p>
+          <input
+            type="text"
+            value={shareItemLink}
+            readOnly
+            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            onClick={(e) => e.target.select()} // Select text on click for easy copying
+          />
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(shareItemLink);
+              alert("Link copied to clipboard!");
+            }}
+            style={{ backgroundColor: 'seagreen', color: 'white', padding: '8px 16px', borderRadius: '5px' }}
+          >
+            Copy Link
+          </button>
+        </div>
+      );
+      setIsModalOpen(true);
+    }
+  }, [shareItemLink]); // Run when shareItemLink changes
+
   return (
     <div>
       <div className="content-wrapper">
@@ -198,6 +347,17 @@ function DatasetView() {
             <h1 style={{ color: 'seagreen', marginBottom: '30px', marginTop: '20px', width: '100%' }}>
               Advanced Filtering
             </h1>
+            <label className="mr-[100%]" style={{ color: 'black' }} htmlFor="">
+              departments
+            </label>
+            <select  className="mb-[30px]" style={{ color: 'black' }} >
+                  <option value="Planning">Planning</option>
+                  <option value="Civilculture">Civil Culture</option>
+                  <option value="ESG">ESG</option>
+                  <option value="ESG">All Departments</option>
+                 
+              </select>
+            
             <label className="mr-[100%] pl-0 self-start" style={{ color: 'black' }} htmlFor="">
               Start Date
             </label>
@@ -249,7 +409,10 @@ function DatasetView() {
                   Filter
                 </button>
                 <input
-                  placeholder="search item"
+                  placeholder="AI Search"
+                  value={search_query}
+                  onChange={handleValueChange}
+                  onKeyDown={handleKeyDown}
                   style={{
                     marginLeft: '250px',
                     width: '700px',
@@ -264,6 +427,7 @@ function DatasetView() {
               <div style={{ marginLeft: 'auto', marginRight: '10px' }}>
                 <select
                   onChange={handleUploadChange}
+                  
                   className="upload_select"
                   style={{
                     margin: 0,
@@ -278,6 +442,7 @@ function DatasetView() {
                   <option value="" disabled>
                     Upload
                   </option>
+                
                   <option value="Geospatia">Geospatial</option>
                   <option value="Documents">Documents</option>
                   <option value="Analysis Assets">Analysis Assets</option>
@@ -289,7 +454,7 @@ function DatasetView() {
             <div className="flex-[9] grid-container" ref={gridRef} key={buttonText}>
               {data.length > 0 ? (
                 data.map((item) => (
-                  <ItemsCard key={`${item.type}-${item.id}`} item={item} />
+                  <ItemsCard key={`${item.type}-${item.id}`} item={item} setShareItemLink={setShareItemLink} />
                 ))
               ) : (
                 <p style={{ textAlign: 'center', color: 'seagreen' }}>

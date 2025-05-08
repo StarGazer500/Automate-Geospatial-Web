@@ -1,8 +1,11 @@
 import './DetailView.css';
 import DatasetHeader from './DatasetHeader';
+import  {EditData} from './EditDataset'
+import Modal from '../../utils/Modal';
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { MapContainer, TileLayer ,useMap, LayersControl} from 'react-leaflet';
 import { IpynbRenderer } from "react-ipynb-renderer";
+import { useNavigate} from 'react-router-dom';
 
 // Jupyter theme
 import "react-ipynb-renderer/dist/styles/monokai.css";
@@ -15,13 +18,104 @@ import {DetailViewIdContext } from '../../utils/context';
 
 const { BaseLayer } = LayersControl;
 
+const downloadFile = async (url) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Download failed');
+
+    const blob = await response.blob();
+    // Extract file name from Content-Disposition header or URL
+    let fileName = 'downloaded-file';
+    const disposition = response.headers.get('Content-Disposition');
+    if (disposition && disposition.includes('attachment')) {
+      const match = disposition.match(/filename="?(.+)"?/i);
+      if (match) fileName = match[1];
+    } else {
+      // Fallback to URL's last segment
+      fileName = url.split('/').pop().split('?')[0] || fileName;
+    }
+
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Download failed:', error);
+  }
+};
+
 export function MapDetailView() {
   const [mapContent, setMapContent] = useState(null);
   const [data,setData]= useState(null)
   const [error, setError] = useState(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+ 
+  const [modalContent, setModalContent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { sharedValue:ItemId} = useContext(DetailViewIdContext);
 
-  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-map/${ItemId}/`; // Django endpoint
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalContent(null);
+  };
+
+
+  const handleEdit = (item,inputType,dataCategory) => {
+    console.log(`Editing ${item}`);
+    const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
+    console.log("The text key id",dataKey)
+    setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={null} />)
+    setIsModalOpen(true);
+    // Your download logic here
+    setOpenDropdownIndex(null); // Close dropdown after action
+  };
+  
+  
+  
+  const handleDownload = (item) => {
+    console.log(`Downloading ${item}`);
+    downloadFile(item) 
+    // Your download logic here
+    setOpenDropdownIndex(null); // Close dropdown after action
+  };
+  
+  const handleDelete = (item) => {
+    console.log(`Deleting ${item}`);
+    // Your delete logic here
+    setOpenDropdownIndex(null); // Close dropdown after action
+  };
+
+
+    const navigate = useNavigate()
+    useEffect(() => {
+      // This will set the CSRF cookie
+      async function fetchisAuthData(){
+      const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        alert("User is Logged out, Redirecting to login");
+        navigate('/login-user', { state: { from: window.location.pathname } });
+        // return null;
+      }
+      // const data = await response.json();
+      console.log("User is Logged In")
+    }
+  
+    fetchisAuthData()
+    
+    }, []);
+  const searchParams = new URLSearchParams(window.location.search);
+  const linkIdParam = searchParams.get("LinkId");
+
+  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-map/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
+  
 
   useEffect(() => {
     // Step 1: Fetch document metadata from Django
@@ -110,21 +204,113 @@ export function MapDetailView() {
                   <label className="text-[seagreen] mb-10">Data Properties</label>
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">file url</label>
-                    <p>{data.file}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.file}  >{data.file} 
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.file ? null : data.file)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.file && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.file,"file","map")}
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
+                            >
+                              Download
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      </p>
                   </div>
                   
                   
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
-                    <p>{data.description}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.description && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.description,"text","map")}
+                            >
+                              Edit
+                            </button>
+                            
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
                   </div>
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
-                    <p>{data.date_captured}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.date_captured}>{data.date_captured}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.date_captured && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.date_captured,"text","map")}
+                            >
+                              Edit
+                            </button>
+                           
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
                   </div>
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">uploaded at</label>
-                    <p>{data.uploaded_at}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.uploaded_at} >{data.uploaded_at}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.uploaded_at ? null : data.uploaded_at)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.uploaded_at && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.uploaded_at,"text","map")}
+                            >
+                              Edit
+                            </button>
+                          
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
                   </div>
                 </div>
               )}
@@ -132,6 +318,9 @@ export function MapDetailView() {
                   </div>
               </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+                {modalContent}
+          </Modal>
   
         
       </div>
@@ -143,9 +332,71 @@ export function DocumentDetailView() {
   const [documentContent, setDocumentContent] = useState(null);
   const [data,setData]= useState(null)
   const [error, setError] = useState(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+  const [modalContent, setModalContent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { sharedValue:ItemId} = useContext(DetailViewIdContext);
 
-  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-document/${ItemId}/`; // Django endpoint
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalContent(null);
+  };
+
+
+  const handleEdit = (item,inputType,dataCategory) => {
+    console.log(`Editing ${item}`);
+    const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
+    console.log("The text key id",dataKey)
+    setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={null}  />)
+    setIsModalOpen(true);
+    // Your download logic here
+    setOpenDropdownIndex(null); // Close dropdown after action
+  };
+  
+  
+  
+  const handleDownload = (item) => {
+    console.log(`Downloading ${item}`);
+    // Your download logic here
+    setOpenDropdownIndex(null); // Close dropdown after action
+  };
+  
+  const handleDelete = (item) => {
+    console.log(`Deleting ${item}`);
+    // Your delete logic here
+    setOpenDropdownIndex(null); // Close dropdown after action
+  };
+
+
+
+
+    const navigate = useNavigate()
+    useEffect(() => {
+      // This will set the CSRF cookie
+      async function fetchisAuthData(){
+      const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        alert("User is Logged out, Redirecting to login");
+        navigate('/login-user', { state: { from: window.location.pathname } });
+        // return null;
+      }
+      // const data = await response.json();
+      console.log("User is Logged In")
+    }
+  
+    fetchisAuthData()
+    
+    }, []);
+  const searchParams = new URLSearchParams(window.location.search);
+  const linkIdParam = searchParams.get("LinkId");
+  console.log("LinkId",linkIdParam)
+  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-document/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
+
+
    
 
   useEffect(() => {
@@ -236,21 +487,113 @@ export function DocumentDetailView() {
                   <label className="text-[seagreen] mb-10">Data Properties</label>
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">file url</label>
-                    <p>{data.file}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.file}  >{data.file} 
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.file ? null : data.file)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.file && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.file,"file","document")}
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
+                            >
+                              Download
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      </p>
                   </div>
                   
                   
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
-                    <p>{data.description}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.description && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.description,"text","document")}
+                            >
+                              Edit
+                            </button>
+                            
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
                   </div>
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
-                    <p>{data.date_captured}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.date_captured}>{data.date_captured}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.date_captured && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.date_captured,"text","document")}
+                            >
+                              Edit
+                            </button>
+                            
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
                   </div>
                   <div className="flex mb-5">
                     <label style={{ textAlign: 'left' }} className="text-black pd-0">uploaded at</label>
-                    <p>{data.uploaded_at}</p>
+                    <p className="flex mb-0 justify-between items-center" key={data.uploaded_at} >{data.uploaded_at}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.uploaded_at ? null : data.uploaded_at)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.uploaded_at && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.uploaded_at,"text","document")}
+                            >
+                              Edit
+                            </button>
+                          
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
                   </div>
                 </div>
               )}
@@ -258,7 +601,9 @@ export function DocumentDetailView() {
                   </div>
               </div>
       </div>
-  
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
+                {modalContent}
+          </Modal>
         
       </div>
     );
@@ -473,10 +818,114 @@ export function DocumentDetailView() {
     const [analysisContent, setAnalysisContent] = useState(null);
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+    const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+    const [openInputDropdownIndex, setOpenInputDropdownIndex] = useState(null);
+    const [openOutputDropdownIndex, setOpenOutputDropdownIndex] = useState(null);
+    const [modalContent, setModalContent] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isGeoGath, setIsGeoGath] = useState(false);
   
     const { sharedValue: ItemId } = useContext(DetailViewIdContext);
-    const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId}/`;
+
+    const closeModal = () => {
+      setIsModalOpen(false);
+      setModalContent(null);
+    };
+
+
+    const handleEdit = (item,inputType,dataCategory,is_analysis_id=null) => {
+      console.log(`Editing ${item}`);
+      const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
+      console.log("The text key id",dataKey)
+      setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={is_analysis_id}/>)
+      setIsModalOpen(true);
+      // Your download logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+    
+    
+    
+    const handleDownload = (item) => {
+      console.log(`Downloading ${item}`);
+      // Your download logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+
+    const handleGeospatialDownload = (item,data_id) => {
+      console.log(`Downloading ${item}`);
+  const fileExtension = item.split('.').pop().toLowerCase(); // Get file extension
+  const isRaster = ['cog', 'tif', 'tiff'].includes(fileExtension);
+  const isVector = ['shp', 'geojson'].includes(fileExtension);
+  let url = null;
+
+  if (isRaster) {
+    url = `http://localhost:8000/media/tiles/${data_id}/${item}`;
+  } else if (isVector) {
+    const nameWithoutExt = item.slice(0, item.lastIndexOf('.')); // Remove extension
+    if (fileExtension === 'shp') {
+      // Array of URLs for shapefile components
+      url = [
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.shp`,
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.shx`,
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.prj`,
+        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.dbf`,
+      ];
+    } else {
+      // Single file for GeoJSON
+      url = `http://localhost:8000/media/geospatial/${data_id}/${item}`;
+    }
+  }
+  console.log("url",url)
+  if (Array.isArray(url)) {
+    // Download each file in the array
+    for (let i = 0; i < url.length; i++) {
+      downloadFile(url[i]);
+    }
+  } else if (url) {
+    // Download single file
+    downloadFile(url);
+  } else {
+    console.error('Invalid file type or URL');
+  }
+      // Your download logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+    
+    
+    const handleDelete = (item) => {
+      console.log(`Deleting ${item}`);
+      // Your delete logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+  
+
+
+      const navigate = useNavigate()
+      useEffect(() => {
+        // This will set the CSRF cookie
+        async function fetchisAuthData(){
+        const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+          alert("User is Logged out, Redirecting to login");
+          navigate('/login-user', { state: { from: window.location.pathname } });
+          // return null;
+        }
+        // const data = await response.json();
+        console.log("User is Logged In")
+      }
+    
+      fetchisAuthData()
+      
+      }, []);
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const linkIdParam = searchParams.get("LinkId");
+    console.log("LinkId",linkIdParam)
+    const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId?ItemId:linkIdParam}/`;
   
     // Fetch data
     useEffect(() => {
@@ -587,31 +1036,221 @@ export function DocumentDetailView() {
                 ) : null}
               </div>
             </div>
-            <div className="flex-col full flex-3 bg-white items-start justify-start border-2 border-[whitesmoke] pl-0 w-full">
+            <div className="flex-col h-screen flex-3  h-full bg-white items-start justify-start border-2 border-[whitesmoke] pl-0 w-full">
               {data && (
                 <div className="flex-col mt-[50px] h-full flex-3 bg-white items-start justify-start border-2 border-[whitesmoke] p-[20x] pl-0 w-full">
-                  <label className="text-[seagreen] mb-10">Data Properties</label>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">file url</label>
-                    <p>{data.file}</p>
+                  <div className='mb-38  mt-13 border-2 border-[whitesmoke]' >
+                    <label className="text-[seagreen] mb-10">Analysis Script Properties</label>
+                    <div className="flex  mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">file url</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.file}  >{data.file} 
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.file ? null : data.file)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.file && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.file,"file","analysis")}
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
+                            >
+                              Download
+                            </button>
+                           
+                          </div>
+                        )}
+                      </div>
+                      </p>
+                    </div>
+                    <div className="flex mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.description && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.description,"text","analysis")}
+                            >
+                              Edit
+                            </button>
+                           
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
+                    </div>
+                    <div className="flex mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.date_captured}>{data.date_captured}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.date_captured && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.date_captured,"text","analysis")}
+                            >
+                              Edit
+                            </button>
+                            
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
+                    </div>
+                    <div className="flex mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">uploaded at</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.uploaded_at} >{data.uploaded_at}
+                    <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.uploaded_at ? null : data.uploaded_at)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.uploaded_at && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.uploaded_at,"text","analysis")}
+                            >
+                              Edit
+                            </button>
+                            
+                          </div>
+                        )}
+                      </div>
+
+                    </p>
+                    </div>
                   </div>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
-                    <p>{data.description}</p>
+                  
+                  <div className='border-2 h-full border-[whitesmoke]' >
+                      {/* <label className="text-[seagreen] mb-10">File Urls</label> */}
+                      <div className='flex gap-x-7 flex-row'>
+                          <div className=' h-full '>
+                          <label className="text-[seagreen] mb-10">Input File Urls</label>
+                          {data.input_tile_paths.map((item, index1) => {
+                              const ext = item.split('.').pop().toLowerCase();
+                              const isGeoFormat = ['tiff', 'tif', 'cog'].includes(ext);
+                              const nameWithoutExt = item.slice(0, item.lastIndexOf('.'));
+                              console.log("paths",isGeoFormat,nameWithoutExt)
+            
+                              return (
+                                <p className="flex mb-0 justify-between items-center" key={index1}>
+                                    {isGeoFormat ? item : nameWithoutExt}
+                                    <div className="relative">
+                                      <button 
+                                        onClick={() => setOpenInputDropdownIndex(openInputDropdownIndex === index1 ? null : index1)}
+                                        className="text-green-600 hover:text-green-800"
+                                      >
+                                        actions ▾
+                                      </button>
+                                      
+                                      {openInputDropdownIndex=== index1 && (
+                                        <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                                          <button 
+                                            className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                                            onClick={() => handleEdit(nameWithoutExt,"file","geospatial",data.input_id)}
+                                          >
+                                            Edit
+                                          </button>
+                                          <button 
+                                            className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                                            onClick={() => handleGeospatialDownload(isGeoFormat?item:nameWithoutExt)}
+                                          >
+                                            Download
+                                          </button>
+                                         
+                                        </div>
+                                      )}
+                                    </div>
+                      </p>
+                              );
+                             })}
+
+                          </div>
+                          <div className='h-full'>
+                          <label className="text-[seagreen] mb-10">Output File Urls</label>
+                          {data.output_tile_paths.map((item, index2) => {
+                              const ext = item.split('.').pop().toLowerCase();
+                              const isGeoFormat = ['tiff', 'tif', 'cog'].includes(ext);
+                              const nameWithoutExt = item.slice(0, item.lastIndexOf('.'));
+                              console.log("paths",isGeoFormat,nameWithoutExt)
+            
+                              return (
+                                <p className="flex mb-0 justify-between items-center" key={index2}>
+                                    {isGeoFormat ? item : nameWithoutExt}
+                                    <div className="relative">
+                                      <button 
+                                        onClick={() => setOpenOutputDropdownIndex(openOutputDropdownIndex === index2 ? null : index2)}
+                                        className="text-green-600 hover:text-green-800"
+                                      >
+                                        actions ▾
+                                      </button>
+                                      
+                                      {openOutputDropdownIndex === index2 && (
+                                        <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                                          <button 
+                                            className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                                            onClick={() => handleEdit(nameWithoutExt,"file","geospatial",data.output_id)}
+                                          >
+                                            Edit
+                                          </button>
+                                          <button 
+                                            className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                                            onClick={() => handleGeospatialDownload(isGeoFormat?item:nameWithoutExt,data.output_id)}
+                                          >
+                                            Download
+                                          </button>
+                                          
+                                        </div>
+                                      )}
+                                    </div>
+                      </p>
+                              );
+          }                  )}
+                            
+                          </div>
+
+                      </div>
                   </div>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
-                    <p>{data.date_captured}</p>
-                  </div>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">uploaded at</label>
-                    <p>{data.uploaded_at}</p>
-                  </div>
+                  
                 </div>
               )}
             </div>
           </div>
         </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+                {modalContent}
+          </Modal>
       </div>
     );
   }
@@ -826,9 +1465,100 @@ export function DocumentDetailView() {
     const [data, setData] = useState(null);
     const [tileJson, setTileJson] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+    const [modalContent, setModalContent] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [error, setError] = useState(null);
     const hasFetched = useRef(false);
     const { sharedValue: ItemId } = useContext(DetailViewIdContext);
+
+    const closeModal = () => {
+      setIsModalOpen(false);
+      setModalContent(null);
+    };
+
+
+    const handleEdit = (item,inputType,dataCategory) => {
+
+      console.log(`Editing ${item}`);
+      const dataKey = inputType==="text"? Object.keys(data).find(key => data[key] === item):null
+      console.log("The text key id",dataKey)
+      setModalContent(<EditData inputType={inputType} dataCategory={dataCategory} dataToEdit={item} dataKey={dataKey} is_analysis_id={null} />)
+      setIsModalOpen(true);
+      // Your download logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+    
+    
+    
+    const handleDownload = (item) => {
+      console.log(`Downloading ${item}`);
+  const fileExtension = item.split('.').pop().toLowerCase(); // Get file extension
+  const isRaster = ['cog', 'tif', 'tiff'].includes(fileExtension);
+  const isVector = ['shp', 'geojson'].includes(fileExtension);
+  let url = null;
+
+  if (isRaster) {
+    url = `http://localhost:8000/media/tiles/${data.id}/${item}`;
+  } else if (isVector) {
+    const nameWithoutExt = item.slice(0, item.lastIndexOf('.')); // Remove extension
+    if (fileExtension === 'shp') {
+      // Array of URLs for shapefile components
+      url = [
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.shp`,
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.shx`,
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.prj`,
+        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.dbf`,
+      ];
+    } else {
+      // Single file for GeoJSON
+      url = `http://localhost:8000/media/geospatial/${data.id}/${item}`;
+    }
+  }
+
+  if (Array.isArray(url)) {
+    // Download each file in the array
+    for (let i = 0; i < url.length; i++) {
+      downloadFile(url[i]);
+    }
+  } else if (url) {
+    // Download single file
+    downloadFile(url);
+  } else {
+    console.error('Invalid file type or URL');
+  }
+      // Your download logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+    
+    const handleDelete = (item) => {
+      console.log(`Deleting ${item}`);
+      // Your delete logic here
+      setOpenDropdownIndex(null); // Close dropdown after action
+    };
+  
+
+      const navigate = useNavigate()
+      useEffect(() => {
+        // This will set the CSRF cookie
+        async function fetchisAuthData(){
+        const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+          alert("User is Logged out, Redirecting to login");
+          navigate('/login-user', { state: { from: window.location.pathname } });
+          // return null;
+        }
+        // const data = await response.json();
+        console.log("User is Logged In")
+      }
+    
+      fetchisAuthData()
+      
+      }, []);
 
     async function fetchGeospatialData(id) {
       try {
@@ -858,8 +1588,10 @@ export function DocumentDetailView() {
       async function handleFetch() {
         if (hasFetched.current) return;
         hasFetched.current = true;
-      
-        await fetchGeospatialData(ItemId);
+        const searchParams = new URLSearchParams(window.location.search);
+        const linkIdParam = searchParams.get("LinkId");
+        console.log("LinkId",linkIdParam)
+        await fetchGeospatialData(ItemId?ItemId:linkIdParam);
         setLoading(false);
       }
       handleFetch();
@@ -868,6 +1600,7 @@ export function DocumentDetailView() {
     useEffect(() => {
       if (!data || !data.tile_paths) return;
       console.log("path", data.tile_paths);
+      console.log("file_path", data.file_paths);
       const tile_urls = data.tile_paths;
 
       const fetchTileJson = async () => {
@@ -982,26 +1715,158 @@ export function DocumentDetailView() {
               </div>
               {data && (
                 <div className="flex-col mt-[50px] flex-3 bg-white items-start justify-start border-2 border-[whitesmoke] pl-0 w-full">
-                  <label className="text-[seagreen] mb-10">Data Properties</label>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">file url</label>
-                    <p>{data.file}</p>
+                  <div className="">
+                    <label className="text-[seagreen] mb-10">Data Properties</label>
+                   
+                    <div className="flex mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">type of data</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.type_of_data}> {data.type_of_data}
+
+                        <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.type_of_data ? null : data.type_of_data)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.type_of_data && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.type_of_data,"text","geospatial")}
+                            >
+                              Edit
+                            </button>
+                           
+                          </div>
+                        )}
+                      </div>
+
+
+                      </p>
+                    </div>
+                    <div className="flex mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">data type</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.data_type} > {data.data_type}
+                        
+                      <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.data_type? null : data.data_type)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.data_type && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.data_type,"text","geospatial")}
+                            >
+                              Edit
+                            </button>
+                           
+                          </div>
+                        )}
+                      </div>
+                      </p>
+                    </div>
+                    <div className="flex mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
+                      <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.description && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.description,"text","geospatial")}
+                            >
+                              Edit
+                            </button>
+                            
+                          </div>
+                        )}
+                      </div>
+                      </p>
+                    </div>
+                    <div className="flex mb-5">
+                      <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
+                      <p className="flex mb-0 justify-between items-center" key={data.date_captured} >{data.date_captured}
+                      <div className="relative">
+                        <button 
+                          onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          actions ▾
+                        </button>
+                        
+                        {openDropdownIndex === data.date_captured && (
+                          <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                            <button 
+                              className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                              onClick={() => handleEdit(data.date_captured,"text","geospatial")}
+                            >
+                              Edit
+                            </button>
+                           
+                          </div>
+                        )}
+                      </div>
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">type of data</label>
-                    <p>{data.type_of_data}</p>
-                  </div>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">data type</label>
-                    <p>{data.data_type}</p>
-                  </div>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">description</label>
-                    <p>{data.description}</p>
-                  </div>
-                  <div className="flex mb-5">
-                    <label style={{ textAlign: 'left' }} className="text-black pd-0">date captured</label>
-                    <p>{data.date_captured}</p>
+                  <div>
+                  <label className="text-[seagreen] mb-10">File Urls</label>
+                  
+                     
+                  {data.tile_paths.map((item, index) => {
+                    const ext = item.split('.').pop().toLowerCase();
+                    const isGeoFormat = ['tiff', 'tif', 'cog'].includes(ext);
+                    const nameWithoutExt = item.slice(0, item.lastIndexOf('.'));
+                    console.log("paths",isGeoFormat,nameWithoutExt)
+  
+                    return (
+                      <p className="flex mb-0 justify-between items-center" key={index}>
+                        {isGeoFormat ? item : nameWithoutExt}
+                        <div className="relative">
+                          <button 
+                            onClick={() => setOpenDropdownIndex(openDropdownIndex === index ? null : index)}
+                            className="text-green-600 hover:text-green-800"
+                          >
+                            actions ▾
+                          </button>
+                          
+                          {openDropdownIndex === index && (
+                            <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
+                              <button 
+                                className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                                onClick={() => handleEdit(nameWithoutExt,"file","geospatial")}
+                              >
+                                Edit
+                              </button>
+                              <button 
+                                className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
+                                onClick={() => handleDownload(isGeoFormat?item:nameWithoutExt)}
+                              >
+                                Download
+                              </button>
+                              
+                            </div>
+                          )}
+                        </div>
+                      </p>
+                    );
+}                  )}
+                  
+
                   </div>
                 </div>
               )}
@@ -1011,6 +1876,9 @@ export function DocumentDetailView() {
             </div>
           </div>
         </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+                {modalContent}
+          </Modal>
       </div>
     );
   }

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { DetailViewIdContext } from '../../utils/context';
 import { useNavigate } from 'react-router-dom';
 
-export function ItemsCard({ item }) {
+export function ItemsCard({ item,setShareItemLink }) {
   const { setSharedValue } = useContext(DetailViewIdContext);
   const [thumbnailCards, setThumbnailCards] = useState([]);
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ export function ItemsCard({ item }) {
     }
   }, [item]); // Depend on the entire item object
 
-  const handleButtonOnClick = (event, cardData) => {
+  const handleButtonOnClick = async(event, cardData) => {
     event.stopPropagation();
     const buttonText = event.target.innerText.trim();
     console.log('Button clicked:', buttonText, 'Item type:', cardData.originalItemType);
@@ -90,12 +90,88 @@ export function ItemsCard({ item }) {
       } else {
         console.log('Unknown item type:', itemType);
       }
-    } else if (buttonText === 'download') {
-      console.log('Download clicked');
-    } else if (buttonText === 'edit') {
-      console.log('Edit clicked');
+    } else if (buttonText === 'share') {
+      console.log('shared clicked');
+      const itemType = cardData.originalItemType || '';
+      let url=""
+
+       if (itemType==="geospatial"){
+          //  url = `http://localhost:3000/data-view?LinkId={cardData.originalItemId}`
+           url = `http://localhost:3000/geo-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://localhost:8000/manage-data/get-update-delete-geospatial/${cardData.originalItemId}/`
+      }else if (itemType==="document"){
+        url = `http://localhost:3000/doc-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://localhost:8000/manage-data/get-update-delete-document/${cardData.originalItemId}/`
+      }else if (itemType==="map"){
+        url = `http://localhost:3000/map-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://localhost:8000/manage-data/get-update-delete-map/${cardData.originalItemId}/`
+      }else if (itemType==="analysis"){
+          url = `http://localhost:3000/analysis-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://localhost:8000/manage-data/get-update-delete-analysis/${cardData.originalItemId}/`
+      }else{
+        console.log("no category found")
+        return
+      }
+      console.log("url",url)
+      setShareItemLink(url)
     } else if (buttonText === 'delete') {
+      const itemType = cardData.originalItemType || '';
       console.log('Delete clicked');
+      let url=null
+
+       if (itemType==="geospatial"){
+        url=`http://localhost:8000/manage-data/get-update-delete-geospatial/${cardData.originalItemId}/`
+      }else if (itemType==="document"){
+        url=`http://localhost:8000/manage-data/get-update-delete-document/${cardData.originalItemId}/`
+      }else if (itemType==="map"){
+        url=`http://localhost:8000/manage-data/get-update-delete-map/${cardData.originalItemId}/`
+      }else if (itemType==="analysis"){
+        url=`http://localhost:8000/manage-data/get-update-delete-analysis/${cardData.originalItemId}/`
+      }else{
+        console.log("no category found")
+        return
+      }
+     
+        try {
+          const response = await fetch(
+            url,
+            {
+              method: 'DELETE',
+              credentials: 'include', 
+              headers: { 'Content-Type': 'application/json' },
+              
+            }
+          );
+    
+          // Log the raw response for debugging
+          const rawResponse = await response.text();
+          console.log('Raw response:', rawResponse);
+    
+          if (!response.ok) {
+            let errorData;
+            try {
+              errorData = JSON.parse(rawResponse);
+            } catch {
+              errorData = { error: `Server returned status ${response.status}` };
+            }
+            console.log('Delete Data  failed:', response.status, errorData.error || 'Unknown error');
+            // setError(errorData.error || 'Delete Data  failed');
+            return null;
+          }else{
+    
+          // Parse JSON only if response is OK
+          const data = JSON.parse(rawResponse);
+         
+          console.log('Data  Deleted Successfully:', data);
+          }
+          // return data;
+        } catch (error) {
+          console.error('Fetch Error:', error.message);
+          // setError(`Network error: ${error.message}`);
+          return null;
+        }
+        
+      
     }
   };
 
@@ -128,19 +204,13 @@ export function ItemsCard({ item }) {
                 >
                   view
                 </button>
+                
                 <button
                   onClick={(e) => handleButtonOnClick(e, cardData)}
                   style={{ backgroundColor: 'white', color: 'seagreen' }}
                   className="btn btn-primary"
                 >
-                  download
-                </button>
-                <button
-                  onClick={(e) => handleButtonOnClick(e, cardData)}
-                  style={{ backgroundColor: 'white', color: 'seagreen' }}
-                  className="btn btn-primary"
-                >
-                  edit
+                  share
                 </button>
                 <button
                   onClick={(e) => handleButtonOnClick(e, cardData)}
@@ -169,19 +239,13 @@ export function ItemsCard({ item }) {
               >
                 view
               </button>
+            
               <button
                 onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
                 style={{ backgroundColor: 'white', color: 'seagreen' }}
                 className="btn btn-primary"
               >
-                download
-              </button>
-              <button
-                onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
-                style={{ backgroundColor: 'white', color: 'seagreen' }}
-                className="btn btn-primary"
-              >
-                edit
+                share
               </button>
               <button
                 onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
