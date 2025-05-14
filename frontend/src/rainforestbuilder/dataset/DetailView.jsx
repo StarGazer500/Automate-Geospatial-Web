@@ -357,6 +357,7 @@ export function DocumentDetailView() {
   
   const handleDownload = (item) => {
     console.log(`Downloading ${item}`);
+    downloadFile(item)
     // Your download logic here
     setOpenDropdownIndex(null); // Close dropdown after action
   };

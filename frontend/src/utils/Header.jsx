@@ -47,20 +47,16 @@ function Header() {
           <li className="tab">
             <a href="/pricing/">shareable maps</a>
           </li>
-          <li className="tab">
-            <a href="/contact/">dashboards</a>
-          </li>
-          <li className="tab">
-            <a href="/services/">datasets</a>
-          </li>
-          <li className="tab">
-            <a href="/data-view/">Datasets</a>
-          </li>
-
-
+          
           <li className="tab">
             <a href="/dashboard/">dashboard</a>
           </li>
+         
+          <li className="tab">
+            <a href="/data-view/">datasets</a>
+          </li>
+
+
           
           
 

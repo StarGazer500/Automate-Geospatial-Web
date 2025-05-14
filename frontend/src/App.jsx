@@ -12,6 +12,7 @@ import {LoginForm} from './rainforestbuilder/auth/LoginView'
 import FormSlider from './rainforestbuilder/dataset/FormSlider'
 import {DocumentDataUpload} from './rainforestbuilder/dataset/Uploads'
 import { Route, Routes } from "react-router-dom";
+import {Dashboard} from './rainforestbuilder/dashboard/Dashboard'
 
 
 

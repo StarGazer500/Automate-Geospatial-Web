@@ -1289,7 +1289,7 @@ class SemanticSearchDocumentView(View):
             print("Queryset executed", results)
             for item in results:
                 item['file'] = item.get('file').url if item.get('file') else None
-                item['thumbnail'] = item.get('thumbnail').url if item.get('thumbnail') else None
+                item['thumbnail'] = item.get('thumbnail').url.strip('/media/') if item.get('thumbnail') else None
                
                 print("document object",item)
                 item['type'] = 'document'
@@ -1408,7 +1408,7 @@ class SemanticSearchMapView(View):
             print("Queryset executed", results)
             for item in results:
                 item['file'] = item.get('file').url if item.get('file') else None
-                item['thumbnail'] = item.get('thumbnail').url if item.get('thumbnail') else None
+                item['thumbnail'] = item.get('thumbnail').url.strip('/media/') if item.get('thumbnail') else None
                 item['type'] = 'map'
 
            
@@ -1525,7 +1525,7 @@ class SemanticSearchAnalysisView(View):
             print("Queryset executed", results)
             for item in results:
                 item['file'] = item.get('file').url if item.get('file') else None
-                item['thumbnail'] = item.get('thumbnail').url if item.get('thumbnail') else None
+                item['thumbnail'] = item.get('thumbnail').url.strip('/media/') if item.get('thumbnail') else None
                 item['type'] = 'analysis'
 
            
@@ -1657,15 +1657,15 @@ class SemanticSearchAllDataView(View):
                 item['tile_paths'] = os.listdir(os.path.join(settings.MEDIA_ROOT,item['tiles_path']))
             for item in document_results:
                 item['file'] = item.get('file').url if item.get('file') else None
-                item['thumbnail'] = item.get('thumbnail').url if item.get('thumbnail') else None
+                item['thumbnail'] = item.get('thumbnail').url.strip('/media/') if item.get('thumbnail') else None
                 item['type'] = 'document'
             for item in map_results:
                 item['file'] = item.get('file').url if item.get('file') else None
-                item['thumbnail'] = item.get('thumbnail').url if item.get('thumbnail') else None
+                item['thumbnail'] = item.get('thumbnail').url.strip('/media/') if item.get('thumbnail') else None
                 item['type'] = 'map'
             for item in analysis_results:
                 item['file'] = item.get('file').url if item.get('file') else None
-                item['thumbnail'] = item.get('thumbnail').url if item.get('thumbnail') else None
+                item['thumbnail'] = item.get('thumbnail').url.strip('/media/') if item.get('thumbnail') else None
                 item['type'] = 'analysis'
 
             all_data = analysis_results + map_results + geospatial_results+ document_results

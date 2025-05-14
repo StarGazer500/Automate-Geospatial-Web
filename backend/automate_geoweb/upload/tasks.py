@@ -451,87 +451,98 @@ def generate_tiles_task(self, input_path, output_dir, instance_id):
                         logger.warning(f"Failed to clean up temporary file {temp_file.name}: {e}")
         cache.delete(lock_key)
 
+from django.apps import apps
+from django.db import transaction
+from celery import shared_task
+import logging
+import time
+from django.core.exceptions import ValidationError
+import numpy as np
+
+logger = logging.getLogger(__name__)
+
 @shared_task(bind=True, max_retries=3)
 def save_embedding(self, instance_id, model_name, embedding_list):
+    """
+    Save the embedding vector to the database with explicit transaction management
+    and proper error handling for VectorField.
+    """
     try:
-        instance_model = apps.get_model(model_name)
-        instance = instance_model.objects.get(id=instance_id)
-        
-        # Check if embedding_list is valid
-        if embedding_list is None or not isinstance(embedding_list, list):
-            logger.error(f"Invalid embedding for {model_name} ID: {instance_id}. Type: {type(embedding_list)}")
-            return None
+        # Use atomic transaction to ensure data consistency
+        with transaction.atomic():
+            instance_model = apps.get_model(model_name)
+            instance = instance_model.objects.get(id=instance_id)
             
-        # Ensure embeddings are proper float values
-        embedding_list = [float(val) for val in embedding_list]
+            # Check if embedding_list is valid
+            if embedding_list is None or not isinstance(embedding_list, list):
+                logger.error(f"Invalid embedding for {model_name} ID: {instance_id}. Type: {type(embedding_list)}")
+                return None
+                
+            # Ensure embeddings are proper float values
+            embedding_list = [float(val) for val in embedding_list]
+            
+            # Check dimensions
+            expected_dim = 384  # Based on your VectorField dimensions
+            if len(embedding_list) != expected_dim:
+                logger.error(f"Embedding has incorrect dimensions: {len(embedding_list)} (expected {expected_dim})")
+                return None
+            
+            # Update embedding field
+            instance.desc_embedding = embedding_list
+            instance.save(update_fields=['desc_embedding'])
+            
+            logger.info(f"Embedding saved for {model_name} ID: {instance_id} within transaction")
+
+        # Small delay to ensure database consistency
+        time.sleep(0.5)
         
-        # Force update the field directly
-        instance.desc_embedding = embedding_list
-        instance.save(update_fields=['desc_embedding'])
+        # Verify the embedding was saved (outside transaction)
+        refreshed_instance = instance_model.objects.select_related().get(id=instance_id)
         
-        # Verify the embedding was saved
-        refreshed_instance = instance_model.objects.get(id=instance_id)
         if refreshed_instance.desc_embedding is None:
             logger.error(f"Embedding failed to save for {model_name} ID: {instance_id} after verification")
+            # Try direct update as fallback
+            instance_model.objects.filter(id=instance_id).update(desc_embedding=embedding_list)
+            logger.info(f"Attempted direct update for {model_name} ID: {instance_id}")
         else:
-            logger.info(f"Embedding saved and verified for {model_name} ID: {instance_id}")
+            # Log first few values to verify content
+            sample_values = refreshed_instance.desc_embedding[:5] if hasattr(refreshed_instance.desc_embedding, "__getitem__") else "N/A"
+            logger.info(f"Embedding saved and verified for {model_name} ID: {instance_id}. Sample: {sample_values}")
             
         return True
         
+    except ValidationError as ve:
+        logger.error(f"Validation error saving embedding for {model_name} ID: {instance_id}: {ve}")
+        # Try with numpy array conversion
+        try:
+            with transaction.atomic():
+                instance_model = apps.get_model(model_name)
+                instance = instance_model.objects.get(id=instance_id)
+                # Convert to numpy array first
+                np_array = np.array(embedding_list, dtype=np.float32)
+                instance.desc_embedding = np_array.tolist()
+                instance.save(update_fields=['desc_embedding'])
+            logger.info(f"Embedding saved with numpy conversion for {model_name} ID: {instance_id}")
+            return True
+        except Exception as e2:
+            logger.error(f"Second attempt failed for {model_name} ID: {instance_id}: {e2}")
+            return None
+            
     except instance_model.DoesNotExist:
         logger.error(f"{model_name} ID: {instance_id} does not exist")
         return None
+        
     except Exception as e:
         logger.error(f"Error saving embedding for {model_name} ID: {instance_id}: {e}")
         raise self.retry(exc=e, countdown=5)
-    
-
-# @shared_task(bind=True, max_retries=3)
-# def generate_embedding_task(self, instance_id, model_name):
-#     try:
-#         instance_model = apps.get_model(model_name)
-#         instance = instance_model.objects.get(id=instance_id)
-#         if instance.description:
-#             model = get_sentence_transformer_model_sync()
-#             embedding = model.encode(instance.description)
-#             # instance.desc_embedding = embedding
-#             # instance.save(update_fields=['desc_embedding'])  # Fixed field name
-#             logger.info("Embedding generated", embedding)
-#             return embedding
-#             # logger.info("Embedding", embedding)
-#             # logger.info(f"Generated embedding for {model_name} ID: {instance_id} encoding:{embedding} enc_field{ instance.desc_embedding}")
-#         else:
-#             logger.warning(f"No description found for {model_name} ID: {instance_id}")
-#     except instance_model.DoesNotExist:
-#         logger.error(f"{model_name} ID: {instance_id} does not exist")
-#     except Exception as e:
-#         logger.error(f"Error generating embedding for {model_name} ID: {instance_id}: {e}")
-#         raise self.retry(exc=e, countdown=5)
-
-@shared_task
-def debug_embedding(instance_id, model_name):
-    try:
-        instance_model = apps.get_model(model_name)
-        instance = instance_model.objects.get(id=instance_id)
-        
-        if instance.desc_embedding is None:
-            logger.error(f"Embedding is None for {model_name} ID: {instance_id}")
-        else:
-            embedding_info = {
-                "type": type(instance.desc_embedding).__name__,
-                "length": len(instance.desc_embedding) if hasattr(instance.desc_embedding, "__len__") else "N/A",
-                "sample": str(instance.desc_embedding[:5]) if hasattr(instance.desc_embedding, "__getitem__") else "N/A"
-            }
-            logger.info(f"Embedding for {model_name} ID: {instance_id}: {embedding_info}")
-        
-        return True
-    except Exception as e:
-        logger.error(f"Error debugging embedding for {model_name} ID: {instance_id}: {e}")
-        return None
 
 
 @shared_task(bind=True, max_retries=3)
 def generate_embedding_task(self, instance_id, model_name):
+    """
+    Generate embedding for a given instance and save it.
+    Improved with better error handling and verification.
+    """
     try:
         instance_model = apps.get_model(model_name)
         instance = instance_model.objects.get(id=instance_id)
@@ -543,7 +554,12 @@ def generate_embedding_task(self, instance_id, model_name):
         try:
             model = get_sentence_transformer_model_sync()
             embedding = model.encode(instance.description)
-            embedding_list = embedding.tolist()  # Convert NumPy array to list
+            
+            # Ensure embedding is the right format
+            if isinstance(embedding, np.ndarray):
+                embedding_list = embedding.tolist()  # Convert NumPy array to list
+            else:
+                embedding_list = list(embedding)  # Convert other iterable types
             
             # Check embedding dimensions
             expected_dim = 384  # Based on your VectorField dimensions
@@ -553,13 +569,18 @@ def generate_embedding_task(self, instance_id, model_name):
                 
             logger.info(f"Embedding generated for {model_name} ID: {instance_id}, length: {len(embedding_list)}")
             
-            # Chain the save_embedding task and wait for result
-            result = save_embedding.delay(instance_id, model_name, embedding_list)
+            # Save embedding using a synchronous call to ensure it completes
+            # This is important for debugging purposes
+            result = save_embedding(instance_id, model_name, embedding_list)
             
-            # Add debug task
-            debug_embedding.delay(instance_id, model_name)
+            # Also queue an asynchronous save as a backup
+            save_embedding.delay(instance_id, model_name, embedding_list)
+            
+            # Add debug task to verify later
+            debug_embedding.apply_async(args=[instance_id, model_name], countdown=10)
             
             return embedding_list
+            
         except Exception as e:
             logger.error(f"Error in embedding generation: {e}")
             raise
@@ -567,11 +588,41 @@ def generate_embedding_task(self, instance_id, model_name):
     except instance_model.DoesNotExist:
         logger.error(f"{model_name} ID: {instance_id} does not exist")
         return None
+        
     except Exception as e:
         logger.error(f"Error generating embedding for {model_name} ID: {instance_id}: {e}")
         raise self.retry(exc=e, countdown=5)
 
 
+@shared_task
+def debug_embedding(instance_id, model_name):
+    """
+    Debug task to verify embedding was saved correctly.
+    """
+    try:
+        instance_model = apps.get_model(model_name)
+        # Force a new database connection
+        instance = instance_model.objects.using('default').get(id=instance_id)
+        
+        if instance.desc_embedding is None:
+            logger.error(f"Embedding is None for {model_name} ID: {instance_id}")
+            return False
+        else:
+            # Get detailed information about the embedding
+            embedding_info = {
+                "type": type(instance.desc_embedding).__name__,
+                "length": len(instance.desc_embedding) if hasattr(instance.desc_embedding, "__len__") else "N/A",
+                "sample": str(instance.desc_embedding[:5]) if hasattr(instance.desc_embedding, "__getitem__") else "N/A",
+                "exists": instance.desc_embedding is not None
+            }
+            logger.info(f"Debug: Embedding for {model_name} ID: {instance_id}: {embedding_info}")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Error debugging embedding for {model_name} ID: {instance_id}: {e}")
+        return None
+    
+    
 @shared_task(bind=True, max_retries=3)
 def save_analysis_files(self, temp_file_paths, metadata):
     try:
