@@ -9,12 +9,13 @@ from django.conf import settings
 from django.http import JsonResponse, HttpResponse, Http404
 from django.views import View
 import aiosqlite
+import aiofiles
 
 logger = logging.getLogger(__name__)
 TILES_BASE_DIR = getattr(settings, 'MBTILES_BASE_DIR', os.path.join(settings.MEDIA_ROOT, 'tiles'))
 
 
-class TileJsonView(View):
+class VectorTileJsonView(View):
     """Class-based async view for TileJSON metadata."""
     
     async def get(self, request, tile_path, user_id):
@@ -51,7 +52,7 @@ class TileJsonView(View):
             return JsonResponse({"error": f"Failed to generate TileJSON: {str(e)}"}, status=500)
 
 
-class TileView(View):
+class VectorTileView(View):
     """Class-based async view for serving MBTiles."""
     
     async def get(self, request, tile_path, user_id, z, x, y):
@@ -98,3 +99,40 @@ class TileView(View):
             raise Http404(f"Error serving tile: {str(e)}")
 
 
+class RasterTileView(View):
+    async def get(self, request, z, x, y, tileset="May"):
+        """Serve a pre-generated map tile for the specified tileset, zoom, x, and y."""
+        test = Path(settings.TILES_ROOT, tileset)
+       
+        
+        try:
+            # Validate zoom level (based on gdal2tiles.py -z 12-19)
+            # if not (12 <= z <= 19):
+            #     raise Http404(f"Zoom level {z} is out of range (12-19)")
+                
+            # Construct tile path
+            tile_path = Path(settings.TILES_ROOT, tileset, str(z), str(x), f"{y}.png")
+            
+            # Prevent path traversal
+            if not tile_path.resolve().is_relative_to(settings.TILES_ROOT):
+                raise Http404("Invalid tile path")
+                
+            # Read tile file asynchronously
+            try:
+                async with aiofiles.open(tile_path, 'rb') as f:
+                    content = await f.read()
+                
+                logger.info(f"Serving tile: {tileset}/{z}/{x}/{y}")
+                
+                # Use AsyncFileResponse instead of FileResponse
+                response = HttpResponse(content, content_type='image/png')
+                print("existes",tile_path)
+                return response
+                
+            except FileNotFoundError:
+                logger.warning(f"Tile not found: {tileset}/{z}/{x}/{y}")
+                raise Http404(f"Tile {tileset}/{z}/{x}/{y} not found")
+                
+        except Exception as e:
+            logger.error(f"Error serving tile {tileset}/{z}/{x}/{y}: {str(e)}")
+            raise Http404(f"Error serving tile: {str(e)}")

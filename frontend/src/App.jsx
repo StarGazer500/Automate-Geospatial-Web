@@ -5,6 +5,7 @@ import './App.css'
 import Homepage from './rainforestbuilder/homepage/Homepage'
 import  DatasetView from './rainforestbuilder/dataset/Dataset'
 import {MapDetailView,DocumentDetailView,AnalysisDetailView,GeospatialDetailView} from './rainforestbuilder/dataset/DetailView'
+import DroneMapViewer from './rainforestbuilder/rastertileservice/RasterTileService'
 
 import {LoginForm} from './rainforestbuilder/auth/LoginView'
 
@@ -34,8 +35,8 @@ function App() {
             <Route path="/doc-detail-view" element={<DocumentDetailView/>} />
             <Route path="/analysis-detail-view" element={<AnalysisDetailView/>} />
             <Route path="/geo-detail-view" element={<GeospatialDetailView/>} />
-
             <Route path="/login-user" element={<LoginForm/>} />
+            <Route path="/basemap-tms" element={<DroneMapViewer/>} />
             
 
             
