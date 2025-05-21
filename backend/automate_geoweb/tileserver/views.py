@@ -102,8 +102,8 @@ class VectorTileView(View):
 class RasterTileView(View):
     async def get(self, request, z, x, y, tileset="May"):
         """Serve a pre-generated map tile for the specified tileset, zoom, x, and y."""
-        test = Path(settings.TILES_ROOT, tileset)
-       
+        # test = Path(settings.TILES_ROOT, tileset)
+    #    Path(os.path.join(settings.MEDIA_ROOT, 'tiles', str(user_id), tile_path))
         
         try:
             # Validate zoom level (based on gdal2tiles.py -z 12-19)
@@ -111,10 +111,10 @@ class RasterTileView(View):
             #     raise Http404(f"Zoom level {z} is out of range (12-19)")
                 
             # Construct tile path
-            tile_path = Path(settings.TILES_ROOT, tileset, str(z), str(x), f"{y}.png")
-            
+            tile_path = Path(os.path.join(settings.MEDIA_ROOT,'raster_tiles', tileset, str(z), str(x), f"{y}.png"))
+            print("Is dir",tile_path.resolve().is_relative_to(settings.MEDIA_ROOT))
             # Prevent path traversal
-            if not tile_path.resolve().is_relative_to(settings.TILES_ROOT):
+            if not tile_path.resolve().is_relative_to(settings.MEDIA_ROOT):
                 raise Http404("Invalid tile path")
                 
             # Read tile file asynchronously

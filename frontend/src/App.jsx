@@ -36,7 +36,7 @@ function App() {
             <Route path="/analysis-detail-view" element={<AnalysisDetailView/>} />
             <Route path="/geo-detail-view" element={<GeospatialDetailView/>} />
             <Route path="/login-user" element={<LoginForm/>} />
-            <Route path="/basemap-tms" element={<DroneMapViewer/>} />
+            <Route path="/drone-basemap-tms" element={<DroneMapViewer/>} />
             
 
             

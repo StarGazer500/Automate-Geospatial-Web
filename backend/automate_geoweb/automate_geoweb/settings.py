@@ -221,6 +221,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 MBTILES_BASE_DIR = os.path.join(MEDIA_ROOT, 'tiles')
 
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

@@ -1,0 +1,2 @@
+#Run the command above to generate drone or image tiles for leaflet
+gdal2tiles.py -z 12-19 -w leaflet "/media/martin/LINUX MINT/Sub_comp50a_ECW/17-04-2024.tif" /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/raster_tiles/May
