@@ -77,6 +77,7 @@ function DatasetView() {
   const currentUrl = useRef(null);
   const lastFetchedPage = useRef(0);
   const isFetching = useRef(false); // Prevent concurrent fetches
+  
 
     const navigate = useNavigate()
     const location = useLocation();
@@ -108,7 +109,8 @@ const handleKeyDown = async(event) => {
     }
 
     if (buttonText ==="All"){
-      url = "http://192.168.1.200:8000/manage-data/semantic-search-all/";
+       setData([])
+      // url = "http://192.168.1.200:8000/manage-data/semantic-search-all/";
       
     }
 
@@ -489,7 +491,7 @@ const handleKeyDown = async(event) => {
                 ))
               ) : (
                 <p style={{ textAlign: 'center', color: 'seagreen' }}>
-                  No data available for {buttonText}
+                  {buttonText==="All"?"Select any of categories: geospatial, map, document or analysis asset before searching":`No data available for ${buttonText}`}
                 </p>
               )}
               {loading && <p style={{ textAlign: 'center', color: 'seagreen' }}>Loading...</p>}

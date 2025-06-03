@@ -14562,3 +14562,710 @@ Traceback (most recent call last):
   File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
     raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
 django.http.response.Http404: Tile not found at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=32, y=32
+Error serving tile: Tile not found at z=6, x=32, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=32, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=33, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=32, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=32, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=33, y=33
+Error serving tile: Tile not found at z=6, x=32, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=32, y=33
+Error serving tile: Tile not found at z=6, x=33, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=33, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=33, y=32
+Error serving tile: Tile not found at z=6, x=32, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=32, y=31
+Error serving tile: Tile not found at z=6, x=33, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=33, y=31
+Error serving tile: Tile not found at z=6, x=33, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=33, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=31, y=32
+Error serving tile: Tile not found at z=6, x=31, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=31, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=34, y=32
+Error serving tile: Tile not found at z=6, x=34, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=34, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=34, y=33
+Error serving tile: Tile not found at z=6, x=34, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=34, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=35, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=34, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=31, y=33
+Error serving tile: Tile not found at z=6, x=34, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=34, y=31
+Error serving tile: Tile not found at z=6, x=35, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=35, y=32
+Error serving tile: Tile not found at z=6, x=31, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=31, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=30, y=32
+Error serving tile: Tile not found at z=6, x=30, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=30, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=31, y=31
+Error serving tile: Tile not found at z=6, x=31, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=31, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=30, y=31
+Error serving tile: Tile not found at z=6, x=30, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=30, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=35, y=31
+Error serving tile: Tile not found at z=6, x=35, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=35, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=35, y=33
+Error serving tile: Tile not found at z=6, x=35, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=35, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=30, y=33
+Error serving tile: Tile not found at z=6, x=30, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=30, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31648
+Error serving tile: Tile not found at z=16, x=32371, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31649
+Error serving tile: Tile not found at z=16, x=32371, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31649
+Error serving tile: Tile not found at z=16, x=32368, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31648
+Error serving tile: Tile not found at z=16, x=32367, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31648
+Error serving tile: Tile not found at z=16, x=32368, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31648
+Error serving tile: Tile not found at z=16, x=32372, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31648
+Tile found for user Compart50a.shp.mbtiles at z=16, x=32369, y=31648, size=870 bytes
+Tile found for user Compart50a.shp.mbtiles at z=16, x=32370, y=31649, size=821 bytes
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31649
+Error serving tile: Tile not found at z=16, x=32372, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31649
+Tile found for user Compart50a.shp.mbtiles at z=16, x=32369, y=31649, size=920 bytes
+Tile found for user Compart50a.shp.mbtiles at z=16, x=32370, y=31648, size=667 bytes
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31649
+Error serving tile: Tile not found at z=16, x=32371, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31648
+Error serving tile: Tile not found at z=16, x=32371, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31648
+Error serving tile: Tile not found at z=16, x=32368, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31648
+Error serving tile: Tile not found at z=16, x=32372, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31648
+Error serving tile: Tile not found at z=16, x=32372, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31649
+Error serving tile: Tile not found at z=16, x=32368, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=32, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=33, y=33
+Error serving tile: Tile not found at z=6, x=32, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=32, y=33
+Error serving tile: Tile not found at z=6, x=33, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=33, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=32, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=33, y=31
+Error serving tile: Tile not found at z=6, x=32, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=32, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=32, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=33, y=32
+Error serving tile: Tile not found at z=6, x=33, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=33, y=31
+Error serving tile: Tile not found at z=6, x=33, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=33, y=32
+Error serving tile: Tile not found at z=6, x=32, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=32, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=31, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=34, y=32
+Error serving tile: Tile not found at z=6, x=31, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=31, y=32
+Error serving tile: Tile not found at z=6, x=34, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=34, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=31, y=31
+Error serving tile: Tile not found at z=6, x=31, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=31, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=34, y=31
+Error serving tile: Tile not found at z=6, x=34, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=34, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=35, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=30, y=32
+Error serving tile: Tile not found at z=6, x=35, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=35, y=32
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=31, y=33
+Error serving tile: Tile not found at z=6, x=30, y=32
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=30, y=32
+Error serving tile: Tile not found at z=6, x=31, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=31, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=34, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=30, y=31
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=35, y=31
+Error serving tile: Tile not found at z=6, x=30, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=30, y=31
+Error serving tile: Tile not found at z=6, x=35, y=31
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=35, y=31
+Error serving tile: Tile not found at z=6, x=34, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=34, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=30, y=33
+Error serving tile: Tile not found at z=6, x=30, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=30, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=6, x=35, y=33
+Error serving tile: Tile not found at z=6, x=35, y=33
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=6, x=35, y=33
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31649
+Error serving tile: Tile not found at z=16, x=32371, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31648
+Error serving tile: Tile not found at z=16, x=32368, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31648
+Error serving tile: Tile not found at z=16, x=32372, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31648
+Error serving tile: Tile not found at z=16, x=32371, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31649
+Error serving tile: Tile not found at z=16, x=32368, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31649
+Error serving tile: Tile not found at z=16, x=32372, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31648
+Error serving tile: Tile not found at z=16, x=32367, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31649
+Error serving tile: Tile not found at z=16, x=32371, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31648
+Error serving tile: Tile not found at z=16, x=32372, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31648
+Error serving tile: Tile not found at z=16, x=32368, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31648
+Error serving tile: Tile not found at z=16, x=32371, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31648
+Error serving tile: Tile not found at z=16, x=32368, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31649
+Error serving tile: Tile not found at z=16, x=32372, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31649
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64739, y=63297, size=808 bytes
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64739, y=63299, size=789 bytes
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64738, y=63297, size=801 bytes
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64739, y=63298, size=735 bytes
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64738, y=63298, size=820 bytes
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64740, y=63298, size=791 bytes
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64740, y=63299, size=733 bytes
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63298
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64738, y=63299, size=680 bytes
+Tile found for user Compart50a.shp.mbtiles at z=17, x=64740, y=63297, size=658 bytes
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63298
+Error serving tile: Tile not found at z=17, x=64737, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63297
+Error serving tile: Tile not found at z=17, x=64737, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63298
+Error serving tile: Tile not found at z=17, x=64741, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63297
+Error serving tile: Tile not found at z=17, x=64741, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63299
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63299
+Error serving tile: Tile not found at z=17, x=64741, y=63299
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63299
+Error serving tile: Tile not found at z=17, x=64737, y=63299
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63299
+Tile not found for user Compart50a.shp.mbtiles at z=18, x=129476, y=126597
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129478, y=126596, size=648 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129479, y=126595, size=722 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129478, y=126595, size=718 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129479, y=126596, size=654 bytes
+Error serving tile: Tile not found at z=18, x=129476, y=126597
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=18, x=129476, y=126597
+Tile not found for user Compart50a.shp.mbtiles at z=18, x=129481, y=126595
+Error serving tile: Tile not found at z=18, x=129481, y=126595
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=18, x=129481, y=126595
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129477, y=126596, size=720 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129478, y=126597, size=733 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129479, y=126597, size=648 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129480, y=126596, size=740 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129477, y=126597, size=757 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129480, y=126597, size=648 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129476, y=126596, size=665 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129477, y=126595, size=664 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129480, y=126595, size=657 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129481, y=126596, size=659 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129481, y=126597, size=710 bytes
+Tile found for user Compart50a.shp.mbtiles at z=18, x=129476, y=126595, size=748 bytes
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63299
+Error serving tile: Tile not found at z=17, x=64741, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63298
+Error serving tile: Tile not found at z=17, x=64737, y=63299
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63299
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63299
+Error serving tile: Tile not found at z=17, x=64737, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63297
+Error serving tile: Tile not found at z=17, x=64737, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63297
+Error serving tile: Tile not found at z=17, x=64741, y=63299
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63299
+Error serving tile: Tile not found at z=17, x=64741, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31648
+Error serving tile: Tile not found at z=16, x=32368, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31649
+Error serving tile: Tile not found at z=16, x=32368, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31648
+Error serving tile: Tile not found at z=16, x=32371, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32372, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31648
+Error serving tile: Tile not found at z=16, x=32372, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31648
+Error serving tile: Tile not found at z=16, x=32372, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32372, y=31649
+Error serving tile: Tile not found at z=16, x=32371, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63299
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63299
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63298
+Error serving tile: Tile not found at z=17, x=64737, y=63299
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63299
+Error serving tile: Tile not found at z=17, x=64737, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63298
+Error serving tile: Tile not found at z=17, x=64741, y=63299
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63299
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63297
+Error serving tile: Tile not found at z=17, x=64741, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63297
+Error serving tile: Tile not found at z=17, x=64741, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63298
+Error serving tile: Tile not found at z=17, x=64737, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=18, x=129476, y=126597
+Error serving tile: Tile not found at z=18, x=129476, y=126597
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=18, x=129476, y=126597
+Tile not found for user Compart50a.shp.mbtiles at z=18, x=129481, y=126595
+Error serving tile: Tile not found at z=18, x=129481, y=126595
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=18, x=129481, y=126595
+Tile not found for user Compart50a.shp.mbtiles at z=18, x=129475, y=126597
+Error serving tile: Tile not found at z=18, x=129475, y=126597
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=18, x=129475, y=126597
+Tile not found for user Compart50a.shp.mbtiles at z=18, x=129475, y=126596
+Error serving tile: Tile not found at z=18, x=129475, y=126596
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=18, x=129475, y=126596
+Tile not found for user Compart50a.shp.mbtiles at z=18, x=129475, y=126595
+Error serving tile: Tile not found at z=18, x=129475, y=126595
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=18, x=129475, y=126595
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64737, y=63298
+Error serving tile: Tile not found at z=17, x=64737, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63297
+Error serving tile: Tile not found at z=17, x=64737, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64737, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63298
+Error serving tile: Tile not found at z=17, x=64741, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64736, y=63298
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64741, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=17, x=64736, y=63297
+Error serving tile: Tile not found at z=17, x=64736, y=63298
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64736, y=63298
+Error serving tile: Tile not found at z=17, x=64736, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64736, y=63297
+Error serving tile: Tile not found at z=17, x=64741, y=63297
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=17, x=64741, y=63297
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32368, y=31648
+Error serving tile: Tile not found at z=16, x=32368, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31649
+Error serving tile: Tile not found at z=16, x=32368, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32368, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31649
+Error serving tile: Tile not found at z=16, x=32371, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31649
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32367, y=31649
+Error serving tile: Tile not found at z=16, x=32367, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31648
+Tile not found for user Compart50a.shp.mbtiles at z=16, x=32371, y=31648
+Error serving tile: Tile not found at z=16, x=32367, y=31649
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32367, y=31649
+Error serving tile: Tile not found at z=16, x=32371, y=31648
+Traceback (most recent call last):
+  File "/home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/tileserver/views.py", line 80, in get
+    raise Http404(f"Tile not found at z={z}, x={x}, y={y}")
+django.http.response.Http404: Tile not found at z=16, x=32371, y=31648
