@@ -21,10 +21,11 @@ export default defineConfig({
   server: {
     
     port: 3000,
+    host: '192.168.1.200', 
     open: true,
     proxy: {
       '/titiler': {
-        target: 'http://localhost:8001',
+        target: 'http://192.168.1.200:8001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/titiler/, ''),
       },

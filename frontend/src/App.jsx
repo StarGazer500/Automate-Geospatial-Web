@@ -28,6 +28,7 @@ function App() {
     <Routes >
             <Route path="/dashboard" element={<Dashboard/>} />
              <Route path="/" element={<Homepage />} />
+             <Route path="/home" element={<Homepage />} />
             <Route path="/data-view" element={<DatasetView/>} />
             <Route path="/doc-upload" element={<DocumentDataUpload/>} />
             <Route path="/homepage" element={<Homepage/>} />

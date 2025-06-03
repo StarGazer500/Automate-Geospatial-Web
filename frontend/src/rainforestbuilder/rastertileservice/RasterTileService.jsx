@@ -11,7 +11,7 @@ const DroneMapViewer = () => {
   const defaultZoom = 17;
 
   const data = async()=>{
-  const response = await fetch("http://localhost:8000/raster-tile-server/tiles/13/4046/4235.png")
+  const response = await fetch("http://192.168.1.200:8000/raster-tile-server/tiles/13/4046/4235.png")
     if (response.ok){
       console.log(response)
     }
@@ -43,7 +43,7 @@ data()
             <BaseLayer checked name="May Drone Capture">
               <TileLayer
               
-                url={`http://localhost:8000/tileserver/tiles/{z}/{x}/{y}.png`}
+                url={`http://192.168.1.200:8000/tileserver/tiles/{z}/{x}/{y}.png`}
                 tms='1'
           
                 minZoom='3'

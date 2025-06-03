@@ -94,7 +94,7 @@ export function MapDetailView() {
     useEffect(() => {
       // This will set the CSRF cookie
       async function fetchisAuthData(){
-      const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+      const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -114,7 +114,7 @@ export function MapDetailView() {
   const searchParams = new URLSearchParams(window.location.search);
   const linkIdParam = searchParams.get("LinkId");
 
-  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-map/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
+  const apiUrl = `http://192.168.1.200:8000/manage-data/get-update-delete-map/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
   
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export function MapDetailView() {
       })
       .then(data => {
         setData(data)
-        const fileUrl = "http://127.0.0.1:8000" + data.file; // Get the file URL from the response
+        const fileUrl = "http://192.168.1.200:8000" + data.file; // Get the file URL from the response
         if (!fileUrl) {
           setError('No file available for this document');
           return;
@@ -207,6 +207,7 @@ export function MapDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.file}  >{data.file} 
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.file ? null : data.file)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -216,14 +217,16 @@ export function MapDetailView() {
                         {openDropdownIndex === data.file && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.file,"file","map")}
                             >
                               Edit
                             </button>
-                            <button 
+                            <button
+                            style={{backgroundColor:'white',color:'green'}} 
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
+                              onClick={() => handleDownload("http://192.168.1.200:8000" + data.file)}
                             >
                               Download
                             </button>
@@ -239,6 +242,7 @@ export function MapDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -248,6 +252,7 @@ export function MapDetailView() {
                         {openDropdownIndex === data.description && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.description,"text","map")}
                             >
@@ -265,6 +270,7 @@ export function MapDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.date_captured}>{data.date_captured}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -274,6 +280,7 @@ export function MapDetailView() {
                         {openDropdownIndex === data.date_captured && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.date_captured,"text","map")}
                             >
@@ -291,6 +298,7 @@ export function MapDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.uploaded_at} >{data.uploaded_at}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.uploaded_at ? null : data.uploaded_at)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -300,6 +308,7 @@ export function MapDetailView() {
                         {openDropdownIndex === data.uploaded_at && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.uploaded_at,"text","map")}
                             >
@@ -375,7 +384,7 @@ export function DocumentDetailView() {
     useEffect(() => {
       // This will set the CSRF cookie
       async function fetchisAuthData(){
-      const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+      const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -395,7 +404,7 @@ export function DocumentDetailView() {
   const searchParams = new URLSearchParams(window.location.search);
   const linkIdParam = searchParams.get("LinkId");
   console.log("LinkId",linkIdParam)
-  const apiUrl = `http://localhost:8000/manage-data/get-update-delete-document/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
+  const apiUrl = `http://192.168.1.200:8000/manage-data/get-update-delete-document/${ItemId?ItemId:linkIdParam}/`; // Django endpoint
 
 
    
@@ -415,7 +424,7 @@ export function DocumentDetailView() {
       })
       .then(data => {
         setData(data)
-        const fileUrl = "http://127.0.0.1:8000" + data.file; // Get the file URL from the response
+        const fileUrl = "http://192.168.1.200:8000" + data.file; // Get the file URL from the response
         if (!fileUrl) {
           setError('No file available for this document');
           return;
@@ -491,6 +500,7 @@ export function DocumentDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.file}  >{data.file} 
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.file ? null : data.file)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -500,14 +510,16 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.file && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.file,"file","document")}
                             >
                               Edit
                             </button>
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
+                              onClick={() => handleDownload("http://192.168.1.200:8000" + data.file)}
                             >
                               Download
                             </button>
@@ -523,6 +535,7 @@ export function DocumentDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -532,6 +545,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.description && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.description,"text","document")}
                             >
@@ -549,6 +563,7 @@ export function DocumentDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.date_captured}>{data.date_captured}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -558,6 +573,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.date_captured && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.date_captured,"text","document")}
                             >
@@ -575,6 +591,7 @@ export function DocumentDetailView() {
                     <p className="flex mb-0 justify-between items-center" key={data.uploaded_at} >{data.uploaded_at}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.uploaded_at ? null : data.uploaded_at)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -584,6 +601,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.uploaded_at && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.uploaded_at,"text","document")}
                             >
@@ -710,9 +728,9 @@ export function DocumentDetailView() {
           console.log("file",file)
       
           if (isCog) {
-            tileJsonUrl = `http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(`/media/tiles/${tiles_id}/${file}`)}`;
+            tileJsonUrl = `http://192.168.1.200:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(`/media/tiles/${tiles_id}/${file}`)}`;
           } else if (isMbtiles) {
-            tileJsonUrl = `http://127.0.0.1:8000/tileserver/${file}/${tiles_id}/tiles`;
+            tileJsonUrl = `http://192.168.1.200:8000/tileserver/${file}/${tiles_id}/tiles`;
           }
       
           console.log('TileJSON URL:', tileJsonUrl);
@@ -860,20 +878,20 @@ export function DocumentDetailView() {
   let url = null;
 
   if (isRaster) {
-    url = `http://localhost:8000/media/tiles/${data_id}/${item}`;
+    url = `http://192.168.1.200:8000/media/tiles/${data_id}/${item}`;
   } else if (isVector) {
     const nameWithoutExt = item.slice(0, item.lastIndexOf('.')); // Remove extension
     if (fileExtension === 'shp') {
       // Array of URLs for shapefile components
       url = [
-        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.shp`,
-        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.shx`,
-        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.prj`,
-        `http://localhost:8000/media/geospatial/${data_id}/${nameWithoutExt}.dbf`,
+        `http://192.168.1.200:8000/media/geospatial/${data_id}/${nameWithoutExt}.shp`,
+        `http://192.168.1.200:8000/media/geospatial/${data_id}/${nameWithoutExt}.shx`,
+        `http://192.168.1.200:8000/media/geospatial/${data_id}/${nameWithoutExt}.prj`,
+        `http://192.168.1.200:8000/media/geospatial/${data_id}/${nameWithoutExt}.dbf`,
       ];
     } else {
       // Single file for GeoJSON
-      url = `http://localhost:8000/media/geospatial/${data_id}/${item}`;
+      url = `http://192.168.1.200:8000/media/geospatial/${data_id}/${item}`;
     }
   }
   console.log("url",url)
@@ -905,7 +923,7 @@ export function DocumentDetailView() {
       useEffect(() => {
         // This will set the CSRF cookie
         async function fetchisAuthData(){
-        const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+        const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -926,7 +944,7 @@ export function DocumentDetailView() {
     const searchParams = new URLSearchParams(window.location.search);
     const linkIdParam = searchParams.get("LinkId");
     console.log("LinkId",linkIdParam)
-    const apiUrl = `http://localhost:8000/manage-data/get-update-delete-analysis/${ItemId?ItemId:linkIdParam}/`;
+    const apiUrl = `http://192.168.1.200:8000/manage-data/get-update-delete-analysis/${ItemId?ItemId:linkIdParam}/`;
   
     // Fetch data
     useEffect(() => {
@@ -943,7 +961,7 @@ export function DocumentDetailView() {
         })
         .then(data => {
           setData(data);
-          const fileUrl = "http://127.0.0.1:8000" + data.file;
+          const fileUrl = "http://192.168.1.200:8000" + data.file;
           if (!fileUrl) {
             setError('No file available for this document');
             return;
@@ -970,7 +988,7 @@ export function DocumentDetailView() {
                 blob.text().then(html => setAnalysisContent(<div dangerouslySetInnerHTML={{ __html: html }} />));
               } else if (contentType.includes('application/octet-stream')) {
                 if (data.file?.endsWith('.ipynb')) {
-                  const url = "http://127.0.0.1:8000" + data.file;
+                  const url = "http://192.168.1.200:8000" + data.file;
                   setAnalysisContent(<IpynbComponent url={url} />);
                 }
               } else {
@@ -1047,6 +1065,7 @@ export function DocumentDetailView() {
                       <p className="flex mb-0 justify-between items-center" key={data.file}  >{data.file} 
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.file ? null : data.file)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -1056,14 +1075,16 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.file && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.file,"file","analysis")}
                             >
                               Edit
                             </button>
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
-                              onClick={() => handleDownload("http://127.0.0.1:8000" + data.file)}
+                              onClick={() => handleDownload("http://192.168.1.200:8000" + data.file)}
                             >
                               Download
                             </button>
@@ -1078,6 +1099,7 @@ export function DocumentDetailView() {
                       <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -1087,6 +1109,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.description && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.description,"text","analysis")}
                             >
@@ -1104,6 +1127,7 @@ export function DocumentDetailView() {
                       <p className="flex mb-0 justify-between items-center" key={data.date_captured}>{data.date_captured}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -1113,6 +1137,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.date_captured && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.date_captured,"text","analysis")}
                             >
@@ -1130,6 +1155,7 @@ export function DocumentDetailView() {
                       <p className="flex mb-0 justify-between items-center" key={data.uploaded_at} >{data.uploaded_at}
                     <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.uploaded_at ? null : data.uploaded_at)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -1139,6 +1165,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.uploaded_at && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.uploaded_at,"text","analysis")}
                             >
@@ -1169,6 +1196,7 @@ export function DocumentDetailView() {
                                     {isGeoFormat ? item : nameWithoutExt}
                                     <div className="relative">
                                       <button 
+                                      style={{backgroundColor:'white',color:'green'}}
                                         onClick={() => setOpenInputDropdownIndex(openInputDropdownIndex === index1 ? null : index1)}
                                         className="text-green-600 hover:text-green-800"
                                       >
@@ -1178,12 +1206,14 @@ export function DocumentDetailView() {
                                       {openInputDropdownIndex=== index1 && (
                                         <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                                           <button 
+                                          style={{backgroundColor:'white',color:'green'}}
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                                             onClick={() => handleEdit(nameWithoutExt,"file","geospatial",data.input_id)}
                                           >
                                             Edit
                                           </button>
                                           <button 
+                                          style={{backgroundColor:'white',color:'green'}}
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                                             onClick={() => handleGeospatialDownload(isGeoFormat?item:nameWithoutExt)}
                                           >
@@ -1211,6 +1241,7 @@ export function DocumentDetailView() {
                                     {isGeoFormat ? item : nameWithoutExt}
                                     <div className="relative">
                                       <button 
+                                      style={{backgroundColor:'white',color:'green'}}
                                         onClick={() => setOpenOutputDropdownIndex(openOutputDropdownIndex === index2 ? null : index2)}
                                         className="text-green-600 hover:text-green-800"
                                       >
@@ -1220,12 +1251,14 @@ export function DocumentDetailView() {
                                       {openOutputDropdownIndex === index2 && (
                                         <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                                           <button 
+                                          style={{backgroundColor:'white',color:'green'}}
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                                             onClick={() => handleEdit(nameWithoutExt,"file","geospatial",data.output_id)}
                                           >
                                             Edit
                                           </button>
                                           <button 
+                                          style={{backgroundColor:'white',color:'green'}}
                                             className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                                             onClick={() => handleGeospatialDownload(isGeoFormat?item:nameWithoutExt,data.output_id)}
                                           >
@@ -1285,7 +1318,7 @@ export function DocumentDetailView() {
   //   async function fetchGeospatialData(id) {
   //     try {
   //       const response = await fetch(
-  //         `http://127.0.0.1:8000/manage-data/get-update-delete-geospatial/${id}/`,
+  //         `http://192.168.1.200:8000/manage-data/get-update-delete-geospatial/${id}/`,
   //         {
   //           method: 'GET',
   //           credentials: 'include',
@@ -1326,7 +1359,7 @@ export function DocumentDetailView() {
   //   const is_cog = data.file.split('.').at(-1)==="cog"
 
   //   if(data && is_cog){
-  //     tileJsonUrl=`http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(data.file)}`
+  //     tileJsonUrl=`http://192.168.1.200:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(data.file)}`
       
   //   }else if (!cog){
       
@@ -1492,7 +1525,7 @@ export function DocumentDetailView() {
     
     
     
-    const handleDownload = (item) => {
+    const handleDownload = async (item) => {
       console.log(`Downloading ${item}`);
   const fileExtension = item.split('.').pop().toLowerCase(); // Get file extension
   const isRaster = ['cog', 'tif', 'tiff'].includes(fileExtension);
@@ -1500,31 +1533,31 @@ export function DocumentDetailView() {
   let url = null;
 
   if (isRaster) {
-    url = `http://localhost:8000/media/tiles/${data.id}/${item}`;
+    url = `http://192.168.1.200:8000/media/tiles/${data.id}/${item}`;
   } else if (isVector) {
     const nameWithoutExt = item.slice(0, item.lastIndexOf('.')); // Remove extension
     if (fileExtension === 'shp') {
       // Array of URLs for shapefile components
       url = [
-        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.shp`,
-        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.shx`,
-        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.prj`,
-        `http://localhost:8000/media/geospatial/${data.id}/${nameWithoutExt}.dbf`,
+        `http://192.168.1.200:8000/media/geospatial/${data.id}/${nameWithoutExt}.shp`,
+        `http://192.168.1.200:8000/media/geospatial/${data.id}/${nameWithoutExt}.shx`,
+        `http://192.168.1.200:8000/media/geospatial/${data.id}/${nameWithoutExt}.prj`,
+        `http://192.168.1.200:8000/media/geospatial/${data.id}/${nameWithoutExt}.dbf`,
       ];
     } else {
       // Single file for GeoJSON
-      url = `http://localhost:8000/media/geospatial/${data.id}/${item}`;
+      url = `http://192.168.1.200:8000/media/geospatial/${data.id}/${item}`;
     }
   }
 
   if (Array.isArray(url)) {
     // Download each file in the array
     for (let i = 0; i < url.length; i++) {
-      downloadFile(url[i]);
+      await downloadFile(url[i]);
     }
   } else if (url) {
     // Download single file
-    downloadFile(url);
+    await downloadFile(url);
   } else {
     console.error('Invalid file type or URL');
   }
@@ -1543,7 +1576,7 @@ export function DocumentDetailView() {
       useEffect(() => {
         // This will set the CSRF cookie
         async function fetchisAuthData(){
-        const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+        const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -1564,7 +1597,7 @@ export function DocumentDetailView() {
     async function fetchGeospatialData(id) {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/manage-data/get-update-delete-geospatial/${id}/`,
+          `http://192.168.1.200:8000/manage-data/get-update-delete-geospatial/${id}/`,
           {
             method: 'GET',
             credentials: 'include',
@@ -1615,9 +1648,9 @@ export function DocumentDetailView() {
           console.log("file",file)
       
           if (isCog) {
-            tileJsonUrl = `http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(`/media/tiles/${data.id}/${file}`)}`;
+            tileJsonUrl = `http://192.168.1.200:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(`/media/tiles/${data.id}/${file}`)}`;
           } else if (isMbtiles) {
-            tileJsonUrl = `http://127.0.0.1:8000/tileserver/${file}/${data.id}/tiles`;
+            tileJsonUrl = `http://192.168.1.200:8000/tileserver/${file}/${data.id}/tiles`;
           }
       
           console.log('TileJSON URL:', tileJsonUrl);
@@ -1725,8 +1758,9 @@ export function DocumentDetailView() {
 
                         <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.type_of_data ? null : data.type_of_data)}
-                          className="text-green-600 hover:text-green-800"
+                          className="text-green-600  hover:text-green-800"
                         >
                           actions ▾
                         </button>
@@ -1734,6 +1768,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.type_of_data && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.type_of_data,"text","geospatial")}
                             >
@@ -1753,6 +1788,7 @@ export function DocumentDetailView() {
                         
                       <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.data_type? null : data.data_type)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -1762,6 +1798,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.data_type && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.data_type,"text","geospatial")}
                             >
@@ -1778,6 +1815,7 @@ export function DocumentDetailView() {
                       <p className="flex mb-0 justify-between items-center" key={data.description} >{data.description}
                       <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.description ? null : data.description)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -1787,6 +1825,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.description && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.description,"text","geospatial")}
                             >
@@ -1803,6 +1842,7 @@ export function DocumentDetailView() {
                       <p className="flex mb-0 justify-between items-center" key={data.date_captured} >{data.date_captured}
                       <div className="relative">
                         <button 
+                        style={{backgroundColor:'white',color:'green'}}
                           onClick={() => setOpenDropdownIndex(openDropdownIndex === data.date_captured ? null : data.date_captured)}
                           className="text-green-600 hover:text-green-800"
                         >
@@ -1812,6 +1852,7 @@ export function DocumentDetailView() {
                         {openDropdownIndex === data.date_captured && (
                           <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                             <button 
+                            style={{backgroundColor:'white',color:'green'}}
                               className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                               onClick={() => handleEdit(data.date_captured,"text","geospatial")}
                             >
@@ -1839,6 +1880,7 @@ export function DocumentDetailView() {
                         {isGeoFormat ? item : nameWithoutExt}
                         <div className="relative">
                           <button 
+                          style={{backgroundColor:'white',color:'green'}}
                             onClick={() => setOpenDropdownIndex(openDropdownIndex === index ? null : index)}
                             className="text-green-600 hover:text-green-800"
                           >
@@ -1848,12 +1890,14 @@ export function DocumentDetailView() {
                           {openDropdownIndex === index && (
                             <div className="absolute right-0 top-6 bg-white shadow-md border border-gray-200 rounded z-10 w-24">
                               <button 
+                              style={{backgroundColor:'white',color:'green'}}
                                 className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                                 onClick={() => handleEdit(nameWithoutExt,"file","geospatial")}
                               >
                                 Edit
                               </button>
                               <button 
+                              style={{backgroundColor:'white',color:'green'}}
                                 className="text-green-600 hover:bg-gray-100 block w-full text-left px-3 py-1"
                                 onClick={() => handleDownload(isGeoFormat?item:nameWithoutExt)}
                               >

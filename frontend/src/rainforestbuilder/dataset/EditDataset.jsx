@@ -110,13 +110,13 @@ export const EditData = ({inputType,dataCategory,dataToEdit,dataKey,is_analysis_
     console.log("key name",dataKey)
     if (inputType==='text' && data){
       if (dataCategory==="geospatial"){
-      await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-geospatial/${is_analysis_id?is_analysis_id:ItemId}/`,data)
+      await editMetaDeta(`http://192.168.1.200:8000/manage-data/get-update-delete-geospatial/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else if (dataCategory==="document"){
-        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-document/${is_analysis_id?is_analysis_id:ItemId}/`,data)
+        await editMetaDeta(`http://192.168.1.200:8000/manage-data/get-update-delete-document/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else if (dataCategory==="map"){
-        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-map/${is_analysis_id?is_analysis_id:ItemId}/`,data)
+        await editMetaDeta(`http://192.168.1.200:8000/manage-data/get-update-delete-map/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else if (dataCategory==="analysis"){
-        await editMetaDeta(`http://localhost:8000/manage-data/get-update-delete-analysis/${is_analysis_id?is_analysis_id:ItemId}/`,data)
+        await editMetaDeta(`http://192.168.1.200:8000/manage-data/get-update-delete-analysis/${is_analysis_id?is_analysis_id:ItemId}/`,data)
       }else{
         console.log("no category found")
         return
@@ -164,7 +164,7 @@ export const EditData = ({inputType,dataCategory,dataToEdit,dataKey,is_analysis_
            
                setUploadStatus('Uploading...');
                setProgress(0);
-               const ws = new WebSocket('ws://localhost:8000/ws/editfile/');
+               const ws = new WebSocket('ws://192.168.1.200:8000/ws/editfile/');
            
                ws.onopen = async () => {
                  console.log('WebSocket opened');

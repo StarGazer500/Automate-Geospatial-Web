@@ -3,10 +3,64 @@ import DatasetHeader from './DatasetHeader';
 import ItemsCard from './ItemsCard';
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { CategoryOfDataClickedContext} from '../../utils/context';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate,useLocation} from 'react-router-dom';
 import Modal from '../../utils/Modal';
 import { GeospatialDataUpload, DocumentDataUpload, MapDataUpload } from './Uploads';
 import FormSlider from './FormSlider';
+
+const copyToClipboard = async (text) => {
+  try {
+    // Check if we're in a secure context and clipboard API is available
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      alert("Link copied to clipboard!");
+      return;
+    }
+    
+    // For insecure contexts or when clipboard API is not available
+    // Use the selection API approach
+    if (window.getSelection) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'absolute';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '0';
+      textArea.setAttribute('readonly', '');
+      textArea.style.fontSize = '12pt'; // Prevent zooming on iOS
+      
+      document.body.appendChild(textArea);
+      
+      // Select the text
+      textArea.select();
+      textArea.setSelectionRange(0, 99999); // For mobile devices
+      
+      // Try to copy using the modern approach first
+      try {
+        const successful = await navigator.clipboard.writeText(text);
+        alert("Link copied to clipboard!");
+      } catch (clipboardErr) {
+        // If modern clipboard fails, inform user to copy manually
+        textArea.focus();
+        alert("Please manually copy the selected text (Ctrl+C or Cmd+C)");
+      }
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(textArea);
+      }, 100);
+      
+      return;
+    }
+    
+    // Final fallback - show in prompt
+    prompt('Copy this link manually:', text);
+    
+  } catch (err) {
+    console.error('Copy to clipboard failed:', err);
+    prompt('Copy this link manually:', text);
+  }
+};
+
 
 function DatasetView() {
   const { sharedValue: buttonText } = useContext(CategoryOfDataClickedContext);
@@ -24,6 +78,9 @@ function DatasetView() {
   const lastFetchedPage = useRef(0);
   const isFetching = useRef(false); // Prevent concurrent fetches
 
+    const navigate = useNavigate()
+    const location = useLocation();
+
 
   const handleValueChange = (event) => {
     setSearch_Query(event.target.value);
@@ -36,22 +93,22 @@ const handleKeyDown = async(event) => {
     event.preventDefault();
     let url=''
     if (buttonText ==="Geospatial Datasets"){
-      url = "http://127.0.0.1:8000/manage-data/semantic-search-geospatial/";
+      url = "http://192.168.1.200:8000/manage-data/semantic-search-geospatial/";
     }
     if (buttonText ==="Maps"){
-      url = "http://127.0.0.1:8000/manage-data/semantic-search-map/";
+      url = "http://192.168.1.200:8000/manage-data/semantic-search-map/";
       
     }
     if (buttonText ==="Analysis Assets"){
-      url = "http://127.0.0.1:8000/manage-data/semantic-search-analysis/";
+      url = "http://192.168.1.200:8000/manage-data/semantic-search-analysis/";
     }
     if (buttonText ==="Documents"){
-      url = "http://127.0.0.1:8000/manage-data/semantic-search-document/";
+      url = "http://192.168.1.200:8000/manage-data/semantic-search-document/";
       
     }
 
     if (buttonText ==="All"){
-      url = "http://127.0.0.1:8000/manage-data/semantic-search-all/";
+      url = "http://192.168.1.200:8000/manage-data/semantic-search-all/";
       
     }
 
@@ -166,11 +223,11 @@ const handleKeyDown = async(event) => {
   };
 
 
-  const navigate = useNavigate()
+
   useEffect(() => {
     // This will set the CSRF cookie
     async function fetchisAuthData(){
-    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+    const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
       method: 'GET',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -202,28 +259,28 @@ const handleKeyDown = async(event) => {
     let url;
 
   if (buttonText === "Geospatial Datasets" && !search_query) {
-    url = "http://127.0.0.1:8000/manage-data/geospatial-data";
+    url = "http://192.168.1.200:8000/manage-data/geospatial-data";
   } else if (buttonText === "Maps"  && !search_query) {
-    url = "http://127.0.0.1:8000/manage-data/map-data";
+    url = "http://192.168.1.200:8000/manage-data/map-data";
   } else if (buttonText === "Documents" && !search_query) {
-    url = "http://127.0.0.1:8000/manage-data/document-data";
+    url = "http://192.168.1.200:8000/manage-data/document-data";
   } else if (buttonText === "Analysis Assets" && !search_query) {
-    url = "http://127.0.0.1:8000/manage-data/analysis-data";
+    url = "http://192.168.1.200:8000/manage-data/analysis-data";
   } else if (buttonText==="All" && !search_query) {
-    url = "http://127.0.0.1:8000/manage-data/all-data";
+    url = "http://192.168.1.200:8000/manage-data/all-data";
   }
 
   else if (buttonText === "Geospatial Datasets" && search_query) {
-    url = "http://127.0.0.1:8000/manage-data/semantic-search-geospatial/";
+    url = "http://192.168.1.200:8000/manage-data/semantic-search-geospatial/";
   } 
   else if (buttonText === "Maps"  && search_query) {
-    url = "http://127.0.0.1:8000/manage-data/semantic-search-map";
+    url = "http://192.168.1.200:8000/manage-data/semantic-search-map";
   } else if (buttonText === "Documents" && search_query) {
-    url = "http://127.0.0.1:8000/manage-data/semantic-search-document";
+    url = "http://192.168.1.200:8000/manage-data/semantic-search-document";
   } else if (buttonText === "Analysis Assets" && search_query) {
-    url = "http://127.0.0.1:8000/manage-data/semantic-search-analysis";
+    url = "http://192.168.1.200:8000/manage-data/semantic-search-analysis";
   } else if (buttonText==="All" && search_query) {
-    url = "http://127.0.0.1:8000/manage-data/semantic-search-all";
+    url = "http://192.168.1.200:8000/manage-data/semantic-search-all";
   }
   
     currentUrl.current = url;
@@ -311,90 +368,60 @@ const handleKeyDown = async(event) => {
   };
 
   useEffect(() => {
-    if (shareItemLink) {
-      console.log("shareItemLink updated:", shareItemLink);
-      setModalContent(
-        <div>
-          <p>Share this link:</p>
-          <input
-            type="text"
-            value={shareItemLink}
-            readOnly
-            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-            onClick={(e) => e.target.select()} // Select text on click for easy copying
-          />
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(shareItemLink);
-              alert("Link copied to clipboard!");
-            }}
-            style={{ backgroundColor: 'seagreen', color: 'white', padding: '8px 16px', borderRadius: '5px' }}
-          >
-            Copy Link
-          </button>
-        </div>
-      );
-      setIsModalOpen(true);
-    }
-  }, [shareItemLink]); // Run when shareItemLink changes
+  if (shareItemLink) {
+    console.log("shareItemLink updated:", shareItemLink);
+    setModalContent(
+      <div>
+        <p>Share this link:</p>
+        <input
+          type="text"
+          value={shareItemLink}
+          readOnly
+          style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+          onClick={(e) => e.target.select()} // Select text on click for easy copying
+        />
+        <button
+          onClick={() => copyToClipboard(shareItemLink)}
+          style={{ backgroundColor: 'seagreen', color: 'white', padding: '8px 16px', borderRadius: '5px' }}
+        >
+          Copy Link
+        </button>
+      </div>
+    );
+    setIsModalOpen(true);
+  }
+}, [shareItemLink]);
 
   return (
     <div>
       <div className="content-wrapper">
         <DatasetHeader />
         <div className="flex">
-          <div className="flex-col mt-[50px] flex-1 bg-white items-start justify-start border-2 border-[whitesmoke] pl-0 w-full">
-            <h1 style={{ color: 'seagreen', marginBottom: '30px', marginTop: '20px', width: '100%' }}>
-              Advanced Filtering
-            </h1>
-            <label className="mr-[100%]" style={{ color: 'black' }} htmlFor="">
-              departments
-            </label>
-            <select  className="mb-[30px]" style={{ color: 'black' }} >
-                  <option value="Planning">Planning</option>
-                  <option value="Civilculture">Civil Culture</option>
-                  <option value="ESG">ESG</option>
-                  <option value="ESG">All Departments</option>
-                 
-              </select>
-            
-            <label className="mr-[100%] pl-0 self-start" style={{ color: 'black' }} htmlFor="">
-              Start Date
-            </label>
-            <input className="mb-[30px]" type="date" />
-            <label className="mr-[100%]" style={{ color: 'black' }} htmlFor="">
-              End Date
-            </label>
-            <input className="mb-[30px]" type="date" />
-            <button style={{ backgroundColor: 'seagreen', color: 'white', padding: '10px 20px', borderRadius: '5px' }}>
-              Query
-            </button>
-            <p>map search will come here</p>
-          </div>
-
-          <div className="w-full flex-[8] flex-col">
+          
+          <div className="w-full flex-1 flex-col">
             <div
               style={{
-                zIndex: '20',
-                alignSelf: 'center',
-                textAlign: 'center',
-                padding: '10px 0',
-                marginTop: 50,
-                width: '84vw',
-                backgroundColor: 'white',
-                border: '1px solid whitesmoke',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-              }}
+            zIndex: '20',
+            margin: '50px auto 0 auto', // Centers the container horizontally
+            textAlign: 'center',
+            padding: '10px 0',
+            width: '84vw',
+            maxWidth: '1200px', // Optional: set max width for very large screens
+            backgroundColor: 'white',
+            // border: '1px solid whitesmoke',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+          }}
             >
               <div
                 style={{
                   alignSelf: 'center',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
-                  marginLeft: '10px',
+                  gap: '100px',
+                  // marginLeft: '30px',
+                  // marginRight: '30px',
                 }}
               >
                 <button
@@ -404,6 +431,7 @@ const handleKeyDown = async(event) => {
                     height: '50px',
                     borderRadius: '10px',
                     color: 'white',
+                    // marginRight:'10vw'
                   }}
                 >
                   Filter
@@ -414,7 +442,8 @@ const handleKeyDown = async(event) => {
                   onChange={handleValueChange}
                   onKeyDown={handleKeyDown}
                   style={{
-                    marginLeft: '250px',
+                    // marginLeft: '250pxmarginLeft: '250px',',
+                    
                     width: '700px',
                     height: '40px',
                     border: '1px solid green',
@@ -422,9 +451,8 @@ const handleKeyDown = async(event) => {
                     borderRadius: '10px',
                   }}
                 />
-              </div>
 
-              <div style={{ marginLeft: 'auto', marginRight: '10px' }}>
+                <div style={{}}>
                 <select
                   onChange={handleUploadChange}
                   
@@ -449,6 +477,9 @@ const handleKeyDown = async(event) => {
                   <option value="Maps">Maps</option>
                 </select>
               </div>
+              </div>
+
+              
             </div>
 
             <div className="flex-[9] grid-container" ref={gridRef} key={buttonText}>

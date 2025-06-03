@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-as@tdh96kob%^^lx+%sqe8a7dj$86s*((emr_m%b6e%nq40b8g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.200']
 
 
 # Application definition
@@ -102,13 +102,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': os.environ.get('POSTGRES_DB', 'generic_planning_gh'),
-        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', '0549martin'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'USER': os.environ.get('POSTGRES_USER', 'u_rb_generic'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'p_rb_generic'),
+        'HOST': os.environ.get('DB_HOST', '192.168.1.200'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
-        'OPTIONS': {
-            'options': '-c search_path=planning_department,public'
-        },
+        # 'OPTIONS': {
+        #     'options': '-c search_path=planning_department,public'
+        # },
     }
 }
 
@@ -141,8 +141,8 @@ LOGGING = {
 }
 
 # automate_geoweb/settings.py
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://192.168.1.200:6379/0'
+CELERY_RESULT_BACKEND = 'redis://192.168.1.200:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']  # Task serialization format
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -150,11 +150,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000", "http://localhost:3000", "http://localhost", "http://127.0.0.1"]
+CORS_ALLOWED_ORIGINS = ["http://192.168.1.200:3000", "http://192.168.1.200:3000", "http://192.168.1.200", "http://192.168.1.200"]
 
-SESSION_COOKIE_SAMESITE = 'None'  # 'Lax' works for most cases; use 'None' if issues persist
-SESSION_COOKIE_SECURE = True  # Set to True in production with HTTPS
-# SESSION_COOKIE_HTTPONLY = True
+# SESSION_COOKIE_SAMESITE = 'None'  # 'Lax' works for most cases; use 'None' if issues persist
+# SESSION_COOKIE_SECURE = True  # Set to True in production with HTTPS
+# # SESSION_COOKIE_HTTPONLY = True
+
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 ASGI_APPLICATION = 'automate_geoweb.asgi.application'
 
@@ -162,7 +165,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [('192.168.1.200', 6379)],
         },
     },
 }

@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DetailViewIdContext } from '../../utils/context';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 
 export function ItemsCard({ item,setShareItemLink }) {
   const { setSharedValue } = useContext(DetailViewIdContext);
   const [thumbnailCards, setThumbnailCards] = useState([]);
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   useEffect(() => {
     // Reset thumbnailCards state to avoid stale data
@@ -23,9 +25,9 @@ export function ItemsCard({ item,setShareItemLink }) {
         let thumbnailSrc = '';
 
         if (isMbtiles) {
-          thumbnailSrc = `http://127.0.0.1:8000/media/thumbnails/${item.id}/${filePath}_thumb.jpg`;
+          thumbnailSrc = `http://192.168.1.200:8000/media/thumbnails/${item.id}/${filePath}_thumb.jpg`;
         } else if (isCog) {
-          thumbnailSrc = `http://localhost:8001/cog/preview.png?url=${encodeURIComponent(`/media/tiles/${item.id}/${filePath}`)}`;
+          thumbnailSrc = `http://192.168.1.200:8001/cog/preview.png?url=${encodeURIComponent(`/media/tiles/${item.id}/${filePath}`)}`;
         } else {
           return null; // Skip if neither mbtiles nor COG
         }
@@ -54,7 +56,7 @@ export function ItemsCard({ item,setShareItemLink }) {
         thumbnailSrc = 'https://i.pinimg.com/236x/50/51/e2/5051e2f0d89fa913ab0f394d1e6464be.jpg';
       }
       else if (item.thumbnail){
-        thumbnailSrc = `http://127.0.0.1:8000/media/${item.thumbnail}`;
+        thumbnailSrc = `http://192.168.1.200:8000/media/${item.thumbnail}`;
       }
 
       // Create a single card for non-geospatial item
@@ -96,18 +98,18 @@ export function ItemsCard({ item,setShareItemLink }) {
       let url=""
 
        if (itemType==="geospatial"){
-          //  url = `http://localhost:3000/data-view?LinkId={cardData.originalItemId}`
-           url = `http://localhost:3000/geo-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
-        // url=`http://localhost:8000/manage-data/get-update-delete-geospatial/${cardData.originalItemId}/`
+          //  url = `http://192.168.1.200:3000/data-view?LinkId={cardData.originalItemId}`
+           url = `http://192.168.1.200:3000/geo-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://192.168.1.200:8000/manage-data/get-update-delete-geospatial/${cardData.originalItemId}/`
       }else if (itemType==="document"){
-        url = `http://localhost:3000/doc-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
-        // url=`http://localhost:8000/manage-data/get-update-delete-document/${cardData.originalItemId}/`
+        url = `http://192.168.1.200:3000/doc-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://192.168.1.200:8000/manage-data/get-update-delete-document/${cardData.originalItemId}/`
       }else if (itemType==="map"){
-        url = `http://localhost:3000/map-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
-        // url=`http://localhost:8000/manage-data/get-update-delete-map/${cardData.originalItemId}/`
+        url = `http://192.168.1.200:3000/map-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://192.168.1.200:8000/manage-data/get-update-delete-map/${cardData.originalItemId}/`
       }else if (itemType==="analysis"){
-          url = `http://localhost:3000/analysis-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
-        // url=`http://localhost:8000/manage-data/get-update-delete-analysis/${cardData.originalItemId}/`
+          url = `http://192.168.1.200:3000/analysis-detail-view?LinkId=${encodeURIComponent(cardData.originalItemId)}`
+        // url=`http://192.168.1.200:8000/manage-data/get-update-delete-analysis/${cardData.originalItemId}/`
       }else{
         console.log("no category found")
         return
@@ -116,17 +118,18 @@ export function ItemsCard({ item,setShareItemLink }) {
       setShareItemLink(url)
     } else if (buttonText === 'delete') {
       const itemType = cardData.originalItemType || '';
+      
       console.log('Delete clicked');
       let url=null
 
        if (itemType==="geospatial"){
-        url=`http://localhost:8000/manage-data/get-update-delete-geospatial/${cardData.originalItemId}/`
+        url=`http://192.168.1.200:8000/manage-data/get-update-delete-geospatial/${cardData.originalItemId}/`
       }else if (itemType==="document"){
-        url=`http://localhost:8000/manage-data/get-update-delete-document/${cardData.originalItemId}/`
+        url=`http://192.168.1.200:8000/manage-data/get-update-delete-document/${cardData.originalItemId}/`
       }else if (itemType==="map"){
-        url=`http://localhost:8000/manage-data/get-update-delete-map/${cardData.originalItemId}/`
+        url=`http://192.168.1.200:8000/manage-data/get-update-delete-map/${cardData.originalItemId}/`
       }else if (itemType==="analysis"){
-        url=`http://localhost:8000/manage-data/get-update-delete-analysis/${cardData.originalItemId}/`
+        url=`http://192.168.1.200:8000/manage-data/get-update-delete-analysis/${cardData.originalItemId}/`
       }else{
         console.log("no category found")
         return
@@ -161,6 +164,7 @@ export function ItemsCard({ item,setShareItemLink }) {
     
           // Parse JSON only if response is OK
           const data = JSON.parse(rawResponse);
+          navigate(0)
          
           console.log('Data  Deleted Successfully:', data);
           }
@@ -176,79 +180,44 @@ export function ItemsCard({ item,setShareItemLink }) {
   };
 
   return (
-    <>
-      {thumbnailCards.length > 0 ? (
-        thumbnailCards.map((cardData) => (
-          <div key={cardData.id} className="card bg-base-100 w-96 shadow-sm mb-4">
-            {cardData.thumbnailSrc ? (
-              <figure className="px-10 pt-10 overflow-hidden" style={{ height: '240px' }}>
-                <img 
-                  src={cardData.thumbnailSrc} 
-                  alt={`${cardData.fileType} thumbnail`} 
-                  className="rounded-xl object-contain w-full h-full"
-                />
-              </figure>
-            ) : (
-              <div className="w-full h-48 flex items-center justify-center bg-gray-200 rounded-t-lg">
-                <p className="text-gray-500">No thumbnail available</p>
-              </div>
-            )}
-            <div className="card-body items-center text-center">
-              <h2 className="card-title">{cardData.title}</h2>
-              <p>{cardData.description}</p>
-              <div className="flex flex-row gap-3 card-actions">
-                <button
-                  onClick={(e) => handleButtonOnClick(e, cardData)}
-                  style={{ backgroundColor: 'white', color: 'seagreen' }}
-                  className="text-black-100"
-                >
-                  view
-                </button>
-                
-                <button
-                  onClick={(e) => handleButtonOnClick(e, cardData)}
-                  style={{ backgroundColor: 'white', color: 'seagreen' }}
-                  className="btn btn-primary"
-                >
-                  share
-                </button>
-                <button
-                  onClick={(e) => handleButtonOnClick(e, cardData)}
-                  style={{ backgroundColor: 'white', color: 'seagreen' }}
-                  className="btn btn-primary"
-                >
-                  delete
-                </button>
-              </div>
+  <>
+    {thumbnailCards.length > 0 ? (
+      thumbnailCards.map((cardData) => (
+        <div key={cardData.id} className="card bg-base-100 shadow-sm mb-4">
+          {cardData.thumbnailSrc ? (
+            <figure className="px-10 pt-10 overflow-hidden" style={{ height: '240px' }}>
+              <img 
+                src={cardData.thumbnailSrc} 
+                alt={`${cardData.fileType} thumbnail`} 
+                className="rounded-xl object-contain w-full h-full"
+              />
+            </figure>
+          ) : (
+            <div className="w-full h-48 flex items-center justify-center bg-gray-200 rounded-t-lg">
+              <p className="text-gray-500">No thumbnail available</p>
             </div>
-          </div>
-        ))
-      ) : (
-        <div className="card bg-base-100 w-96 shadow-sm">
-          <div className="w-full h-48 flex items-center justify-center bg-gray-200 rounded-t-lg">
-            <p className="text-gray-500">No thumbnails available</p>
-          </div>
+          )}
           <div className="card-body items-center text-center">
-            <h2 className="card-title">{item.file ? item.file.split('/').pop() : 'Untitled'}</h2>
-            <p>{item.description || 'No description available'}</p>
+            <h2 className="card-title">{cardData.title}</h2>
+            <p>{cardData.description}</p>
             <div className="flex flex-row gap-3 card-actions">
               <button
-                onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
+                onClick={(e) => handleButtonOnClick(e, cardData)}
                 style={{ backgroundColor: 'white', color: 'seagreen' }}
                 className="text-black-100"
               >
                 view
               </button>
-            
+              
               <button
-                onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
+                onClick={(e) => handleButtonOnClick(e, cardData)}
                 style={{ backgroundColor: 'white', color: 'seagreen' }}
                 className="btn btn-primary"
               >
                 share
               </button>
               <button
-                onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
+                onClick={(e) => handleButtonOnClick(e, cardData)}
                 style={{ backgroundColor: 'white', color: 'seagreen' }}
                 className="btn btn-primary"
               >
@@ -257,9 +226,44 @@ export function ItemsCard({ item,setShareItemLink }) {
             </div>
           </div>
         </div>
-      )}
-    </>
-  );
+      ))
+    ) : (
+      <div className="card bg-base-100 shadow-sm">
+        <div className="w-full h-48 flex items-center justify-center bg-gray-200 rounded-t-lg">
+          <p className="text-gray-500">No thumbnails available</p>
+        </div>
+        <div className="card-body items-center text-center">
+          <h2 className="card-title">{item.file ? item.file.split('/').pop() : 'Untitled'}</h2>
+          <p>{item.description || 'No description available'}</p>
+          <div className="flex flex-row gap-3 card-actions">
+            <button
+              onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
+              style={{ backgroundColor: 'white', color: 'seagreen' }}
+              className="text-black-100"
+            >
+              view
+            </button>
+          
+            <button
+              onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
+              style={{ backgroundColor: 'white', color: 'seagreen' }}
+              className="btn btn-primary"
+            >
+              share
+            </button>
+            <button
+              onClick={(e) => handleButtonOnClick(e, { originalItemId: item.id, originalItemType: item.type })}
+              style={{ backgroundColor: 'white', color: 'seagreen' }}
+              className="btn btn-primary"
+            >
+              delete
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </>
+);
 }
 
 export default ItemsCard;

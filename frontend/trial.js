@@ -2,7 +2,7 @@
 //   try {
 //     const url = '/media/tiles/205/raster.cog.tif';
 //     const response = await fetch(
-//       `http://localhost:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(url)}`,
+//       `http://192.168.1.200:8001/cog/WebMercatorQuad/tilejson.json?url=${encodeURIComponent(url)}`,
 //       {
 //         method: 'GET',
 //         headers: {

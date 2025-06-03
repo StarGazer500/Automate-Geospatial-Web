@@ -28,7 +28,7 @@ export const DocumentDataUpload = () => {
   useEffect(() => {
     // This will set the CSRF cookie
     async function fetchisAuthData(){
-    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+    const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
       method: 'GET',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -48,6 +48,7 @@ export const DocumentDataUpload = () => {
   
 
   const handleFileChange = (e) => {
+   
     if (e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.size > MAX_FILE_SIZE) {
@@ -73,14 +74,14 @@ export const DocumentDataUpload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.file) {
-      setUploadStatus('Please select a file');
+    if (!formData.file || !formData.description || !formData.dateCaptured) {
+      setUploadStatus('Please All Entries must be filled');
       return;
     }
 
     setUploadStatus('Uploading...');
     setProgress(0); // Reset progress
-    const ws = new WebSocket('ws://localhost:8000/ws/documentupload/');
+    const ws = new WebSocket('ws://192.168.1.200:8000/ws/documentupload/');
 
     ws.onopen = () => {
       // Send metadata
@@ -229,7 +230,7 @@ export const MapDataUpload = () => {
   useEffect(() => {
     // This will set the CSRF cookie
     async function fetchisAuthData(){
-    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+    const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
       method: 'GET',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -274,14 +275,14 @@ export const MapDataUpload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.file) {
-      setUploadStatus('Please select a file');
+    if (!formData.file || !formData.description || !formData.dateCaptured) {
+      setUploadStatus('Please All Entries must be filled');
       return;
     }
 
     setUploadStatus('Uploading...');
     setProgress(0); // Reset progress
-    const ws = new WebSocket('ws://localhost:8000/ws/mapupload/');
+    const ws = new WebSocket('ws://192.168.1.200:8000/ws/mapupload/');
 
     ws.onopen = () => {
       // Send metadata
@@ -443,7 +444,7 @@ export const GeospatialDataUpload = () => {
   useEffect(() => {
     // This will set the CSRF cookie
     async function fetchisAuthData(){
-    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+    const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
       method: 'GET',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -488,14 +489,28 @@ export const GeospatialDataUpload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.files.length === 0) {
-      setUploadStatus('Please select at least one file');
+  
+    if (formData.files.length === 0 || !formData.description || !formData.dateCaptured) {
+      setUploadStatus('Please Make sure entries are filled');
       return;
+    }
+
+    if (formData.files.find(f => f.name.toLowerCase().endsWith('.shp'))){
+      if(!formData.files.find(f => f.name.toLowerCase().endsWith('.shx')) || 
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.shx'))||
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.prj'))||
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.dbf'))
+      ){
+      setUploadStatus('shapefiles must include .shp, .shx,.dbf');
+      return;
+
+      }
+      
     }
 
     setUploadStatus('Uploading...');
     setProgress(0);
-    const ws = new WebSocket('ws://localhost:8000/ws/upload/');
+    const ws = new WebSocket('ws://192.168.1.200:8000/ws/upload/');
 
     ws.onopen = async () => {
       console.log('WebSocket opened');
@@ -688,14 +703,27 @@ export const GeospatialInputDataUpload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.files.length === 0) {
-      setUploadStatus('Please select at least one file');
+    if (formData.files.length === 0 || !formData.description || !formData.dateCaptured) {
+      setUploadStatus('Please Make sure entries are filled');
       return;
+    }
+
+    if (formData.files.find(f => f.name.toLowerCase().endsWith('.shp'))){
+      if(!formData.files.find(f => f.name.toLowerCase().endsWith('.shx')) || 
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.shx'))||
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.prj'))||
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.dbf'))
+      ){
+      setUploadStatus('shapefiles must include .shp, .shx,.dbf');
+      return;
+
+      }
+      
     }
 
     setUploadStatus('Uploading...');
     setProgress(0);
-    const ws = new WebSocket('ws://localhost:8000/ws/upload/');
+    const ws = new WebSocket('ws://192.168.1.200:8000/ws/upload/');
 
     ws.onopen = async () => {
       console.log('WebSocket opened');
@@ -889,14 +917,27 @@ export const GeospatialOutputDataUpload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.files.length === 0) {
-      setUploadStatus('Please select at least one file');
+    if (formData.files.length === 0 || !formData.description || !formData.dateCaptured) {
+      setUploadStatus('Please Make sure entries are filled');
       return;
+    }
+
+    if (formData.files.find(f => f.name.toLowerCase().endsWith('.shp'))){
+      if(!formData.files.find(f => f.name.toLowerCase().endsWith('.shx')) || 
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.shx'))||
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.prj'))||
+        !formData.files.find(f => f.name.toLowerCase().endsWith('.dbf'))
+      ){
+      setUploadStatus('shapefiles must include .shp, .shx,.dbf');
+      return;
+
+      }
+      
     }
 
     setUploadStatus('Uploading...');
     setProgress(0);
-    const ws = new WebSocket('ws://localhost:8000/ws/upload/');
+    const ws = new WebSocket('ws://192.168.1.200:8000/ws/upload/');
 
     ws.onopen = async () => {
       console.log('WebSocket opened');
@@ -1107,7 +1148,7 @@ export const GeospatialOutputDataUpload = () => {
 
 //     // setUploadStatus('Uploading...');
 //     // setProgress(0);
-//     const ws = new WebSocket('ws://localhost:8000/ws/analysisupload/');
+//     const ws = new WebSocket('ws://192.168.1.200:8000/ws/analysisupload/');
 //     console.log(inputgeospatialValue)
 
 //     ws.onopen = async () => {
@@ -1521,8 +1562,8 @@ export const AnalysisAssetsUpload = forwardRef((props, ref) => {
       e.preventDefault();
     }
 
-    if (!formData.file) {
-      setUploadStatus('Please select at least one file');
+    if (!formData.file || !formData.description || !formData.dateCaptured) {
+      setUploadStatus('Please All Entries must be filled');
       return;
     }
 
@@ -1534,7 +1575,7 @@ export const AnalysisAssetsUpload = forwardRef((props, ref) => {
 
     setUploadStatus('Uploading...');
     setProgress(0);
-    const ws = new WebSocket('ws://localhost:8000/ws/analysisupload/');
+    const ws = new WebSocket('ws://192.168.1.200:8000/ws/analysisupload/');
 
     ws.onopen = async () => {
       console.log('WebSocket opened');

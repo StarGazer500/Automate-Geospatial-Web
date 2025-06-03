@@ -45,7 +45,7 @@ stopmbtileserver:
 runmbtileserver: stopmbtileserver
 	@docker run -d --name mbtileserver \
 	-p 8080:8000 \
-	-v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media/tiles:/tiles \
+	-v /home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media/tiles:/tiles \
 	consbio/mbtileserver:0.11 \
 	--dir /tiles --enable-fs-watch --cors "*"
 
@@ -56,7 +56,7 @@ stopmartintileserver:
 runmartintileserver: stopmartintileserver
 
 	@docker run -d --name martin-container \
-  -v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media/tiles:/data/tiles \
+  -v /home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media/tiles:/data/tiles \
   -p 8080:3000 \
   ghcr.io/maplibre/martin /data/tiles
 
@@ -68,8 +68,8 @@ runtitiler: stoptitiler
 	@docker run -d --name titiler-container \
 	--platform=linux/amd64 \
 	-p 8001:80 \
-	-v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media:/media \
-	-e TITILER_CORS="http://localhost:3000" \
+	-v /home/rbgh-officer-server/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media:/media \
+	-e TITILER_CORS="http://192.168.1.200:3000" \
 	-e LOG_LEVEL=debug \
 	--memory="2g" --cpus="4" \
 	--rm \
@@ -79,7 +79,7 @@ runtitiler: stoptitiler
 #     --platform=linux/amd64 \
 #     -p 8001:8000 \
 #     -v /home/martin/Desktop/Automate-Geospatial-Web/backend/automate_geoweb/media:/media \
-#     -e TITILER_CORS="http://localhost:3000" \
+#     -e TITILER_CORS="http://192.168.1.200:3000" \
 #     -e LOG_LEVEL=debug \
 #     --memory="2g" --cpus="2" \
 #     --rm \
@@ -95,8 +95,11 @@ stopredis:
 	-@docker rm redis-server 2>/dev/null || true
 
 # Start the Redis container
+# runredis: stopredis
+# 	-@docker run -d --name redis-server -p 6379:6379 redis || echo "Failed to start Redis"
+
 runredis: stopredis
-	-@docker run -d --name redis-server -p 6379:6379 redis || echo "Failed to start Redis"
+	-@docker run -d --name redis-server -p 192.168.1.200:6379:6379 redis || echo "Failed to start Redis"
 
 # This solves raster numpy int issue by changing int:int to int:int64
 patchdjangoraster:
@@ -138,3 +141,8 @@ runserver: runredis runcelery runtitiler
 migrate-db:
 	python manage.py makemigrations
 	python manage.py migrate
+#install gdal for linux
+# install_gdal
+# 	sudo apt update && sudo apt install gdal-bin libgdal-dev && sudo apt install python3-dev build-essential
+
+#if failed ce

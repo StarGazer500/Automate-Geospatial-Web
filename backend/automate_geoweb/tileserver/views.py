@@ -39,7 +39,7 @@ class VectorTileJsonView(View):
                     "tilejson": "2.2.0",
                     "name": metadata.get("name", f"tiles{user_id}"),
                     "version": metadata.get("version", "1.0.0"),
-                    "tiles": [f"http://127.0.0.1:8000/tileserver/{tile_path}/{user_id}/tiles/{{z}}/{{x}}/{{y}}.pbf"],
+                    "tiles": [f"http://192.168.1.200:8000/tileserver/{tile_path}/{user_id}/tiles/{{z}}/{{x}}/{{y}}.pbf"],
                     "minzoom": min_zoom or 6,
                     "maxzoom": max_zoom or 18,
                     "bounds": metadata.get("bounds", "-180,-85.0511,180,85.0511").split(","),

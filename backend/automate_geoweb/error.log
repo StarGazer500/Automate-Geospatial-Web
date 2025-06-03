@@ -1,7 +1,7 @@
 [2025-03-23 11:08:24 +0000] [19791] [DEBUG] Current configuration:
   config: ./gunicorn.conf.py
   wsgi_app: None
-  bind: ['127.0.0.1:8000']
+  bind: ['192.168.1.200:8000']
   backlog: 2048
   workers: 2
   worker_class: uvicorn_worker.UvicornWorker
@@ -35,7 +35,7 @@
   initgroups: False
   tmp_upload_dir: None
   secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
-  forwarded_allow_ips: ['127.0.0.1', '::1']
+  forwarded_allow_ips: ['192.168.1.200', '::1']
   accesslog: access.log
   disable_redirect_access_to_syslog: False
   access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
@@ -46,7 +46,7 @@
   logconfig: None
   logconfig_dict: {}
   logconfig_json: None
-  syslog_addr: udp://localhost:514
+  syslog_addr: udp://192.168.1.200:514
   syslog: False
   syslog_prefix: None
   syslog_facility: user
@@ -75,7 +75,7 @@
   on_exit: <function OnExit.on_exit at 0x713b22adf380>
   ssl_context: <function NewSSLContext.ssl_context at 0x713b22adf560>
   proxy_protocol: False
-  proxy_allow_ips: ['127.0.0.1', '::1']
+  proxy_allow_ips: ['192.168.1.200', '::1']
   keyfile: None
   certfile: None
   ssl_version: 2
@@ -94,7 +94,7 @@
   header_map: drop
 [2025-03-23 11:08:24 +0000] [19791] [INFO] Starting gunicorn 23.0.0
 [2025-03-23 11:08:24 +0000] [19791] [DEBUG] Arbiter booted
-[2025-03-23 11:08:24 +0000] [19791] [INFO] Listening at: http://127.0.0.1:8000 (19791)
+[2025-03-23 11:08:24 +0000] [19791] [INFO] Listening at: http://192.168.1.200:8000 (19791)
 [2025-03-23 11:08:24 +0000] [19791] [INFO] Using worker: uvicorn_worker.UvicornWorker
 [2025-03-23 11:08:24 +0000] [19792] [INFO] Booting worker with pid: 19792
 [2025-03-23 11:08:24 +0000] [19793] [INFO] Booting worker with pid: 19793
@@ -155,7 +155,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
 [2025-03-23 11:11:47 +0000] [20068] [DEBUG] Current configuration:
   config: ./gunicorn.conf.py
   wsgi_app: None
-  bind: ['127.0.0.1:8000']
+  bind: ['192.168.1.200:8000']
   backlog: 2048
   workers: 2
   worker_class: uvicorn_worker.UvicornWorker
@@ -189,7 +189,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   initgroups: False
   tmp_upload_dir: None
   secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
-  forwarded_allow_ips: ['127.0.0.1', '::1']
+  forwarded_allow_ips: ['192.168.1.200', '::1']
   accesslog: access.log
   disable_redirect_access_to_syslog: False
   access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
@@ -200,7 +200,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   logconfig: None
   logconfig_dict: {}
   logconfig_json: None
-  syslog_addr: udp://localhost:514
+  syslog_addr: udp://192.168.1.200:514
   syslog: False
   syslog_prefix: None
   syslog_facility: user
@@ -229,7 +229,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   on_exit: <function OnExit.on_exit at 0x79c0c2f6b380>
   ssl_context: <function NewSSLContext.ssl_context at 0x79c0c2f6b560>
   proxy_protocol: False
-  proxy_allow_ips: ['127.0.0.1', '::1']
+  proxy_allow_ips: ['192.168.1.200', '::1']
   keyfile: None
   certfile: None
   ssl_version: 2
@@ -248,7 +248,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   header_map: drop
 [2025-03-23 11:11:47 +0000] [20068] [INFO] Starting gunicorn 23.0.0
 [2025-03-23 11:11:47 +0000] [20068] [DEBUG] Arbiter booted
-[2025-03-23 11:11:47 +0000] [20068] [INFO] Listening at: http://127.0.0.1:8000 (20068)
+[2025-03-23 11:11:47 +0000] [20068] [INFO] Listening at: http://192.168.1.200:8000 (20068)
 [2025-03-23 11:11:47 +0000] [20068] [INFO] Using worker: uvicorn_worker.UvicornWorker
 [2025-03-23 11:11:47 +0000] [20163] [INFO] Booting worker with pid: 20163
 [2025-03-23 11:11:47 +0000] [20164] [INFO] Booting worker with pid: 20164
@@ -358,7 +358,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
 [2025-03-23 11:12:51 +0000] [20343] [DEBUG] Current configuration:
   config: ./gunicorn.conf.py
   wsgi_app: None
-  bind: ['127.0.0.1:8000']
+  bind: ['192.168.1.200:8000']
   backlog: 2048
   workers: 2
   worker_class: uvicorn_worker.UvicornWorker
@@ -392,7 +392,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   initgroups: False
   tmp_upload_dir: None
   secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
-  forwarded_allow_ips: ['127.0.0.1', '::1']
+  forwarded_allow_ips: ['192.168.1.200', '::1']
   accesslog: access.log
   disable_redirect_access_to_syslog: False
   access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
@@ -403,7 +403,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   logconfig: None
   logconfig_dict: {}
   logconfig_json: None
-  syslog_addr: udp://localhost:514
+  syslog_addr: udp://192.168.1.200:514
   syslog: False
   syslog_prefix: None
   syslog_facility: user
@@ -432,7 +432,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   on_exit: <function OnExit.on_exit at 0x7284832ab380>
   ssl_context: <function NewSSLContext.ssl_context at 0x7284832ab560>
   proxy_protocol: False
-  proxy_allow_ips: ['127.0.0.1', '::1']
+  proxy_allow_ips: ['192.168.1.200', '::1']
   keyfile: None
   certfile: None
   ssl_version: 2
@@ -451,7 +451,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   header_map: drop
 [2025-03-23 11:12:51 +0000] [20343] [INFO] Starting gunicorn 23.0.0
 [2025-03-23 11:12:51 +0000] [20343] [DEBUG] Arbiter booted
-[2025-03-23 11:12:51 +0000] [20343] [INFO] Listening at: http://127.0.0.1:8000 (20343)
+[2025-03-23 11:12:51 +0000] [20343] [INFO] Listening at: http://192.168.1.200:8000 (20343)
 [2025-03-23 11:12:51 +0000] [20343] [INFO] Using worker: uvicorn_worker.UvicornWorker
 [2025-03-23 11:12:51 +0000] [20431] [INFO] Booting worker with pid: 20431
 [2025-03-23 11:12:51 +0000] [20432] [INFO] Booting worker with pid: 20432
@@ -561,7 +561,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
 [2025-03-23 11:13:37 +0000] [20682] [DEBUG] Current configuration:
   config: ./gunicorn.conf.py
   wsgi_app: None
-  bind: ['127.0.0.1:8000']
+  bind: ['192.168.1.200:8000']
   backlog: 2048
   workers: 2
   worker_class: uvicorn_worker.UvicornWorker
@@ -595,7 +595,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   initgroups: False
   tmp_upload_dir: None
   secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
-  forwarded_allow_ips: ['127.0.0.1', '::1']
+  forwarded_allow_ips: ['192.168.1.200', '::1']
   accesslog: access.log
   disable_redirect_access_to_syslog: False
   access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
@@ -606,7 +606,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   logconfig: None
   logconfig_dict: {}
   logconfig_json: None
-  syslog_addr: udp://localhost:514
+  syslog_addr: udp://192.168.1.200:514
   syslog: False
   syslog_prefix: None
   syslog_facility: user
@@ -635,7 +635,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   on_exit: <function OnExit.on_exit at 0x7fd87f793380>
   ssl_context: <function NewSSLContext.ssl_context at 0x7fd87f793560>
   proxy_protocol: False
-  proxy_allow_ips: ['127.0.0.1', '::1']
+  proxy_allow_ips: ['192.168.1.200', '::1']
   keyfile: None
   certfile: None
   ssl_version: 2
@@ -654,7 +654,7 @@ django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
   header_map: drop
 [2025-03-23 11:13:37 +0000] [20682] [INFO] Starting gunicorn 23.0.0
 [2025-03-23 11:13:37 +0000] [20682] [DEBUG] Arbiter booted
-[2025-03-23 11:13:37 +0000] [20682] [INFO] Listening at: http://127.0.0.1:8000 (20682)
+[2025-03-23 11:13:37 +0000] [20682] [INFO] Listening at: http://192.168.1.200:8000 (20682)
 [2025-03-23 11:13:37 +0000] [20682] [INFO] Using worker: uvicorn_worker.UvicornWorker
 [2025-03-23 11:13:37 +0000] [20683] [INFO] Booting worker with pid: 20683
 [2025-03-23 11:13:37 +0000] [20684] [INFO] Booting worker with pid: 20684

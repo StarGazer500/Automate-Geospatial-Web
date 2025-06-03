@@ -119,7 +119,7 @@ const FormSlider = () => {
   useEffect(() => {
     // This will set the CSRF cookie
     async function fetchisAuthData(){
-    const response=await fetch('http://127.0.0.1:8000/manage-data/is_user_authenticated/',  {
+    const response=await fetch('http://192.168.1.200:8000/manage-data/is_user_authenticated/',  {
       method: 'GET',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

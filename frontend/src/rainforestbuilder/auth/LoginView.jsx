@@ -22,7 +22,7 @@ export const LoginForm = () => {
     setError(null); // Clear previous errors
     try {
       const response = await fetch(
-        'http://127.0.0.1:8000/manage-data/login-user/',
+        'http://192.168.1.200:8000/manage-data/login-user/',
         {
           method: 'POST',
           credentials: 'include', 

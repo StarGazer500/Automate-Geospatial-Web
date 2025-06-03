@@ -36,7 +36,7 @@ function Homepage(){
                         className="section-image"
                     />
                     <p className="section-description">
-                        Data and Automated Script Management for Rainforest Builder
+                        {/* Data and Automated Script Management for Rainforest Builder */}
                     </p>
                 </section>
                 <section className="section">

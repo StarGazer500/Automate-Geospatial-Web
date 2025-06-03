@@ -28,7 +28,7 @@ useEffect(()=>{
   useEffect(() => {
     const fetchCompartments = async () => {
       try {
-        const response = await fetch('http://localhost:8000/dashboard/retrieve-all-compt/', {
+        const response = await fetch('http://192.168.1.200:8000/dashboard/retrieve-all-compt/', {
           method: 'GET',
           headers: { "Content-Type": "application/json" },
         });
@@ -102,7 +102,7 @@ useEffect(()=>{
       console.log("Sending compartment to backend:", compartment);
       
       // Example API call to send the compartment data
-      const response = await fetch('http://localhost:8000/dashboard/rerieve-qcpnts-in-comptment/', {
+      const response = await fetch('http://192.168.1.200:8000/dashboard/rerieve-qcpnts-in-comptment/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
