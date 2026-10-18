@@ -14,6 +14,7 @@ import FormSlider from './rainforestbuilder/dataset/FormSlider'
 import {DocumentDataUpload} from './rainforestbuilder/dataset/Uploads'
 import { Route, Routes } from "react-router-dom";
 import {Dashboard} from './rainforestbuilder/dashboard/Dashboard'
+import {RNDDashboard}  from './rainforestbuilder/dashboard/rnd_dashboard/RndDashshboard'
 
 
 
@@ -38,6 +39,8 @@ function App() {
             <Route path="/geo-detail-view" element={<GeospatialDetailView/>} />
             <Route path="/login-user" element={<LoginForm/>} />
             <Route path="/drone-basemap-tms" element={<DroneMapViewer/>} />
+            <Route path="/rnd-dashboard" element={<RNDDashboard/>} />
+            
             
 
             
