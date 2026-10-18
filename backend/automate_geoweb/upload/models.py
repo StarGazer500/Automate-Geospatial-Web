@@ -91,8 +91,8 @@ class DocumentData(models.Model):
            HnswIndex(
                 name='documentdata_desc_idx',
                 fields=['desc_embedding'],
-                m=16,
-                ef_construction=64,
+                m=32,
+                ef_construction=128,
                 opclasses=['vector_cosine_ops'],
             ),
         ]
@@ -148,8 +148,8 @@ class MapData(models.Model):
            HnswIndex(
                 name='mapdata_desc_idx',
                 fields=['desc_embedding'],
-                m=16,
-                ef_construction=64,
+                m=32,
+                ef_construction=128,
                 opclasses=['vector_cosine_ops'],
             ),
         ]
@@ -252,8 +252,8 @@ class GeospatialData(models.Model):
             HnswIndex(
                 name='geospatial_desc_idx',
                 fields=['desc_embedding'],
-                m=16,
-                ef_construction=64,
+                m=32,
+                ef_construction=128,
                 opclasses=['vector_cosine_ops'],
             )
         ]
@@ -312,8 +312,8 @@ class AnalysispData(models.Model):
            HnswIndex(
                 name='analysisdata_desc_idx',
                 fields=['desc_embedding'],
-                m=16,
-                ef_construction=64,
+                m=32,
+                ef_construction=128,
                 opclasses=['vector_cosine_ops'],
             ),
         ]

@@ -51,7 +51,7 @@ async def create_access_token(payload, secret):
         if isinstance(payload["start_time"], str)
         else payload["start_time"]
     )
-    access_expiry_time = start_time + timedelta(minutes=1)
+    access_expiry_time = start_time + timedelta(minutes=10)
     payload["access_expiry_time"] = access_expiry_time.isoformat()
     token = await encode_token(payload, secret)
     return token
